@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام متابعة الطلاب الاحترافي - أ/ عبدالعزيز الفيفي</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; min-height: 100vh; transition: background 0.5s ease; }
+        .click-effect:active { transform: scale(0.96); opacity: 0.8; }
+        .glass-card { backdrop-filter: blur(10px); transition: all 0.5s ease; }
+    </style>
+    <!-- استيراد مكتبات Firebase (Realtime Database) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, push, remove, update, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVrIIm7aXjg0hGrMk0qVrXT8gaRIpHoBk",
+            authDomain: "youy-apps.firebaseapp.com",
+            databaseURL: "https://youy-apps-default-rtdb.firebaseio.com",
+            projectId: "youy-apps",
+            storageBucket: "youy-apps.firebasestorage.app",
+            messagingSenderId: "690543747528",
+            appId: "1:690543747528:web:10c85ef0c93b79596620fd",
+            measurementId: "G-LL8PGM8G8E"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let activeClass = null;
+        let currentStudentId = null;
+        let allStudents = [];
+        let customActions = [];
+        let classList = ['الفصل الأول', 'الفصل الثاني', 'الفصل الثالث', 'الفصل الرابع'];
+        let editingActionIndex = null;
+        let editingClassIndex = null;
+
+        const themes = [
+            { name: "الذهب الأبيض", bg: "linear-gradient(135deg, #fdfbf7 0%, #eef2f3 100%)", headerBg: "bg-stone-800 text-amber-100 border-stone-700", btnPrimary: "bg-stone-800 hover:bg-stone-900 text-amber-100" },
+            { name: "اللؤلؤ الطبيعي", bg: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)", headerBg: "bg-slate-700 text-slate-100 border-slate-600", btnPrimary: "bg-slate-700 hover:bg-slate-800 text-white" },
+            { name: "الكشمير الفاخر", bg: "linear-gradient(135deg, #fcfaf8 0%, #f5efe6 100%)", headerBg: "bg-amber-900 text-amber-50 border-amber-800", btnPrimary: "bg-amber-900 hover:bg-amber-950 text-amber-50" },
+            { name: "الفانيلا اللاتيه", bg: "linear-gradient(135deg, #faf7f2 0%, #f0eae1 100%)", headerBg: "bg-amber-950 text-orange-100 border-amber-900", btnPrimary: "bg-amber-950 hover:bg-black text-orange-100" },
+            { name: "السحاب الفرنسي", bg: "linear-gradient(135deg, #f4f6f9 0%, #e2e8f0 100%)", headerBg: "bg-sky-900 text-sky-50 border-sky-800", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" },
+            { name: "الزمرد الخفيف", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-900 text-emerald-50 border-emerald-800", btnPrimary: "bg-emerald-800 hover:bg-emerald-900 text-white" },
+            { name: "الشمبانيا الملكي", bg: "linear-gradient(135deg, #fffcf4 0%, #f7f1e3 100%)", headerBg: "bg-yellow-900 text-yellow-50 border-yellow-800", btnPrimary: "bg-yellow-800 hover:bg-yellow-900 text-white" },
+            { name: "الكوارتز الوردي", bg: "linear-gradient(135deg, #fdf8f8 0%, #f9f0f0 100%)", headerBg: "bg-rose-900 text-rose-50 border-rose-800", btnPrimary: "bg-rose-800 hover:bg-rose-900 text-white" },
+            { name: "النحاس الدافئ", bg: "linear-gradient(135deg, #faf6f5 0%, #f0eae6 100%)", headerBg: "bg-orange-950 text-orange-50 border-orange-900", btnPrimary: "bg-orange-900 hover:bg-orange-950 text-white" },
+            { name: "اللافندر الملكي الفاتح", bg: "linear-gradient(135deg, #f7f5fa 0%, #edeaf2 100%)", headerBg: "bg-purple-950 text-purple-50 border-purple-900", btnPrimary: "bg-purple-900 hover:bg-purple-950 text-white" }
+        ];
+
+        function applyRandomTheme() {
+            const randomIndex = Math.floor(Math.random() * themes.length);
+            const selectedTheme = themes[randomIndex];
+            document.body.style.background = selectedTheme.bg;
+            const header = document.getElementById('main-header');
+            if(header) {
+                header.className = `p-4 shadow-md border-b transition-all duration-500 ${selectedTheme.headerBg}`;
+            }
+            window.currentTheme = selectedTheme;
+        }
+
+        const defaultActions = [
+            { icon: '✅', name: 'إجابة صحيحة', score: 1.0, color: '#28a745' },
+            { icon: '❌', name: 'إجابة خاطئة', score: -1.0, color: '#dc3545' },
+            { icon: '💡', name: 'مشاركة', score: 1.0, color: '#17a2b8' },
+            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#20c997' },
+            { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#e83e8c' },
+            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#6610f2' },
+            { icon: '🗣️', name: 'التحدث أثناء الدرس', score: -1.0, color: '#6f42c1' },
+            { icon: '🏃‍♂️', name: 'خرج ولم يعد', score: -1.0, color: '#007bff' },
+            { icon: '😑', name: 'غير مهتم', score: -1.0, color: '#fd7e14' },
+            { icon: '📁', name: 'نسيان ملف أو واجب', score: -5.0, color: '#ffc107' },
+            { icon: '📱', name: 'استخدام الهاتف', score: -1.0, color: '#d9534f' },
+            { icon: '⭐', name: 'إنجاز ملف', score: 5.0, color: '#00cec9' },
+            { icon: '🎁', name: 'هدية', score: 5.0, color: '#e17055' }
+        ];
+
+        // تحميل محسن: قراءة من الذاكرة المحلية أولاً ثم مزامنة ذكية وهادئة في الخلفية
+        window.initFastLoad = async function() {
+            applyRandomTheme();
+
+            const cachedStudents = localStorage.getItem('fifi_cached_students');
+            const cachedActions = localStorage.getItem('fifi_cached_actions');
+            const cachedClasses = localStorage.getItem('fifi_cached_classes');
+
+            if (cachedStudents) allStudents = JSON.parse(cachedStudents);
+            if (cachedActions) customActions = JSON.parse(cachedActions); else customActions = defaultActions;
+            if (cachedClasses) classList = JSON.parse(cachedClasses);
+
+            renderView();
+            renderCustomActionsUI();
+            renderSettingsActionsDropdown();
+            renderClassesListUI();
+
+            const dbRef = ref(db);
+            try {
+                const [studentsSnap, settingsSnap, classesSnap] = await Promise.all([
+                    get(child(dbRef, 'fifi_students_tracker')),
+                    get(child(dbRef, 'fifi_custom_actions')),
+                    get(child(dbRef, 'fifi_classes_list'))
+                ]);
+
+                let needsUIRender = false;
+
+                if (studentsSnap.exists()) {
+                    const newStudents = [];
+                    const data = studentsSnap.val();
+                    Object.keys(data).forEach((key) => {
+                        const studentItem = data[key];
+                        newStudents.push({ 
+                            id: key, 
+                            name: studentItem.name || 'بدون اسم',
+                            email: studentItem.email || 'بدون إيميل',
+                            className: studentItem.className || 'غير موزع',
+                            phone: studentItem.phone || '966566688614',
+                            actions: studentItem.actions || [],
+                            attendanceStats: studentItem.attendanceStats || { absents: 0, lates: 0, excuses: 0 }
+                        });
+                    });
+                    if (JSON.stringify(newStudents) !== JSON.stringify(allStudents)) {
+                        allStudents = newStudents;
+                        localStorage.setItem('fifi_cached_students', JSON.stringify(allStudents));
+                        needsUIRender = true;
+                    }
+                }
+
+                if (settingsSnap.exists()) {
+                    const rawData = settingsSnap.val();
+                    const fetchedActions = Array.isArray(rawData) ? rawData : Object.values(rawData);
+                    if (JSON.stringify(fetchedActions) !== JSON.stringify(customActions)) {
+                        customActions = fetchedActions;
+                        localStorage.setItem('fifi_cached_actions', JSON.stringify(customActions));
+                        needsUIRender = true;
+                    }
+                } else {
+                    customActions = defaultActions;
+                    set(ref(db, 'fifi_custom_actions'), defaultActions);
+                }
+
+                if (classesSnap.exists()) {
+                    const fetchedClasses = classesSnap.val();
+                    if (JSON.stringify(fetchedClasses) !== JSON.stringify(classList)) {
+                        classList = fetchedClasses;
+                        localStorage.setItem('fifi_cached_classes', JSON.stringify(classList));
+                        needsUIRender = true;
+                    }
+                } else {
+                    set(ref(db, 'fifi_classes_list'), classList);
+                }
+
+                if (needsUIRender) {
+                    renderView();
+                    renderCustomActionsUI();
+                    renderSettingsActionsDropdown();
+                    renderClassesListUI();
+                }
+            } catch (error) {
+                console.error("خطأ في المزامنة الخلفية: ", error);
+            }
+        };
+
+        window.openClass = function(className) {
+            activeClass = className;
+            document.getElementById('main-dashboard').classList.add('hidden');
+            document.getElementById('class-view').classList.remove('hidden');
+            document.getElementById('class-title-header').innerText = `إدارة فصل: ${className}`;
+            renderClassStudents();
+        };
+
+        window.backToHome = function() {
+            activeClass = null;
+            document.getElementById('class-view').classList.add('hidden');
+            document.getElementById('main-dashboard').classList.remove('hidden');
+            renderView();
+        };
+
+        window.openSettingsModal = function(tabName = 'classes') {
+            document.getElementById('settings-modal').classList.remove('hidden');
+            document.getElementById('settings-modal').classList.add('flex');
+            switchSettingsTab(tabName);
+        };
+
+        window.closeSettingsModal = function() {
+            document.getElementById('settings-modal').classList.add('hidden');
+            document.getElementById('settings-modal').classList.remove('flex');
+            resetActionForm();
+            resetClassForm();
+        };
+
+        window.switchSettingsTab = function(tab) {
+            const classesTabContent = document.getElementById('classes-tab-content');
+            const actionsTabContent = document.getElementById('actions-tab-content');
+            const btnClasses = document.getElementById('btn-tab-classes');
+            const btnActions = document.getElementById('btn-tab-actions');
+            const activeColorClass = window.currentTheme ? window.currentTheme.btnPrimary.split(' ')[0] : 'bg-slate-700';
+
+            if(tab === 'classes') {
+                classesTabContent.classList.remove('hidden');
+                actionsTabContent.classList.add('hidden');
+                btnClasses.className = `flex-1 py-2.5 rounded-xl font-bold text-xs ${activeColorClass} text-white shadow transition-all cursor-pointer`;
+                btnActions.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer";
+            } else {
+                classesTabContent.classList.add('hidden');
+                actionsTabContent.classList.remove('hidden');
+                btnActions.className = `flex-1 py-2.5 rounded-xl font-bold text-xs ${activeColorClass} text-white shadow transition-all cursor-pointer`;
+                btnClasses.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer";
+                renderSettingsActionsDropdown();
+            }
+        };
+
+        window.saveClassItem = function() {
+            const classNameInput = document.getElementById('new-class-name');
+            const name = classNameInput.value.trim();
+            if(!name) return alert('الرجاء إدخال اسم الفصل');
+
+            if(editingClassIndex !== null) {
+                const oldName = classList[editingClassIndex];
+                classList[editingClassIndex] = name;
+                allStudents.forEach(stu => {
+                    if(stu.className === oldName) stu.className = name;
+                });
+                editingClassIndex = null;
+                document.getElementById('save-class-btn').innerText = "إضافة ➕";
+            } else {
+                if(classList.includes(name)) return alert('هذا الفصل موجود مسبقاً');
+                classList.push(name);
+            }
+
+            classNameInput.value = '';
+            localStorage.setItem('fifi_cached_classes', JSON.stringify(classList));
+            renderClassesListUI();
+            renderView();
+            set(ref(db, 'fifi_classes_list'), classList);
+        };
+
+        window.editClassItem = function(index) {
+            document.getElementById('new-class-name').value = classList[index];
+            editingClassIndex = index;
+            document.getElementById('save-class-btn').innerText = "تعديل ✏️";
+        };
+
+        window.deleteClassItem = function(index) {
+            if(confirm('هل أنت متأكد من حذف هذا الفصل؟')) {
+                const removedName = classList[index];
+                classList.splice(index, 1);
+                allStudents.forEach(stu => {
+                    if(stu.className === removedName) stu.className = 'غير موزع';
+                });
+                localStorage.setItem('fifi_cached_classes', JSON.stringify(classList));
+                renderClassesListUI();
+                renderView();
+                set(ref(db, 'fifi_classes_list'), classList);
+            }
+        };
+
+        window.resetClassForm = function() {
+            editingClassIndex = null;
+            document.getElementById('new-class-name').value = '';
+            document.getElementById('save-class-btn').innerText = "إضافة ➕";
+        };
+
+        function renderClassesListUI() {
+            const container = document.getElementById('settings-classes-list');
+            if(!container) return;
+            container.innerHTML = '';
+            classList.forEach((cls, index) => {
+                container.innerHTML += `
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs shadow-xs">
+                        <span class="font-bold text-slate-700">${cls}</span>
+                        <div class="flex gap-1.5">
+                            <button onclick="editClassItem(${index})" class="bg-amber-50 text-amber-700 px-2 py-1 rounded-lg font-semibold cursor-pointer">✏️ تعديل</button>
+                            <button onclick="deleteClassItem(${index})" class="bg-rose-50 text-rose-600 px-2 py-1 rounded-lg font-semibold cursor-pointer">🗑️ حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.renderSettingsActionsDropdown = function() {
+            const selectEl = document.getElementById('actions-dropdown-select');
+            if(!selectEl) return;
+            selectEl.innerHTML = `<option value="">-- اختر تقييماً للتعديل أو أضف جديداً --</option>`;
+            if (customActions && customActions.length > 0) {
+                customActions.forEach((act, index) => {
+                    const scoreText = act.score > 0 ? '+' + act.score : act.score;
+                    selectEl.innerHTML += `<option value="${index}">${act.icon || '⭐'} ${act.name} (${scoreText})</option>`;
+                });
+            }
+        };
+
+        window.onSelectActionToEdit = function() {
+            const index = document.getElementById('actions-dropdown-select').value;
+            if(index === "") {
+                resetActionForm();
+                return;
+            }
+            const act = customActions[index];
+            if(!act) return;
+            
+            document.getElementById('new-action-icon').value = act.icon || '⭐';
+            document.getElementById('new-action-name').value = act.name;
+            document.getElementById('new-action-score').value = act.score;
+            document.getElementById('new-action-color').value = act.color;
+            editingActionIndex = parseInt(index);
+            document.getElementById('save-action-btn').innerText = "تعديل التقييم ✏️";
+            document.getElementById('delete-action-btn').classList.remove('hidden');
+        };
+
+        window.saveCustomActionFromDropdown = function() {
+            const icon = document.getElementById('new-action-icon').value;
+            const name = document.getElementById('new-action-name').value.trim();
+            const score = parseFloat(document.getElementById('new-action-score').value);
+            const color = document.getElementById('new-action-color').value;
+
+            if(!name || isNaN(score)) return alert('الرجاء إدخال اسم التقييم والدرجة بشكل صحيح.');
+
+            const newActObj = { icon, name, score, color };
+
+            if(editingActionIndex !== null && editingActionIndex >= 0) {
+                customActions[editingActionIndex] = newActObj;
+            } else {
+                customActions.push(newActObj);
+            }
+
+            localStorage.setItem('fifi_cached_actions', JSON.stringify(customActions));
+            set(ref(db, 'fifi_custom_actions'), customActions);
+            renderCustomActionsUI();
+            renderSettingsActionsDropdown();
+            resetActionForm();
+            alert('تم حفظ التقييم بنجاح في السحابة ✅');
+        };
+
+        window.deleteSelectedAction = function() {
+            if(editingActionIndex === null || editingActionIndex < 0) return alert('الرجاء اختيار تقييم من القائمة أولاً للحذف');
+            if(confirm('هل أنت متأكد من حذف هذا التقييم؟')) {
+                customActions.splice(editingActionIndex, 1);
+                localStorage.setItem('fifi_cached_actions', JSON.stringify(customActions));
+                set(ref(db, 'fifi_custom_actions'), customActions);
+                renderCustomActionsUI();
+                renderSettingsActionsDropdown();
+                resetActionForm();
+                alert('تم الحذف بنجاح 🗑️');
+            }
+        };
+
+        window.resetActionForm = function() {
+            editingActionIndex = null;
+            const selectEl = document.getElementById('actions-dropdown-select');
+            if(selectEl) selectEl.value = "";
+            document.getElementById('new-action-name').value = '';
+            document.getElementById('new-action-score').value = '';
+            document.getElementById('new-action-icon').value = '⭐';
+            document.getElementById('save-action-btn').innerText = "حفظ كتقييم جديد 🚀";
+            document.getElementById('delete-action-btn').classList.add('hidden');
+        };
+
+        window.renderCustomActionsUI = function() {
+            const container = document.getElementById('custom-actions-container');
+            if(!container) return;
+            container.innerHTML = '';
+            
+            customActions.forEach(act => {
+                const fullName = `${act.icon || ''} ${act.name}`.trim();
+                const actColor = act.color || '#64748b';
+                
+                container.innerHTML += `
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-100 flex items-center justify-between shadow-xs hover:shadow transition">
+                        <button onclick="recordAction('${fullName}', ${act.score}, null)" class="flex items-center gap-2.5 flex-grow text-right cursor-pointer">
+                            <span class="w-9 h-9 rounded-lg flex items-center justify-center text-base border" style="background-color: ${actColor}15; border-color: ${actColor}40;">
+                                ${act.icon || '⭐'}
+                            </span>
+                            <span class="font-bold text-xs text-slate-700">${act.name}</span>
+                        </button>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">${act.score > 0 ? '+' + act.score : act.score}</span>
+                    </div>
+                `;
+            });
+        }
+
+        window.superSmartBulkAdd = async function() {
+            const bulkText = document.getElementById('bulk-students-input').value.trim();
+            if(!bulkText) return alert('الرجاء إدخال قائمة الطلاب في المربع');
+            const lines = bulkText.split('\n').map(l => l.trim()).filter(l => l !== "");
+            let count = 0;
+            const studentsRef = ref(db, 'fifi_students_tracker');
+            const updates = {};
+
+            for(let i = 0; i < lines.length; i++) {
+                let line1 = lines[i];
+                let line2 = lines[i+1];
+                if(!line2) break;
+                let name = "", email = "";
+                if(!line1.includes('@') && line2.includes('@')) {
+                    name = line1; email = line2.toLowerCase(); i++;
+                } else if(line1.includes('@') && !line2.includes('@')) {
+                    email = line1.toLowerCase(); name = line2; i++;
+                }
+                if(name && email) {
+                    const newStudentRef = push(studentsRef);
+                    const newStuObj = {
+                        id: newStudentRef.key, name: name, email: email, className: 'غير موزع',
+                        phone: '966566688614', actions: [],
+                        attendanceStats: { absents: 0, lates: 0, excuses: 0 }
+                    };
+                    allStudents.push(newStuObj);
+                    updates[newStudentRef.key] = newStuObj;
+                    count++;
+                }
+            }
+
+            if(count > 0) {
+                document.getElementById('bulk-students-input').value = '';
+                localStorage.setItem('fifi_cached_students', JSON.stringify(allStudents));
+                renderView();
+                update(studentsRef, updates);
+                alert(`تم حفظ ${count} طالب في السحابة بنجاح وبسرعة فائقة ✅`);
+            } else {
+                alert('تأكد من تنسيق القائمة (اسم الطالب ثم الإيميل في كل سطر).');
+            }
+        };
+
+        window.copyAllStudents = function() {
+            if(allStudents.length === 0) return alert('لا توجد أسماء للنسخ');
+            let textToCopy = "";
+            allStudents.forEach(s => {
+                textToCopy += `${s.name}\n${s.email || ''}\n`;
+            });
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('تم نسخ جميع الأسماء والإيميلات بنجاح 📋');
+            });
+        };
+
+        window.deleteAllStudents = async function() {
+            if(confirm('تحذير: هل أنت متأكد من حذف جميع الطلاب من السحابة نهائياً؟')) {
+                allStudents = [];
+                localStorage.setItem('fifi_cached_students', JSON.stringify([]));
+                renderView();
+                if(activeClass) renderClassStudents();
+                set(ref(db, 'fifi_students_tracker'), null);
+                alert('تم تفريغ وحذف جميع الطلاب بنجاح 🗑️');
+            }
+        };
+
+        window.searchGlobalStudents = function() {
+            const query = document.getElementById('global-search-input').value.trim().toLowerCase();
+            const resultsBox = document.getElementById('global-search-results');
+            if(!query) { resultsBox.innerHTML = ''; resultsBox.classList.add('hidden'); return; }
+            const matches = allStudents.filter(s => s.name.toLowerCase().includes(query) || (s.email && s.email.toLowerCase().includes(query)));
+            if(matches.length === 0) {
+                resultsBox.innerHTML = `<div class="p-2.5 text-xs text-slate-500">لا توجد نتائج مطابقة.</div>`;
+                resultsBox.classList.remove('hidden');
+                return;
+            }
+            resultsBox.innerHTML = '';
+            matches.forEach(student => {
+                resultsBox.innerHTML += `
+                    <div class="p-2.5 hover:bg-slate-50 flex justify-between items-center border-b border-slate-100 text-xs">
+                        <div>
+                            <span class="font-bold text-slate-700">${student.name}</span>
+                            <span class="text-[11px] text-slate-500 block">${student.email || ''} (الحالة: ${student.className})</span>
+                        </div>
+                        <button onclick="transferStudentToCurrentClass('${student.id}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-md font-bold text-[11px]">➕ إضافة</button>
+                    </div>
+                `;
+            });
+            resultsBox.classList.remove('hidden');
+        };
+
+        window.transferStudentToCurrentClass = async function(id) {
+            const student = allStudents.find(s => s.id === id);
+            if(student) {
+                student.className = activeClass;
+                localStorage.setItem('fifi_cached_students', JSON.stringify(allStudents));
+                renderClassStudents();
+                document.getElementById('global-search-input').value = '';
+                document.getElementById('global-search-results').classList.add('hidden');
+                update(ref(db, `fifi_students_tracker/${id}`), { className: activeClass });
+            }
+        };
+
+        window.editStudent = async function(id) {
+            const student = allStudents.find(s => s.id === id);
+            if(!student) return;
+            const newName = prompt("تعديل اسم الطالب:", student.name);
+            if(newName === null) return;
+            const newEmail = prompt("تعديل إيميل مدرستي:", student.email || '');
+            student.name = newName.trim();
+            student.email = newEmail.trim();
+            localStorage.setItem('fifi_cached_students', JSON.stringify(allStudents));
+            renderView();
+            if(activeClass) renderClassStudents();
+            update(ref(db, `fifi_students_tracker/${id}`), { name: student.name, email: student.email });
+        };
+
+        window.deleteStudent = async function(id) {
+            if(confirm('هل أنت متأكد من حذف هذا الطالب نهائياً؟')) {
+                allStudents = allStudents.filter(s => s.id !== id);
+                localStorage.setItem('fifi_cached_students', JSON.stringify(allStudents));
+                renderView();
+                if(activeClass) renderClassStudents();
+                remove(ref(db, `fifi_students_tracker/${id}`));
+            }
+        };
+
+        window.recordAction = function(actionName, scoreChange = 0, attendanceType = null) {
+            if(!currentStudentId) return;
+            closeActionModal();
+
+            const student = allStudents.find(s => s.id === currentStudentId);
+            if(student) {
+                const now = new Date();
+                const dayName = now.toLocaleDateString('ar-SA', { weekday: 'long' });
+                const dateFormatted = now.toLocaleDateString('ar-SA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                const timeFormatted = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+                const formattedTime = `${dayName} | ${dateFormatted} - ${timeFormatted}`;
+
+                if(attendanceType) {
+                    if(attendanceType === 'غائب') student.attendanceStats.absents = (student.attendanceStats.absents || 0) + 1;
+                    if(attendanceType === 'متأخر') student.attendanceStats.lates = (student.attendanceStats.lates || 0) + 1;
+                    if(attendanceType === 'مستأذن') student.attendanceStats.excuses = (student.attendanceStats.excuses || 0) + 1;
+                }
+                
+                const newRecord = { title: actionName, score: scoreChange, timestamp: formattedTime };
+                student.actions = [newRecord, ...(student.actions || [])];
+
+                localStorage.setItem('fifi_cached_students', JSON.stringify(allStudents));
+                renderClassStudents();
+
+                update(ref(db, `fifi_students_tracker/${currentStudentId}`), {
+                    actions: student.actions,
+                    attendanceStats: student.attendanceStats
+                });
+            }
+        };
+
+        window.deleteStudentAction = function(actionIndex) {
+            if(!currentStudentId) return;
+            const student = allStudents.find(s => s.id === currentStudentId);
+            if(student && student.actions) {
+                student.actions.splice(actionIndex, 1);
+                localStorage.setItem('fifi_cached_students', JSON.stringify(allStudents));
+                openModal(currentStudentId);
+                renderClassStudents();
+                update(ref(db, `fifi_students_tracker/${currentStudentId}`), { actions: student.actions });
+            }
+        };
+
+        window.adjustAttendance = function(type, delta) {
+            if(!currentStudentId) return;
+            const student = allStudents.find(s => s.id === currentStudentId);
+            if(student) {
+                if(type === 'absents') student.attendanceStats.absents = Math.max(0, (student.attendanceStats.absents || 0) + delta);
+                if(type === 'lates') student.attendanceStats.lates = Math.max(0, (student.attendanceStats.lates || 0) + delta);
+                if(type === 'excuses') student.attendanceStats.excuses = Math.max(0, (student.attendanceStats.excuses || 0) + delta);
+
+                localStorage.setItem('fifi_cached_students', JSON.stringify(allStudents));
+                openModal(currentStudentId);
+                update(ref(db, `fifi_students_tracker/${currentStudentId}`), { attendanceStats: student.attendanceStats });
+            }
+        };
+
+        function renderView() {
+            const classesContainer = document.getElementById('dynamic-classes-grid');
+            if(!classesContainer) return;
+            classesContainer.innerHTML = '';
+
+            classList.forEach(cls => {
+                const count = allStudents.filter(s => s.className === cls).length;
+                classesContainer.innerHTML += `
+                    <div onclick="openClass('${cls}')" class="glass-card p-4 rounded-2xl shadow-sm border border-slate-200 hover:border-slate-400 cursor-pointer transition flex items-center justify-between" style="background: rgba(255, 255, 255, 0.95);">
+                        <div>
+                            <span class="text-2xl mb-1 block">📚</span>
+                            <h3 class="text-base font-bold text-slate-800">${cls}</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">${count} طلاب مخصصين</p>
+                        </div>
+                        <span class="bg-slate-100 text-slate-700 w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shadow-2xs">➔</span>
+                    </div>
+                `;
+            });
+
+            const totalCountBadge = document.getElementById('total-cloud-count');
+            if(totalCountBadge) {
+                totalCountBadge.innerText = `إجمالي القائمة العامة بالسحابة: ${allStudents.length} طالب`;
+            }
+
+            const globalContainer = document.getElementById('general-students-list-container');
+            if(globalContainer) {
+                globalContainer.innerHTML = '';
+                allStudents.forEach(student => {
+                    globalContainer.innerHTML += `
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 flex justify-between items-center shadow-2xs text-xs">
+                            <div>
+                                <span class="font-bold text-slate-800">${student.name}</span>
+                                <span class="text-[11px] text-slate-500 block">${student.email || 'بدون إيميل'} | الفصل: <strong class="text-slate-700">${student.className}</strong></span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <button onclick="editStudent('${student.id}')" class="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-lg font-bold cursor-pointer hover:bg-amber-100">✏️ تعديل</button>
+                                <button onclick="deleteStudent('${student.id}')" class="bg-rose-50 text-rose-600 px-2.5 py-1 rounded-lg font-bold cursor-pointer hover:bg-rose-100">🗑️ حذف</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function renderClassStudents() {
+            if(!activeClass) return;
+            const container = document.getElementById('class-students-container');
+            if(!container) return;
+            container.innerHTML = '';
+            const students = allStudents.filter(s => s.className === activeClass);
+
+            if(students.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-2 text-center py-8 font-semibold bg-white rounded-2xl shadow-2xs text-xs">لا توجد طلاب مخصصين في هذا الفصل حالياً. استخدم خانة البحث بالأعلى.</p>`;
+                return;
+            }
+
+            students.forEach(student => {
+                const btnPrimaryClass = window.currentTheme ? window.currentTheme.btnPrimary.split(' ')[0] : 'bg-slate-700';
+                
+                let totalScore = 0;
+                if(student.actions && Array.isArray(student.actions)) {
+                    student.actions.forEach(act => {
+                        totalScore += (parseFloat(act.score) || 0);
+                    });
+                }
+
+                let scoreBadgeBg = "bg-slate-100 text-slate-700 border-slate-200";
+                if(totalScore > 0) scoreBadgeBg = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                if(totalScore < 0) scoreBadgeBg = "bg-rose-50 text-rose-700 border-rose-200";
+                const formattedScore = totalScore > 0 ? `+${totalScore}` : totalScore;
+
+                container.innerHTML += `
+                    <div class="bg-white p-3.5 rounded-2xl shadow-2xs flex items-center justify-between border border-slate-200 hover:shadow-xs transition">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-sm text-slate-800">${student.name}</h3>
+                                <span class="text-[11px] font-black px-2 py-0.5 rounded-lg border ${scoreBadgeBg}" title="مجموع التقييمات">⭐ ${formattedScore}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 font-medium mt-0.5">${student.email || 'بدون إيميل'}</p>
+                        </div>
+                        <div class="flex gap-1.5 items-center">
+                            <button onclick="openActionModal('${student.id}')" class="${btnPrimaryClass} text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-2xs cursor-pointer transition">📝 رصد</button>
+                            <button onclick="openModal('${student.id}')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-2xs hover:bg-emerald-700 cursor-pointer transition">📊 التقرير</button>
+                            <button onclick="deleteStudent('${student.id}')" class="bg-rose-50 text-rose-600 px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-rose-100 cursor-pointer transition">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.openActionModal = function(id) {
+            currentStudentId = id;
+            const student = allStudents.find(s => s.id === id);
+            if(student) document.getElementById('action-student-name').innerText = student.name;
+            document.getElementById('action-modal').classList.remove('hidden');
+            document.getElementById('action-modal').classList.add('flex');
+        };
+
+        window.closeActionModal = function() {
+            document.getElementById('action-modal').classList.add('hidden');
+            document.getElementById('action-modal').classList.remove('flex');
+        };
+
+        window.openModal = function(id) {
+            currentStudentId = id;
+            const student = allStudents.find(s => s.id === id);
+            if(!student) return;
+
+            const att = student.attendanceStats || { absents: 0, lates: 0, excuses: 0 };
+            const actions = student.actions || [];
+            const btnPrimaryClass = window.currentTheme ? window.currentTheme.btnPrimary.split(' ')[0] : 'bg-slate-800';
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 ${btnPrimaryClass} text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-3 shadow-lg">👤</div>
+                    <h2 class="text-2xl font-black text-slate-800">${student.name}</h2>
+                    <p class="text-sm font-bold text-slate-500 mt-1">${student.className}</p>
+                </div>
+
+                <div class="bg-slate-50 p-5 rounded-2xl mb-6 border border-slate-200 shadow-2xs">
+                    <h4 class="font-bold text-slate-800 text-sm mb-3">👤 الحضور والغياب (تعديل فوري بالضغط)</h4>
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div class="bg-rose-50 p-3.5 rounded-xl flex flex-col justify-between border border-rose-100 shadow-2xs">
+                            <span class="block text-xs font-bold text-rose-700">غائب (${att.absents || 0})</span>
+                            <div class="flex justify-center gap-2 mt-2">
+                                <button onclick="adjustAttendance('absents', 1)" class="bg-rose-600 text-white w-8 h-8 rounded-lg font-black text-sm cursor-pointer shadow-xs hover:bg-rose-700">+</button>
+                                <button onclick="adjustAttendance('absents', -1)" class="bg-rose-800 text-white w-8 h-8 rounded-lg font-black text-sm cursor-pointer shadow-xs hover:bg-rose-900">-</button>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50 p-3.5 rounded-xl flex flex-col justify-between border border-amber-100 shadow-2xs">
+                            <span class="block text-xs font-bold text-amber-700">متأخر (${att.lates || 0})</span>
+                            <div class="flex justify-center gap-2 mt-2">
+                                <button onclick="adjustAttendance('lates', 1)" class="bg-amber-600 text-white w-8 h-8 rounded-lg font-black text-sm cursor-pointer shadow-xs hover:bg-amber-700">+</button>
+                                <button onclick="adjustAttendance('lates', -1)" class="bg-amber-800 text-white w-8 h-8 rounded-lg font-black text-sm cursor-pointer shadow-xs hover:bg-amber-900">-</button>
+                            </div>
+                        </div>
+                        <div class="bg-sky-50 p-3.5 rounded-xl flex flex-col justify-between border border-sky-100 shadow-2xs">
+                            <span class="block text-xs font-bold text-sky-700">مستأذن (${att.excuses || 0})</span>
+                            <div class="flex justify-center gap-2 mt-2">
+                                <button onclick="adjustAttendance('excuses', 1)" class="bg-sky-600 text-white w-8 h-8 rounded-lg font-black text-sm cursor-pointer shadow-xs hover:bg-sky-700">+</button>
+                                <button onclick="adjustAttendance('excuses', -1)" class="bg-sky-800 text-white w-8 h-8 rounded-lg font-black text-sm cursor-pointer shadow-xs hover:bg-sky-900">-</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center justify-between">
+                        <span>📅 النشاطات والسلوكيات المسجلة</span>
+                        <span class="text-xs text-slate-500 font-normal">موثق بالتاريخ والوقت</span>
+                    </h4>
+                    <div class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                        ${actions.length === 0 ? '<p class="text-sm text-slate-400 text-center py-6">لا توجد نشاطات مسجلة حالياً</p>' : 
+                            actions.map((act, index) => `
+                                <div class="bg-white p-3.5 rounded-xl border border-slate-200 flex justify-between items-center text-sm shadow-2xs">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-3 h-3 rounded-full ${act.score > 0 ? 'bg-emerald-500' : (act.score < 0 ? 'bg-rose-500' : 'bg-sky-500')}"></span>
+                                        <div>
+                                            <span class="font-bold text-slate-800 block text-sm">${act.title} (${act.score > 0 ? '+' + act.score : act.score})</span>
+                                            <span class="text-xs text-slate-400 font-mono mt-0.5 block">${act.timestamp}</span>
+                                        </div>
+                                    </div>
+                                    <button onclick="deleteStudentAction(${index})" class="bg-rose-50 text-rose-600 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-rose-100 cursor-pointer">🗑️ حذف</button>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button onclick="window.print()" class="flex-1 ${btnPrimaryClass} text-white py-3 rounded-xl font-bold text-sm cursor-pointer shadow-md">🖨️ طباعة التقرير</button>
+                    <button onclick="closeModal()" class="flex-1 bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-sm hover:bg-slate-300 cursor-pointer shadow-md">إغلاق</button>
+                </div>
+            `;
+
+            document.getElementById('student-modal').classList.remove('hidden');
+            document.getElementById('student-modal').classList.add('flex');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('student-modal').classList.add('hidden');
+            document.getElementById('student-modal').classList.remove('flex');
+        };
+
+        window.onload = function() {
+            initFastLoad();
+        };
+    </script>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between text-sm">
+
+    <!-- الترويسة الاحترافية -->
+    <header id="main-header" class="p-4 shadow-md border-b">
+        <div class="container mx-auto max-w-3xl flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="text-center sm:text-right">
+                <h1 class="text-lg font-black tracking-wide">نظام المتابعة السحابي الشامل</h1>
+                <p class="text-xs opacity-90 mt-0.5">المعلم: أ/ عبدالعزيز الفيفي | الكفايات اللغوية | ثانوية الأمير عبدالمجيد (الرياض)</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="openSettingsModal('classes')" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-1 cursor-pointer transition backdrop-blur-xs">
+                    🏫 الفصول
+                </button>
+                <button onclick="openSettingsModal('actions')" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-1 cursor-pointer transition backdrop-blur-xs">
+                    ⚙️ التقييمات
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-3 max-w-3xl flex-grow my-3">
+
+        <!-- لوحة التحكم الرئيسية -->
+        <div id="main-dashboard" class="py-1">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 text-center">الفصول الدراسية</h2>
+            
+            <div id="dynamic-classes-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6"></div>
+
+            <div class="glass-card p-5 rounded-2xl shadow-sm border border-slate-200 mb-6" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-2 gap-1.5">
+                    <h3 class="font-bold text-sm text-slate-800 flex items-center gap-1.5">📥 حفظ القائمة العامة للطلاب في السحابة</h3>
+                    <span class="text-[11px] bg-slate-100 text-slate-700 font-bold px-3 py-1 rounded-full" id="total-cloud-count">إجمالي القائمة العامة بالسحابة: 0 طالب</span>
+                </div>
+                <p class="text-xs text-slate-500 mb-3">الصق القائمة الكاملة هنا (اسم الطالب والإيميل سطر بسطر):</p>
+                <textarea id="bulk-students-input" rows="4" placeholder="محمد أحمد الفيفي&#10;m.feefi@moe.gov.sa" class="w-full border border-slate-200 p-3 rounded-xl text-xs focus:outline-none focus:border-slate-500 mb-3 font-sans bg-white shadow-2xs"></textarea>
+                
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <button onclick="superSmartBulkAdd()" class="flex-1 bg-slate-700 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition text-xs cursor-pointer shadow-xs">حفظ القائمة العامة في السحابة 🚀</button>
+                    <button onclick="copyAllStudents()" class="bg-sky-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-sky-700 transition text-xs cursor-pointer shadow-xs">📋 نسخ الكل</button>
+                    <button onclick="deleteAllStudents()" class="bg-rose-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-rose-700 transition text-xs cursor-pointer shadow-xs">🗑️ حذف الكل</button>
+                </div>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl shadow-sm border border-slate-200" style="background: rgba(255, 255, 255, 0.95);">
+                <h3 class="font-bold text-sm text-slate-800 mb-3">📋 القائمة العامة للطلاب المحفوظين بالسحابة</h3>
+                <div id="general-students-list-container" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+
+        <!-- واجهة الفصل المستقلة -->
+        <div id="class-view" class="hidden py-1">
+            <div class="flex items-center justify-between mb-4 bg-white p-3.5 rounded-2xl shadow-2xs border border-slate-200">
+                <button onclick="backToHome()" class="bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl font-bold text-xs hover:bg-slate-200 transition cursor-pointer">⬅ الرئيسية</button>
+                <h2 class="text-base font-bold text-slate-700" id="class-title-header">الفصل</h2>
+                <div class="w-12"></div>
+            </div>
+
+            <div class="glass-card p-3 rounded-2xl shadow-sm mb-4 relative border border-slate-200" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="flex items-center gap-2 px-1">
+                    <span class="text-sm">🔍</span>
+                    <input type="text" id="global-search-input" oninput="searchGlobalStudents()" placeholder="ابحث باسم الطالب من القائمة العامة لإضافته لهذا الفصل..." class="w-full border-none focus:outline-none text-xs font-semibold bg-transparent">
+                </div>
+                <div id="global-search-results" class="hidden absolute top-full left-0 right-0 bg-white shadow-lg rounded-2xl mt-1 border border-slate-200 max-h-48 overflow-y-auto z-30 p-1"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="class-students-container"></div>
+        </div>
+
+    </main>
+
+    <!-- تذييل الصفحة -->
+    <footer class="bg-slate-900 text-slate-400 py-4 text-center text-[11px] font-semibold border-t border-slate-800">
+        <p>جميع الحقوق محفوظة © 2026 | نظام متابعة الطلاب السحابي - ثانوية الأمير عبدالمجيد بالرياض</p>
+    </footer>
+
+    <!-- نافذة الإعدادات الشاملة -->
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50 backdrop-blur-xs">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeSettingsModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center hover:bg-slate-200 cursor-pointer">✕</button>
+            <h3 class="text-lg font-bold text-center mb-1 text-slate-800">⚙️ لوحة الإعدادات</h3>
+            <p class="text-[11px] text-center text-slate-500 mb-4 font-medium">تحكم بالفصول الدراسية أو خصص التقييمات عبر القائمة المنسدلة</p>
+
+            <div class="flex gap-2 mb-4 bg-slate-100 p-1 rounded-xl">
+                <button id="btn-tab-classes" onclick="switchSettingsTab('classes')" class="flex-1 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer">🏫 إعدادات الفصول</button>
+                <button id="btn-tab-actions" onclick="switchSettingsTab('actions')" class="flex-1 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer">⭐ إعدادات التقييمات</button>
+            </div>
+
+            <!-- محتوى تبويب الفصول -->
+            <div id="classes-tab-content" class="space-y-3">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5">
+                    <h4 class="font-bold text-xs text-slate-700">إضافة أو تعديل فصل دراسي</h4>
+                    <div class="flex gap-2">
+                        <input type="text" id="new-class-name" placeholder="اسم الفصل (مثال: أول ثانوي / 5)..." class="flex-1 border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white focus:outline-none focus:ring-1 focus:ring-slate-400">
+                        <button id="save-class-btn" onclick="saveClassItem()" class="bg-slate-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-slate-800 cursor-pointer">إضافة ➕</button>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-xs text-slate-700">قائمة الفصول الحالية</h4>
+                    <div id="settings-classes-list" class="max-h-44 overflow-y-auto space-y-1.5 pr-1 border border-slate-200 p-2.5 rounded-2xl bg-slate-50"></div>
+                </div>
+            </div>
+
+            <!-- محتوى تبويب التقييمات -->
+            <div id="actions-tab-content" class="space-y-3 hidden">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5">
+                    <h4 class="font-bold text-xs text-slate-700">📌 اختر تقييماً للتعديل أو أضف جديداً</h4>
+                    
+                    <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white focus:outline-none focus:ring-1 focus:ring-slate-400 cursor-pointer">
+                        <option value="">-- اختر تقييماً للتعديل أو أضف جديداً --</option>
+                    </select>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <select id="new-action-icon" class="border border-slate-200 p-2.5 rounded-xl text-base font-bold bg-white">
+                            <option value="⭐">⭐ نجمة</option>
+                            <option value="✅">✅ صح</option>
+                            <option value="❌">❌ خطأ</option>
+                            <option value="💡">💡 مشاركة</option>
+                            <option value="📘">📘 واجب</option>
+                            <option value="📕">📕 عدم حل</option>
+                            <option value="🎁">🎁 هدية</option>
+                            <option value="🏆">🏆 كأس</option>
+                            <option value="💤">💤 نوم</option>
+                            <option value="🗣️">🗣️ تحدث</option>
+                            <option value="📱">📱 جوال</option>
+                            <option value="😑">😑 غير مهتم</option>
+                            <option value="🏃‍♂️">🏃‍♂️ هروب</option>
+                            <option value="📁">📁 نسيان</option>
+                            <option value="⚡">⚡ نشاط</option>
+                            <option value="🔥">🔥 تميز</option>
+                        </select>
+
+                        <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white focus:outline-none">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة (1 أو -1)" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
+                        
+                        <select id="new-action-color" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
+                            <option value="#28a745">🟢 أخضر عشبي</option>
+                            <option value="#20c997">🔹 أخضر فيروزي</option>
+                            <option value="#007bff">🔵 أزرق غامق</option>
+                            <option value="#17a2b8">🟦 سماوي فاتح</option>
+                            <option value="#6610f2">🟣 بنفسجي ملكي</option>
+                            <option value="#6f42c1">🔮 أرجواني</option>
+                            <option value="#e83e8c">🩷 وردي زاهي</option>
+                            <option value="#dc3545">🔴 أحمر قاني</option>
+                            <option value="#fd7e14">🟠 برتقالي ساطع</option>
+                            <option value="#ffc107">🟡 أصفر ذهبي</option>
+                            <option value="#6c757d">⚪ رمادي رسمي</option>
+                        </select>
+                    </div>
+
+                    <div class="flex gap-2 pt-1">
+                        <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="flex-1 bg-slate-700 text-white py-2.5 rounded-xl font-bold text-xs hover:bg-slate-800 transition cursor-pointer">حفظ التقييم 🚀</button>
+                        <button id="delete-action-btn" onclick="deleteSelectedAction()" class="hidden bg-rose-600 text-white px-3 py-2.5 rounded-xl font-bold text-xs hover:bg-rose-700 transition cursor-pointer">حذف 🗑️</button>
+                        <button onclick="resetActionForm()" class="bg-slate-200 text-slate-700 px-3 py-2.5 rounded-xl font-bold text-xs hover:bg-slate-300 cursor-pointer">إلغاء</button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="closeSettingsModal()" class="w-full bg-slate-900 text-slate-100 py-3 rounded-xl font-bold text-xs cursor-pointer hover:bg-black shadow-md mt-4">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة تقرير ملف الطالب -->
+    <div id="student-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 md:p-6 z-50 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl w-[95%] md:w-full md:max-w-2xl max-h-[90vh] overflow-y-auto p-6 md:p-8 relative shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-5 left-5 bg-slate-100 text-slate-600 w-10 h-10 rounded-full font-bold flex items-center justify-center hover:bg-slate-200 cursor-pointer shadow-xs">✕</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <!-- نافذة رصد التقييمات للطالب -->
+    <div id="action-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50 backdrop-blur-xs">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 relative shadow-xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeActionModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center hover:bg-slate-200 cursor-pointer">✕</button>
+            <div class="text-center mb-4">
+                <h3 class="text-base font-bold text-slate-800" id="action-student-name">رصد الطالب</h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">أ/ عبدالعزيز موسى الفيفي</p>
+                <p class="text-[10px] text-slate-600 font-semibold mt-0.5">اختر التقييم أو الحالة أدناه ليتم حفظها وتحديثها لحظياً</p>
+            </div>
+
+            <!-- أزرار الحضور والغياب الأربعة العلوية -->
+            <div class="grid grid-cols-4 gap-1.5 mb-3">
+                <button onclick="recordAction('حاضر', 0, null)" class="click-effect p-2 rounded-xl bg-emerald-600 text-white font-bold text-[11px] cursor-pointer shadow-2xs hover:bg-emerald-700 transition flex flex-col items-center justify-center">🟢 حاضر</button>
+                <button onclick="recordAction('غائب', 0, 'غائب')" class="click-effect p-2 rounded-xl bg-rose-600 text-white font-bold text-[11px] cursor-pointer shadow-2xs hover:bg-rose-700 transition flex flex-col items-center justify-center">🔴 غائب</button>
+                <button onclick="recordAction('مستأذن', 0, 'مستأذن')" class="click-effect p-2 rounded-xl bg-sky-600 text-white font-bold text-[11px] cursor-pointer shadow-2xs hover:bg-sky-700 transition flex flex-col items-center justify-center">🔵 مستأذن</button>
+                <button onclick="recordAction('متأخر', 0, 'متأخر')" class="click-effect p-2 rounded-xl bg-amber-600 text-white font-bold text-[11px] cursor-pointer shadow-2xs hover:bg-amber-700 transition flex flex-col items-center justify-center">🟠 متأخر</button>
+            </div>
+
+            <!-- شبكة التقييمات والسلوكيات -->
+            <div id="custom-actions-container" class="grid grid-cols-2 gap-2 mb-4 max-h-60 overflow-y-auto pr-1"></div>
+            
+            <button onclick="closeActionModal()" class="w-full bg-slate-900 text-slate-100 py-2.5 rounded-xl font-bold text-xs cursor-pointer hover:bg-black shadow-xs">إغلاق</button>
+        </div>
+    </div>
+
+</body>
+</html>
