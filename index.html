@@ -115,7 +115,6 @@
     </style>
 
     <script>
-        // إعدادات سحابة د/ سامي محمد العمر الخاصة والمستقلة[span_1](start_span)[span_1](end_span)
         const firebaseConfig = {
           apiKey: "AIzaSyAJKKo_NfmOMA095ulSRDnwQvfHLeIz_s",
           authDomain: "samy-28452.firebaseapp.com",
@@ -133,7 +132,6 @@
         const db = firebase.firestore();
         const rtdb = firebase.database();
 
-        // بيانات المعلم الحالي
         let currentTeacherEmail = "";
         let currentTeacherName = "د/ سامي محمد العمر";
         let currentTeacherSubject = "القرآن الكريم وعلومه";
@@ -853,7 +851,7 @@
                 
                 for(let stu of allStudents) {
                     if(stu.className === removedName) {
-                        stu.className = 'غير موزاد';
+                        stu.className = 'غير موزع';
                         await db.collection(getTeacherCollection()).doc(stu.id).update({ className: 'غير موزع' });
                     }
                 }
@@ -1768,7 +1766,6 @@
             document.getElementById('student-modal').classList.remove('flex');
         };
 
-        // --- نظام تسجيل الدخول المباشر والآمن للمعلمين ---
         window.onload = function() {
             const savedEmail = localStorage.getItem('teacher_email');
             if (savedEmail) {
@@ -1783,6 +1780,11 @@
             document.getElementById('teacher-login-modal').classList.add('flex');
         }
 
+        function openAdminDirectLogin() {
+            document.getElementById('loginTeacherEmail').value = "admin@supervisor.com";
+            submitTeacherLogin();
+        }
+
         async function submitTeacherLogin() {
             const emailInput = document.getElementById('loginTeacherEmail').value.trim().toLowerCase();
             const loginError = document.getElementById('loginError');
@@ -1794,20 +1796,20 @@
                 return;
             }
 
-            // التحقق الخاص بحساب المشرف الرئيسي
             if (emailInput === "admin@supervisor.com" || emailInput === "sami@moe.gov.sa") {
                 localStorage.setItem('teacher_email', emailInput);
-                location.reload();
+                document.getElementById('teacher-login-modal').classList.add('hidden');
+                verifyAndLoadTeacher(emailInput);
                 return;
             }
 
-            // التحقق من السحابة إذا كان الإيميل مسجلاً بواسطة المشرف
             const safeKey = emailInput.replace(/\./g, '_');
             try {
                 const snap = await rtdb.ref('teachers_registry/' + safeKey).once('value');
                 if (snap.exists()) {
                     localStorage.setItem('teacher_email', emailInput);
-                    location.reload();
+                    document.getElementById('teacher-login-modal').classList.add('hidden');
+                    verifyAndLoadTeacher(emailInput);
                 } else {
                     loginError.innerText = "عذراً، هذا البريد غير مسجل لدى المشرف! يرجى التواصل مع المشرف لإضافتك أولاً.";
                     loginError.classList.remove('hidden');
@@ -1821,10 +1823,11 @@
         async function verifyAndLoadTeacher(email) {
             if (email === "admin@supervisor.com") {
                 document.getElementById('admin-supervisor-card').style.display = 'block';
+                document.getElementById('main-dashboard').style.display = 'none';
                 document.getElementById('main-header-title').innerText = "منصة المتابعة السحابية الشاملة";
                 document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام لإدارة وتوليد منصات المعلمين";
-                loadTeachersList();
                 document.getElementById('teacher-logout-btn').classList.remove('hidden');
+                loadTeachersList();
                 return;
             }
 
@@ -1839,6 +1842,7 @@
                     currentTeacherSubject = tData.subject;
 
                     document.getElementById('admin-supervisor-card').style.display = 'none';
+                    document.getElementById('main-dashboard').style.display = 'block';
                     document.getElementById('main-header-title').innerText = currentTeacherName + " 👨‍🏫";
                     document.getElementById('main-header-subtitle').innerText = "المادة الدراسية: " + currentTeacherSubject;
                     document.getElementById('teacher-logout-btn').classList.remove('hidden');
@@ -1850,6 +1854,7 @@
                     currentTeacherSubject = "القرآن الكريم وعلومه";
 
                     document.getElementById('admin-supervisor-card').style.display = 'none';
+                    document.getElementById('main-dashboard').style.display = 'block';
                     document.getElementById('main-header-title').innerText = currentTeacherName + " 👨‍🏫";
                     document.getElementById('main-header-subtitle').innerText = "المادة الدراسية: " + currentTeacherSubject;
                     document.getElementById('teacher-logout-btn').classList.remove('hidden');
@@ -1866,13 +1871,12 @@
         }
 
         function logoutTeacher() {
-            if (confirm("هل ترغب في تسجيل الخروج وتغيير حساب المعلم؟")) {
+            if (confirm("هل ترغب في تسجيل الخروج وتغيير حساب المعلم أو دخول المشرف؟")) {
                 localStorage.removeItem('teacher_email');
                 location.reload();
             }
         }
 
-        // [للمشرف] إضافة معلم جديد للسحابة
         async function addNewTeacher() {
             const name = document.getElementById('newTeacherName').value.trim();
             const email = document.getElementById('newTeacherEmail').value.trim().toLowerCase();
@@ -1896,7 +1900,6 @@
             }
         }
 
-        // [للمشرف] تحميل قائمة المعلمين المعتمدين
         function loadTeachersList() {
             const tbody = document.getElementById('teachers-list-body');
             if(!tbody) return;
@@ -1939,29 +1942,33 @@
 </head>
 <body class="text-slate-900 h-full flex flex-col justify-between text-sm overflow-x-hidden">
 
-    <!-- نافذة دخول المعلم الإلزامية والآمنة -->
     <div id="teacher-login-modal" class="fixed inset-0 bg-slate-950/80 hidden items-center justify-center p-4 z-50 backdrop-blur-md">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-2xl text-center border-2 border-amber-300">
             <div class="w-20 h-20 bg-amber-900 text-amber-100 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg border-2 border-amber-400">👨‍🏫</div>
-            <h2 class="text-2xl font-black text-slate-900 mb-1">منصة المعلم الموحدة</h2>
-            <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال بريدك الإلكتروني المعتمد للدخول إلى لوحتك الخاصة</p>
+            <h2 class="text-2xl font-black text-slate-900 mb-1">منصة المعلمين والمشرفين</h2>
+            <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال البريد الإلكتروني للوصول إلى لوحة التحكم</p>
 
             <div class="space-y-4">
                 <div class="text-right">
-                    <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني للمعلم:</label>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني المعتمد:</label>
                     <input type="email" id="loginTeacherEmail" placeholder="مثال: teacher@moe.gov.sa" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
                 </div>
                 <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 hidden"></div>
+                
                 <button onclick="submitTeacherLogin()" class="w-full bg-amber-900 hover:bg-amber-950 text-amber-50 py-3.5 rounded-2xl font-black text-sm shadow-md transition cursor-pointer flex items-center justify-center gap-2">
                     <span>دخول المنصة السحابية</span>
                     <i class="fas fa-arrow-left"></i>
                 </button>
+
+                <button onclick="openAdminDirectLogin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer transition border border-slate-700 flex items-center justify-center gap-2 mt-2">
+                    <i class="fas fa-user-shield text-amber-400"></i>
+                    <span>👑 دخول المشرف العام (إضافة معلمين)</span>
+                </button>
             </div>
-            <p class="text-[11px] text-slate-400 font-semibold mt-6">مؤمن بالكامل - لن يتمكن الطلاب من الوصول لحسابك عبر الرابط 🔒</p>
+            <p class="text-[11px] text-slate-400 font-semibold mt-6">مؤمن بالكامل - بيانات المعلمين مفصولة تماماً سحابياً 🔒</p>
         </div>
     </div>
 
-    <!-- 1. الترويسة العلوية الثابتة (Header) -->
     <header id="main-header" class="p-4 shadow-sm border-b shrink-0 z-30 transition-all duration-500">
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-center sm:text-right">
@@ -1976,14 +1983,12 @@
         </div>
     </header>
 
-    <!-- 2. منطقة المحتوى الوسطى القابلة للتمرير (Main Scroll Container) -->
     <main id="main-scroll-container" class="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 container mx-auto max-w-6xl w-full">
 
-        <!-- 0. لوحة المشرف لإضافة وإدارة المعلمين (تظهر للمشرف فقط عند الدخول ببريده) -->
         <div id="admin-supervisor-card" class="admin-card mb-6" style="display: none;">
             <div class="header">
-                <h2 class="text-xl font-black text-slate-900"><i class="fas fa-user-shield"></i> لوحة إدارة المعلمين العامة</h2>
-                <p class="text-xs text-slate-500 mt-1">أضف المعلم وسيتمكن فوراً من تسجيل الدخول بحسابه عند إدخال بريده:</p>
+                <h2 class="text-xl font-black text-slate-900"><i class="fas fa-user-shield text-amber-600"></i> لوحة إدارة المعلمين العامة (خاص بالمشرف)</h2>
+                <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا وسيتمكن فوراً من دخول المنصة المخصصة له بإيميله:</p>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-5">
@@ -1993,7 +1998,7 @@
                     <input type="email" id="newTeacherEmail" placeholder="البريد (مثال: mohammed@moe.gov.sa)" class="border p-2 rounded-xl text-xs font-bold bg-white text-left" dir="ltr">
                     <input type="text" id="newTeacherSubject" placeholder="المادة الدراسية (مثال: الفيزياء)" class="border p-2 rounded-xl text-xs font-bold bg-white">
                 </div>
-                <button onclick="addNewTeacher()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs shadow"><i class="fas fa-magic"></i> اعتماد وإضافة المعلم</button>
+                <button onclick="addNewTeacher()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer"><i class="fas fa-magic"></i> اعتماد وإضافة المعلم</button>
             </div>
 
             <h3 class="text-xs font-bold text-slate-800 mb-2 text-right"><i class="fas fa-list"></i> المعلمون المعتمدون في النظام:</h3>
@@ -2015,17 +2020,14 @@
             </div>
         </div>
 
-        <!-- 1. الواجهة الرئيسية: شبكة الفصول ولائحة التحكم كأيقونة بجانبها -->
         <div id="main-dashboard" class="py-2 space-y-6">
             <div class="flex items-center justify-between border-b pb-3">
                 <h2 class="text-2xl font-black text-slate-900 tracking-wider">🏫 القائمة الرئيسية</h2>
                 <span class="text-xs font-bold text-slate-500 bg-white px-3.5 py-1.5 rounded-full border shadow-2xs">اختر الفصل أو اللوحة للبدء</span>
             </div>
             
-            <!-- شبكة البطاقات الموحدة (تشمل الفصول ولوحة التحكم كبطاقة متناسقة) -->
             <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 sm:gap-6 w-full max-w-full overflow-hidden"></div>
 
-            <!-- شريط العبارات التحفيزية الأنيق في أسفل الصفحة -->
             <div class="bg-white/80 backdrop-blur-xs border-2 border-amber-200/80 p-5 rounded-3xl shadow-sm text-center my-4 transition hover:shadow-md">
                 <p id="quote-text" class="student-name-font text-lg text-amber-950 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
@@ -2034,7 +2036,6 @@
             </div>
         </div>
 
-        <!-- 2. واجهة لوحة التحكم المدمجة (تظهر عند الضغط على أيقونتها) -->
         <div id="admin-control-view" class="hidden py-2 space-y-4">
             <div class="flex items-center justify-between mb-2 bg-white p-3.5 rounded-2xl shadow-sm border">
                 <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
@@ -2097,7 +2098,6 @@
             </div>
         </div>
 
-        <!-- 3. واجهة الطلاب داخل الفصل المختار -->
         <div id="class-view" class="hidden py-1">
             <div class="flex items-center justify-between mb-4 bg-white p-3.5 rounded-2xl shadow-sm border">
                 <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
@@ -2110,7 +2110,6 @@
 
     </main>
 
-    <!-- 3. التذييل السفلي الثابت (Footer) -->
     <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right">
             <div>منصة متابعة الطلاب الشاملة</div>
@@ -2119,7 +2118,6 @@
         </div>
     </footer>
 
-    <!-- النوافذ المنبثقة (Modals) -->
     <div id="settings-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-xl max-h-[90vh] overflow-y-auto">
             <button onclick="closeSettingsModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
