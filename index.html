@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة الطلاب الشامل - ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</title>
+    <title>منصة ثانوية الأمير عبدالمجيد</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -114,7 +114,7 @@
         .search-box:focus { border-color: var(--maroon); box-shadow: 0 0 6px rgba(128,0,0,0.2); }
     </style>
 
-    <script[span_2](start_span)[span_2](end_span)>
+    <script>
         const firebaseConfig = {
           apiKey: "AIzaSyAJKKo_NfmOMA095ulSRDnwQvfHLeIz_s",
           authDomain: "samy-28452.firebaseapp.com",
@@ -132,7 +132,6 @@
         const db = firebase.firestore();
         const rtdb = firebase.database();
 
-        let currentTeacherEmail = "";
         let currentTeacherName = "ثانوية الأمير عبدالمجيد";
         let currentTeacherSubject = "ثانوية الأمير عبدالمجيد";
 
@@ -161,43 +160,12 @@
             "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
             "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
             "🌟 \"قمة المجد ليست في عدم السقوط أبداً، بل في القيام بعد كل سقوط.\"",
-            "📚 \"العلم نور والجهل ظلام.. والمواظبة هي طريق التميز والنجاح.\"",
-            "🚀 \"طريق الألف ميل يبدأ بفرصة وحصة دراسية واحدة، اجعل يومك مثمراً.\"",
-            "🏆 \"من فتح باب مدرسة، أغلق باب سجن.. تحية لكل طالب يطلب العلم بشغف.\"",
-            "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\"",
-            "🌱 \"كل خطوة صغيرة تقطعها اليوم نحو هدفك، تقربك مسات طويلة نحو قمة النجاح.\"",
-            "🔥 \"لا تقارن نفسك بغيرك، بل قارن نفسك بما كنت عليه بالأمس، وحاول أن تكون أفضل دائماً.\"",
-            "🦅 \"العقبات والصعوبات ليست سوى حواجز اختبار لتعرف مدى إصرارك وقوتك الحقيقية.\"",
-            "⏳ \"الوقت الذي تستثمره في التعلم اليوم هو الأداة الأكثر قيمة التي تمتلكها لصناعة الغد.\"",
-            "💎 \"التعب الذي تشعر به أثناء الدراسة سيزول سريعاً، لكن فخر إنجازك سيبقى معك إلى الأبد.\"",
-            "🌟 \"استمر في السعي بثقة، فكل درس تتعلمه اليوم يضيف لبنة جديدة في جدار مستقبلك العظيم.\"",
-            "💪 \"النجاح يبدأ من الإيمان بقدرتك على تجاوز الصعاب مهما كانت معقدة.\"",
-            "🧠 \"عقلك هو أثمن ما تملك؛ استثمره بالقراءة والتعلم كل يوم لتصنع الفارق.\"",
-            "☀️ \"ابدأ صباحك بعزيمة متجددة، فاليوم هو فرصة جديدة لتحقيق ما لم تقم به بالأمس.\"",
-            "🔑 \"الانضباط هو الجسر الحقيقي الذي يربط بين أحلامك وبين إنجازاتها على أرض الواقع.\"",
-            "📖 \"كل صفحة تقرأها اليوم هي خطوة تفصلك عن الجهل وتقربك من التميز.\"",
-            "⚡ \"الشغف يمنحك البداية، لكن الاستمرارية والعزيمة هما ما يوصلانك إلى خط النهاية.\"",
-            "🌊 \"لا تخف من الأمواج العالية، فالسفن الماهرة تصنع أروع إنجازاتها في البحار الثائرة.\"",
-            "🎨 \"مستقبلك لوحة فنية، وأنت من تختار الألوان والجهد الذي تضعه لتخرج في أبهى صورة.\"",
-            "⛰️ \"الجبال العالية لا تتسلق بلمح البصر، بل بخطوات ثابتة وواثقة نحو القمة.\"",
-            "🔮 \"أفضل طريقة لتنبؤ مستقبلك هي أن تقوم بصناعته بنفسك اليوم، خطوة بخطوة.\"",
-            "🛡️ \"الأخطاء ليست نهاية المطاف، بل هي الدروس المجانية التي تجعلنا أكثر ذكاءً وقوة.\"",
-            "⚓ \"كن صبوراً، فالأشجار العميقة الجذور هي وحدها التي تقاوم أقوى العواصف.\"",
-            "🌠 \"الأحلام الكبيرة تحتاج إلى جهود عظيمة، فلا تستصغر أي جهد قمت به اليوم.\"",
-            "🛠️ \"العلم في الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
-            "🧭 \"دع شغفك هو بوصلتك، وعملك الجاد هو وقودك، ولا تيأس مهما كانت المسافة طويلة.\"",
-            "✍️ \"اكتب نجاحك اليوم بعرق جبينك وإصرارك، لتقرأه بفخر واعتزاز غداً.\"",
-            "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
+            "📚 \"العلم نور والجهل ظلام.. والمواظبة هي طريق التميز والنجاح.\""
         ];
 
         const themes = [
             { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50 text-amber-950 border-amber-200/80", btnPrimary: "bg-amber-900 hover:bg-amber-950 text-amber-50" },
-            { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
-            { name: "الكتان الدافئ", bg: "linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%)", headerBg: "bg-stone-100 text-stone-900 border-stone-200", btnPrimary: "bg-stone-800 hover:bg-stone-900 text-amber-50" },
-            { name: "الزمرد الفاتح", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-50 text-emerald-950 border-emerald-200", btnPrimary: "bg-emerald-800 hover:bg-emerald-900 text-white" },
-            { name: "السموكي الناعم", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-50 text-sky-950 border-sky-200", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" },
-            { name: "اللافندر الرقيق", bg: "linear-gradient(135deg, #fcfaff 0%, #f0ebf8 100%)", headerBg: "bg-purple-50 text-purple-950 border-purple-200", btnPrimary: "bg-purple-900 hover:bg-purple-950 text-white" },
-            { name: "المرجان المشرق", bg: "linear-gradient(135deg, #fffaf9 0%, #fcefeD 100%)", headerBg: "bg-rose-50 text-rose-950 border-rose-200", btnPrimary: "bg-rose-800 hover:bg-rose-900 text-white" }
+            { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" }
         ];
 
         function applyRandomTheme() {
@@ -230,14 +198,7 @@
             { icon: '✅', name: 'إجابة صحيحة', score: 1.0, color: '#28a745' },
             { icon: '❌', name: 'إجابة خاطئة', score: -1.0, color: '#dc3545' },
             { icon: '💡', name: 'مشاركة', score: 1.0, color: '#17a2b8' },
-            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#20c997' },
-            { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#e83e8c' },
-            { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#dc3545' },
-            { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#ffc107' },
-            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#6610f2' },
-            { icon: '🗣️', name: 'التحدث أثناء الدرس', score: -1.0, color: '#6f42c1' },
-            { icon: '📱', name: 'استخدام الهاتف', score: -1.0, color: '#d9534f' },
-            { icon: '🎁', name: 'هدية', score: 5.0, color: '#e17055' }
+            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#20c997' }
         ];
 
         function initSystem() {
@@ -661,7 +622,7 @@
             if (cleanName.includes('غائب بعذر')) { return { title: 'غائب بعذر', icon: '👤' }; }
             if (cleanName.includes('غائب')) { return { title: 'غائب', icon: '🔴' }; }
             if (cleanName.includes('متأخر')) { return { title: 'متأخر', icon: '⏰' }; }
-            if (cleanName.includes('مستاذن')) { return { title: 'مستاذن', icon: '🏃' }; }
+            if (cleanName.includes('عن بعد')) { return { title: 'عن بعد', icon: '💻' }; }
             if (cleanName.includes('هارب')) { return { title: 'هارب', icon: '🚶‍♂️' }; }
 
             for (let ca of customActions) {
@@ -1089,7 +1050,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر')) {
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('عن بعد') || title.includes('غائب بعذر')) {
                     attendanceEventsList.push(act);
                 }
 
@@ -1130,7 +1091,7 @@
                 <div class="text-center mb-6 border-b pb-4">
                     <div class="w-20 h-20 ${btnPrimaryClass} text-white rounded-full flex items-center justify-center text-4xl font-bold mx-auto mb-2 shadow-md">👤</div>
                     <h2 class="student-name-font text-3xl text-slate-900">${student.name}</h2>
-                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | منصة ثانوية الأمير عبدالمجيد</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -1229,7 +1190,7 @@
                     <div class="text-center border-b border-amber-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-amber-950">📋 تقرير متابعة طالب مفصل</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
-                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">ثانوية الأمير عبدالمجيد</p>
                     </div>
 
                     <div class="space-y-4 text-xs font-bold text-slate-800">
@@ -1310,7 +1271,7 @@
                             <span class="text-5xl mb-2 inline-block">🎓</span>
                             <h1 class="student-title text-3xl font-bold text-slate-900">${student.name}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">الصف: ${student.className}</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">ثانوية الأمير عبدالمجيد</p>
                         </div>
 
                         <div class="space-y-4 text-xs font-bold text-slate-800">
@@ -1381,9 +1342,9 @@
                         </div>
 
                         <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-500 flex justify-between">
-                            <span>ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</span>
+                            <span>ثانوية الأمير عبدالمجيد</span>
                             <span>الحقوق محفوظة 2026</span>
-                            <span>ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</span>
+                            <span>ثانوية الأمير عبدالمجيد</span>
                         </div>
                     </div>
                 </body>
@@ -1479,7 +1440,7 @@
                     <div class="text-center border-b border-amber-200 pb-3 mb-6 sticky top-0 bg-white z-10 py-2">
                         <h3 class="student-name-font text-2xl text-slate-900">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
@@ -1574,13 +1535,13 @@
                             <span class="text-5xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الفردي الشامل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">ثانوية الأمير عبدالمجيد</p>
                         </div>
                         <div>${students.length === 0 ? '<p style="text-align: center; padding: 30px; color: #94a3b8; font-weight: bold;">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
-                            <span>ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</span>
+                            <span>ثانوية الأمير عبدالمجيد</span>
                             <span>الحقوق محفوظة 2026</span>
-                            <span>ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</span>
+                            <span>ثانوية الأمير عبدالمجيد</span>
                         </div>
                     </div>
                 </body>
@@ -1625,8 +1586,8 @@
                 <div class="bg-white border-2 border-amber-200 p-6 rounded-3xl mb-5 text-right max-h-[80vh] overflow-y-auto">
                     <div class="text-center border-b border-amber-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-900">📊 جدول الفصل الشامل والمفصل: ${className}</h3>
-                        <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">ثانوية الأمير عبدالمجيد</p>
                     </div>
 
                     <div class="grid grid-cols-3 gap-2 text-center mb-4 text-xs font-bold">
@@ -1723,7 +1684,7 @@
                             <span class="text-5xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الشامل والمفصل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">ثانوية الأمير عبدالمجيد</p>
                         </div>
                         <div class="grid grid-cols-3 gap-3 text-center mb-6 text-xs font-bold">
                             <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-emerald-800 block text-sm">إجمالي الحضور بالفصل</span><span class="text-xl font-black text-emerald-600">${totalPresentsClass}</span></div>
@@ -1741,7 +1702,7 @@
                             </table>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
-                            <span>ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</span>
+                            <span>ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>ثانوية الأمير عبدالمجيد</span>
                         </div>
                     </div>
                 </body>
@@ -1758,7 +1719,13 @@
         };
 
         window.onload = function() {
-            showLoginModal();
+            const savedEmail = localStorage.getItem('teacher_email');
+            if (savedEmail && savedEmail.toLowerCase().trim() === "school1school2@gmail.com") {
+                verifyAndLoadTeacher(savedEmail);
+            } else {
+                localStorage.removeItem('teacher_email');
+                showLoginModal();
+            }
         };
 
         function showLoginModal() {
@@ -1778,6 +1745,7 @@
             }
 
             if (emailInput === "school1school2@gmail.com") {
+                localStorage.setItem('teacher_email', emailInput);
                 document.getElementById('teacher-login-modal').classList.add('hidden');
                 verifyAndLoadTeacher(emailInput);
                 return;
@@ -1792,17 +1760,19 @@
                 document.getElementById('admin-supervisor-card').style.display = 'block';
                 document.getElementById('main-dashboard').style.display = 'none';
                 document.getElementById('main-header-title').innerText = "نظام المتابعة الشاملة";
-                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد";
+                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام - ثانوية الأمير عبدالمجيد";
                 document.getElementById('teacher-logout-btn').classList.remove('hidden');
                 loadTeachersList();
                 return;
             } else {
+                localStorage.removeItem('teacher_email');
                 showLoginModal();
             }
         }
 
         function logoutTeacher() {
-            if (confirm("هل ترغب في قفل الجلسة وتسجيل الخروج؟")) {
+            if (confirm("هل ترغب في تسجيل الخروج؟")) {
+                localStorage.removeItem('teacher_email');
                 location.reload();
             }
         }
@@ -1874,7 +1844,7 @@
 
     <div id="teacher-login-modal" class="fixed inset-0 bg-slate-950/80 hidden items-center justify-center p-4 z-50 backdrop-blur-md">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-2xl text-center border-2 border-amber-300">
-            <div class="w-20 h-20 bg-amber-900 text-amber-100 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg border-2 border-amber-400">👨‍🏫</div>
+            <div class="w-20 h-20 bg-amber-900 text-amber-100 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg border-2 border-amber-400">🏫</div>
             <h2 class="text-2xl font-black text-slate-900 mb-1">تسجيل دخول المشرف العام</h2>
             <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال البريد الإلكتروني المعتمد للوصول</p>
 
@@ -1883,6 +1853,11 @@
                     <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني المعتمد:</label>
                     <input type="email" id="loginTeacherEmail" autocomplete="off" spellcheck="false" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
                 </div>
+                
+                <button type="button" onclick="navigator.clipboard.writeText('school1school2@gmail.com'); alert('تم نسخ البريد الصحيح إلى الحافظة! الصقه الآن في خانة البريد 📋');" class="w-full bg-sky-50 hover:bg-sky-100 text-sky-800 py-2.5 rounded-xl font-bold text-xs border border-sky-200 transition cursor-pointer flex items-center justify-center gap-2">
+                    <i class="fas fa-copy"></i>
+                    <span>اضغط هنا لنسخ الإيميل الصحيح بضغطة زر</span>
+                </button>
 
                 <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 hidden"></div>
                 
@@ -1891,7 +1866,7 @@
                     <i class="fas fa-arrow-left"></i>
                 </button>
             </div>
-            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد</p>
         </div>
     </div>
 
@@ -1899,12 +1874,12 @@
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-center sm:text-right">
                 <h1 class="text-lg font-black tracking-wide" id="main-header-title">نظام المتابعة السحابي الشامل</h1>
-                <p class="text-xs opacity-90 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</p>
+                <p class="text-xs opacity-90 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد</p>
             </div>
             <div class="flex gap-2 items-center">
                 <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🏫 الفصول</button>
                 <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">⚙️ التقييمات</button>
-                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
+                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
         </div>
     </header>
@@ -1958,7 +1933,7 @@
                 <p id="quote-text" class="student-name-font text-lg text-amber-950 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
                 </p>
-                <span class="text-[11px] font-bold text-amber-800/60 block mt-1">ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</span>
+                <span class="text-[11px] font-bold text-amber-800/60 block mt-1">ثانوية الأمير عبدالمجيد</span>
             </div>
         </div>
 
@@ -2038,7 +2013,7 @@
 
     <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right">
-            <div>ثانوية الأمير عبدالمجيد منصه ثانوية الأمير عبدالمجيد</div>
+            <div>ثانوية الأمير عبدالمجيد</div>
             <div>الحقوق محفوظة 2026</div>
             <div>التعليم الذكي</div>
         </div>
@@ -2110,7 +2085,6 @@
                     <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
                     <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
                     <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
-                    <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-3 bg-sky-50 border border-sky-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🏃 مستاذن</button>
                 </div>
             </div>
 
