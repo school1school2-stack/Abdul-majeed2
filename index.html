@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة الطلاب الشامل  👨‍🏫 ثانوية الأمير عبدالمجيد 😊</title>
+    <title>نظام متابعة الطلاب الشامل - د/ سامي محمد العمر 👨‍🏫 ثانوية الأمير عبدالمجيد 😊</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -137,24 +137,15 @@
         let currentTeacherSubject = "القرآن الكريم وعلومه";
 
         function getTeacherCollection() {
-            if (!currentTeacherEmail || currentTeacherEmail === "school1school2@gmail.com") {
-                return "allowed_students";
-            }
-            return "allowed_students_" + currentTeacherEmail.replace(/\./g, '_');
+            return "allowed_students";
         }
 
         function getPendingCollection() {
-            if (!currentTeacherEmail || currentTeacherEmail === "school1school2@gmail.com") {
-                return "pending_students";
-            }
-            return "pending_students_" + currentTeacherEmail.replace(/\./g, '_');
+            return "pending_students";
         }
 
         function getClassConfigDoc() {
-            if (!currentTeacherEmail || currentTeacherEmail === "school1school2@gmail.com") {
-                return "classes_config";
-            }
-            return "classes_config_" + currentTeacherEmail.replace(/\./g, '_');
+            return "classes_config";
         }
 
         let activeClass = null;
@@ -1098,7 +1089,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستأذن ') || title.includes('غائب بعذر')) {
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('عن بعد') || title.includes('غائب بعذر')) {
                     attendanceEventsList.push(act);
                 }
 
@@ -1766,11 +1757,13 @@
             document.getElementById('student-modal').classList.remove('flex');
         };
 
+        // تم تعديل دالة التحقق لتتأكد حصرياً من الإيميل وتطلب إدخاله إن لم يوجد
         window.onload = function() {
             const savedEmail = localStorage.getItem('teacher_email');
-            if (savedEmail) {
+            if (savedEmail && savedEmail.toLowerCase() === "school1school2@gmail.com") {
                 verifyAndLoadTeacher(savedEmail);
             } else {
+                localStorage.removeItem('teacher_email');
                 showLoginModal();
             }
         };
@@ -1796,72 +1789,35 @@
                 return;
             }
 
-            // الاعتماد الحصري لمشرف النظام على البريد المحدد فقط
+            // التحقق الصارم من البريد المعتمد للمشرف فقط
             if (emailInput === "school1school2@gmail.com") {
                 localStorage.setItem('teacher_email', emailInput);
                 document.getElementById('teacher-login-modal').classList.add('hidden');
                 verifyAndLoadTeacher(emailInput);
                 return;
-            }
-
-            const safeKey = emailInput.replace(/\./g, '_');
-            try {
-                const snap = await rtdb.ref('teachers_registry/' + safeKey).once('value');
-                if (snap.exists()) {
-                    localStorage.setItem('teacher_email', emailInput);
-                    document.getElementById('teacher-login-modal').classList.add('hidden');
-                    verifyAndLoadTeacher(emailInput);
-                } else {
-                    loginError.innerText = "عذراً، هذا البريد غير مسجل لدى المشرف! يرجى التواصل مع المشرف لإضافتك أولاً.";
-                    loginError.classList.remove('hidden');
-                }
-            } catch (e) {
-                loginError.innerText = "حدث خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.";
+            } else {
+                loginError.innerText = "عذراً، هذا البريد غير مصرح له بدخول لوحة المشرف العام!";
                 loginError.classList.remove('hidden');
             }
         }
 
         async function verifyAndLoadTeacher(email) {
-            // التحقق من حساب المشرف العام بالبريد الجديد
-            if (email === "school1school2@gmail.com") {
+            if (email.toLowerCase() === "school1school2@gmail.com") {
                 document.getElementById('admin-supervisor-card').style.display = 'block';
                 document.getElementById('main-dashboard').style.display = 'none';
-                document.getElementById('main-header-title').innerText = "نظام المتابعة السحابية الشاملة";
-                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام لإدارة وتوليد منصات المعلمين ثانوية الأمير عبدالمجيد مع فيس تعبيري 😊";
+                document.getElementById('main-header-title').innerText = "نظام المتابعة الشاملة";
+                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام ثانوية الأمير عبدالمجيد 😊";
                 document.getElementById('teacher-logout-btn').classList.remove('hidden');
                 loadTeachersList();
                 return;
-            }
-
-            const safeKey = email.replace(/\./g, '_');
-            try {
-                let snap = await rtdb.ref('teachers_registry/' + safeKey).once('value');
-                let tData = snap.val();
-
-                if (snap.exists()) {
-                    currentTeacherEmail = tData.email;
-                    currentTeacherName = tData.name;
-                    currentTeacherSubject = tData.subject;
-
-                    document.getElementById('admin-supervisor-card').style.display = 'none';
-                    document.getElementById('main-dashboard').style.display = 'block';
-                    document.getElementById('main-header-title').innerText = currentTeacherName + " 👨‍🏫";
-                    document.getElementById('main-header-subtitle').innerText = "المادة الدراسية: " + currentTeacherSubject;
-                    document.getElementById('teacher-logout-btn').classList.remove('hidden');
-
-                    initSystem();
-                } else {
-                    localStorage.removeItem('teacher_email');
-                    showLoginModal();
-                }
-            } catch (e) {
-                console.error(e);
-                initSystem();
+            } else {
+                localStorage.removeItem('teacher_email');
+                showLoginModal();
             }
         }
 
         function logoutTeacher() {
-            if (confirm("هل ترغب في تسجيل الخروج وتغيير حساب المعلم أو دخول المشرف؟")) {
+            if (confirm("هل ترغب في تسجيل الخروج؟")) {
                 localStorage.removeItem('teacher_email');
                 location.reload();
             }
@@ -1880,7 +1836,7 @@
             const safeKey = email.replace(/\./g, '_');
             try {
                 await rtdb.ref('teachers_registry/' + safeKey).set({ name, email, subject });
-                alert(`تم اعتماد المعلم (${name}) بنجاح! 🌟\nيمكن للمعلم الآن فتح الموقع وإدخال بريده (${email}) للوصول لحسابه مباشره.`);
+                alert(`تم اعتماد المعلم (${name}) بنجاح! 🌟`);
                 document.getElementById('newTeacherName').value = '';
                 document.getElementById('newTeacherEmail').value = '';
                 document.getElementById('newTeacherSubject').value = '';
@@ -1935,27 +1891,27 @@
     <div id="teacher-login-modal" class="fixed inset-0 bg-slate-950/80 hidden items-center justify-center p-4 z-50 backdrop-blur-md">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-2xl text-center border-2 border-amber-300">
             <div class="w-20 h-20 bg-amber-900 text-amber-100 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg border-2 border-amber-400">👨‍🏫</div>
-            <h2 class="text-2xl font-black text-slate-900 mb-1">منصة المعلمين والمشرفين</h2>
-            <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال البريد الإلكتروني للوصول إلى لوحة التحكم</p>
+            <h2 class="text-2xl font-black text-slate-900 mb-1">تسجيل دخول المشرف العام</h2>
+            <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال البريد الإلكتروني المعتمد للوصول</p>
 
             <div class="space-y-4">
                 <div class="text-right">
                     <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني المعتمد:</label>
-                    <input type="email" id="loginTeacherEmail" placeholder="مثال: teacher@moe.gov.sa" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
+                    <input type="email" id="loginTeacherEmail" placeholder="school1school2@gmail.com" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
                 </div>
                 <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 hidden"></div>
                 
                 <button onclick="submitTeacherLogin()" class="w-full bg-amber-900 hover:bg-amber-950 text-amber-50 py-3.5 rounded-2xl font-black text-sm shadow-md transition cursor-pointer flex items-center justify-center gap-2">
-                    <span>دخول المنصة السحابية</span>
+                    <span>دخول المنصة</span>
                     <i class="fas fa-arrow-left"></i>
                 </button>
 
                 <button onclick="openAdminDirectLogin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer transition border border-slate-700 flex items-center justify-center gap-2 mt-2">
                     <i class="fas fa-user-shield text-amber-400"></i>
-                    <span>👑 دخول المشرف العام (إضافة معلمين)</span>
+                    <span>⚡ تعبئة البريد تلقائياً ودخول</span>
                 </button>
             </div>
-            <p class="text-[11px] text-slate-400 font-semibold mt-6">مؤمن بالكامل - بيانات المعلمين مفصولة تماماً سحابياً 🔒</p>
+            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد 😊</p>
         </div>
     </div>
 
@@ -1978,15 +1934,15 @@
         <div id="admin-supervisor-card" class="admin-card mb-6" style="display: none;">
             <div class="header">
                 <h2 class="text-xl font-black text-slate-900"><i class="fas fa-user-shield text-amber-600"></i> لوحة إدارة المعلمين العامة (خاص بالمشرف)</h2>
-                <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا وسيتمكن فوراً من دخول المنصة المخصصة له بإيميله:</p>
+                <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا:</p>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-5">
                 <h3 class="text-xs font-bold text-sky-800 mb-2"><i class="fas fa-user-plus"></i> إضافة معلم جديد:</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
-                    <input type="text" id="newTeacherName" placeholder="اسم المعلم (مثال: أ / محمد العتيبي)" class="border p-2 rounded-xl text-xs font-bold bg-white">
-                    <input type="email" id="newTeacherEmail" placeholder="البريد (مثال: mohammed@moe.gov.sa)" class="border p-2 rounded-xl text-xs font-bold bg-white text-left" dir="ltr">
-                    <input type="text" id="newTeacherSubject" placeholder="المادة الدراسية (مثال: الفيزياء)" class="border p-2 rounded-xl text-xs font-bold bg-white">
+                    <input type="text" id="newTeacherName" placeholder="اسم المعلم" class="border p-2 rounded-xl text-xs font-bold bg-white">
+                    <input type="email" id="newTeacherEmail" placeholder="البريد الإلكتروني" class="border p-2 rounded-xl text-xs font-bold bg-white text-left" dir="ltr">
+                    <input type="text" id="newTeacherSubject" placeholder="المادة الدراسية" class="border p-2 rounded-xl text-xs font-bold bg-white">
                 </div>
                 <button onclick="addNewTeacher()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer"><i class="fas fa-magic"></i> اعتماد وإضافة المعلم</button>
             </div>
@@ -2013,7 +1969,7 @@
         <div id="main-dashboard" class="py-2 space-y-6">
             <div class="flex items-center justify-between border-b pb-3">
                 <h2 class="text-2xl font-black text-slate-900 tracking-wider">🏫 القائمة الرئيسية</h2>
-                <span class="text-xs font-bold text-slate-500 bg-white px-3.5 py-1.5 rounded-full border shadow-2xs">اختر الفصل أو اللوحة للبدء</span>
+                <span class="text-xs font-bold text-slate-500 bg-white px-3.5 py-1.5 rounded-full border shadow-2xs">اختر الفصل للبدء</span>
             </div>
             
             <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 sm:gap-6 w-full max-w-full overflow-hidden"></div>
@@ -2022,14 +1978,14 @@
                 <p id="quote-text" class="student-name-font text-lg text-amber-950 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
                 </p>
-                <span class="text-[11px] font-bold text-amber-800/60 block mt-1">حكمة اليوم للمعلم والطالب 🌿</span>
+                <span class="text-[11px] font-bold text-amber-800/60 block mt-1">ثانوية الأمير عبدالمجيد 😊</span>
             </div>
         </div>
 
         <div id="admin-control-view" class="hidden py-2 space-y-4">
             <div class="flex items-center justify-between mb-2 bg-white p-3.5 rounded-2xl shadow-sm border">
                 <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
-                <h2 class="text-base font-black text-slate-800">🔒  لوحة إضافة الطلاب للفصول</h2>
+                <h2 class="text-base font-black text-slate-800">🔒 لوحة إضافة الطلاب للفصول</h2>
                 <div class="w-12"></div>
             </div>
 
@@ -2127,82 +2083,17 @@
                 <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border p-2.5 rounded-xl text-xs font-bold"></select>
                 <div class="grid grid-cols-3 gap-2">
                     <select id="new-action-icon" class="border border-slate-200 p-2.5 rounded-xl text-base font-bold bg-white">
-                        <option value="👑">👑 ملك الإنجاز / التميز المطلق</option>
-                        <option value="🚀">🚀 انطلاقة صاروخية / تفوق</option>
-                        <option value="🧠">🧠 عبقري / تفكير عميق</option>
-                        <option value="🌟">🌟 نجم ساطع</option>
-                        <option value="💯">💯 درجة كاملة / مثالي</option>
-                        <option value="🥇">🥇 المركز الأول</option>
-                        <option value="🎓">🎓 إنجاز أكاديمي عالي</option>
-                        <option value="🔥">🔥 اشتعال الحماس والهمة</option>
-                        <option value="💎">💎 درة ومجوهرات الأداء</option>
-                        <option value="👑💯">👑💯 القمة المطلقة</option>
-                        <option value="🚀🌟">🚀🌟 تميز وانطلاق صاروخي</option>
                         <option value="⭐">⭐ نجمة تفوق</option>
-                        <option value="👍">👍 أحسنت / تأييد</option>
-                        <option value="✨">✨ تألق وإبداع</option>
-                        <option value="📈">📈 صعود ومؤشر تصاعدي</option>
-                        <option value="👏">👏 تشجيع وثناء</option>
-                        <option value="🎯">🎯 إصابة الهدف بدقة</option>
-                        <option value="📝">📝 تدريب وتحضير</option>
-                        <option value="👌">👌 إتقان وأداء ممتاز</option>
-                        <option value="⚡">⚡ نشاط وسرعة استجابة</option>
-                        <option value="📚">📚 استذكار ومذاكرة</option>
-                        <option value="⏳">⏳ انتظار وصبر</option>
-                        <option value="🔋">🔋 طاقة جيدة</option>
-                        <option value="🌤️">🌤️ تحسن ملحوظ</option>
-                        <option value="🚲">🚲 محاولة مستمرة</option>
-                        <option value="📉">📉 انخفاض بالمستوى</option>
-                        <option value="⚠️">⚠️ تنبيه هام</option>
-                        <option value="🛑">🛑 إيقاف / منع</option>
-                        <option value="🔍">🔍 تحتاج تدقيق ومراجعة</option>
-                        <option value="🔄">🔄 إعادة المحاولة</option>
-                        <option value="❌">❌ خطأ / تقصير</option>
-                        <option value="🎨">🎨 ترتيب وإبداع فني</option>
-                        <option value="🧼">🧼 نظافة ومرتب</option>
-                        <option value="🌸">🌸 حسن مظهر</option>
-                        <option value="📐">📐 تنظيم وهندسة الدفتر</option>
-                        <option value="📖">📖 العناية بالكتاب المدرسي</option>
-                        <option value="✏️">✏️ كتابة ممتازة ودقيقة</option>
-                        <option value="📜">📜 خط جميل ومنسق</option>
-                        <option value="🙋‍♂️">🙋‍♂️ مبادر بالمشاركة (طالب)</option>
-                        <option value="🙋‍♀️">🙋‍♀️ مبادرة بالمشاركة (طالبة)</option>
-                        <option value="🗣️">🗣️ تفاعل لفظي نشط</option>
-                        <option value="🤝">🤝 تعاون ومساعدة الزملاء</option>
-                        <option value="⏱️">⏱️ التزام بالوقت</option>
-                        <option value="🏅">🏅 وسام الالتزام السلوكي</option>
-                        <option value="😍">😍 فخور بك جداً</option>
-                        <option value="🥰">🥰 أحببت عملك وأدائك</option>
-                        <option value="😎">😎 إجابة واثقة ومتقنة</option>
-                        <option value="🤔">🤔 فكر مجدداً بعمق</option>
-                        <option value="🧐">🧐 ركز أكثر من فضلك</option>
-                        <option value="😢">😢 حزين على مستواك وتقصيرك</option>
-                        <option value="✅">✅ إجابة صحيحة / صح</option>
-                        <option value="💡">💡 مشاركة وفكرة</option>
-                        <option value="📘">📘 حل الواجب</option>
-                        <option value="📕">📕 لم يحل الواجب</option>
-                        <option value="📁">📁 نسيان ملف</option>
-                        <option value="📂">📂 إنجاز ملف</option>
-                        <option value="💤">💤 النوم في الحصة</option>
-                        <option value="📱">📱 استخدام الهاتف</option>
-                        <option value="🎁">🎁 هدية تشجيعية</option>
+                        <option value="✅">✅ إجابة صحيحة</option>
+                        <option value="❌">❌ خطأ</option>
                     </select>
-                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white focus:outline-none">
+                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة (1 أو -1)" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
+                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
                     <select id="new-action-color" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
-                        <option value="#28a745">🟢 أخضر عشبي</option>
-                        <option value="#20c997">🔹 أخضر فيروزي</option>
-                        <option value="#007bff">🔵 أزرق غامق</option>
-                        <option value="#17a2b8">🟦 سماوي فاتح</option>
-                        <option value="#6610f2">🟣 بنفسجي ملكي</option>
-                        <option value="#6f42c1">🔮 أرجواني</option>
-                        <option value="#e83e8c">🩷 وردي زاهي</option>
-                        <option value="#dc3545">🔴 أحمر قاني</option>
-                        <option value="#fd7e14">🟠 برتقالي ساطع</option>
-                        <option value="#ffc107">🟡 أصفر ذهبي</option>
-                        <option value="#6c757d">⚪ رمادي رسمي</option>
+                        <option value="#28a745">🟢 أخضر</option>
+                        <option value="#dc3545">🔴 أحمر</option>
                     </select>
                 </div>
                 <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-black">حفظ التقييم 🚀</button>
@@ -2235,31 +2126,10 @@
             
             <div class="mb-5">
                 <h4 class="font-bold text-slate-900 text-sm mb-3">📌 الحضور والغياب والتأخر:</h4>
-                <div class="flex gap-3 overflow-x-auto pb-2 pt-1 px-1 scrollbar-thin">
-                    <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 px-4 py-3 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">
-                        <span class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shadow-2xs">🟢</span>
-                        <span class="font-bold text-sm text-emerald-900">حاضر</span>
-                    </button>
-                    <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 hover:bg-rose-100 px-4 py-3 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">
-                        <span class="w-9 h-9 rounded-xl bg-rose-600 text-white flex items-center justify-center text-base shadow-2xs">🔴</span>
-                        <span class="font-bold text-sm text-rose-900">غائب</span>
-                    </button>
-                    <button onclick="recordAction('غائب بعذر', 0, 'غائب بعذر')" class="flex items-center gap-3 bg-indigo-50 border border-indigo-300 hover:bg-indigo-100 px-4 py-3 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">
-                        <span class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-base shadow-2xs">👤</span>
-                        <span class="font-bold text-sm text-indigo-900">غائب بعذر</span>
-                    </button>
-                    <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 hover:bg-amber-100 px-4 py-3 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">
-                        <span class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base shadow-2xs">⏰</span>
-                        <span class="font-bold text-sm text-amber-900">متأخر</span>
-                    </button>
-                    <button onclick="recordAction('عن بعد', 0, 'عن بعد')" class="flex items-center gap-3 bg-purple-50 border border-purple-300 hover:bg-purple-100 px-4 py-3 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">
-                        <span class="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center text-base shadow-2xs">💻</span>
-                        <span class="font-bold text-sm text-purple-900">عن بعد</span>
-                    </button>
-                    <button onclick="recordAction('هارب', -2, 'هارب')" class="flex items-center gap-3 bg-stone-100 border border-stone-300 hover:bg-stone-200 px-4 py-3 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">
-                        <span class="w-9 h-9 rounded-xl bg-stone-900 text-white flex items-center justify-center text-base shadow-2xs">🚶‍♂️</span>
-                        <span class="font-bold text-sm text-stone-900">هارب</span>
-                    </button>
+                <div class="flex gap-3 overflow-x-auto pb-2 pt-1 px-1">
+                    <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
+                    <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
+                    <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
                 </div>
             </div>
 
@@ -2267,7 +2137,7 @@
                 <h4 class="font-bold text-slate-900 text-sm mb-3">⭐ اختر التقييم السريع:</h4>
                 <div id="custom-actions-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 overflow-y-auto pr-1"></div>
             </div>
-            <button onclick="closeActionModal()" class="w-full bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-300 shadow-md">إغلاق</button>
+            <button onclick="closeActionModal()" class="w-full bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs cursor-pointer">إغلاق</button>
         </div>
     </div>
 
