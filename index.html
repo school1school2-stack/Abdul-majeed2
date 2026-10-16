@@ -1760,7 +1760,6 @@
         // التحقق الصارم والمشدد عند الفتح
         window.onload = function() {
             const savedEmail = localStorage.getItem('teacher_email');
-            // يشترط حصرياً أن يكون مسجلاً مسبقاً بنفس إيميل المشرف حرفياً، وإلا يتم إجبار الجميع على شاشة الدخول
             if (savedEmail && savedEmail.toLowerCase().trim() === "school1school2@gmail.com") {
                 verifyAndLoadTeacher(savedEmail);
             } else {
@@ -1772,11 +1771,6 @@
         function showLoginModal() {
             document.getElementById('teacher-login-modal').classList.remove('hidden');
             document.getElementById('teacher-login-modal').classList.add('flex');
-        }
-
-        function openAdminDirectLogin() {
-            document.getElementById('loginTeacherEmail').value = "school1school2@gmail.com";
-            submitTeacherLogin();
         }
 
         async function submitTeacherLogin() {
@@ -1898,18 +1892,13 @@
             <div class="space-y-4">
                 <div class="text-right">
                     <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني المعتمد:</label>
-                    <input type="email" id="loginTeacherEmail" placeholder="school1school2@gmail.com" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
+                    <input type="email" id="loginTeacherEmail" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
                 </div>
                 <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 hidden"></div>
                 
                 <button onclick="submitTeacherLogin()" class="w-full bg-amber-900 hover:bg-amber-950 text-amber-50 py-3.5 rounded-2xl font-black text-sm shadow-md transition cursor-pointer flex items-center justify-center gap-2">
                     <span>دخول المنصة</span>
                     <i class="fas fa-arrow-left"></i>
-                </button>
-
-                <button onclick="openAdminDirectLogin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer transition border border-slate-700 flex items-center justify-center gap-2 mt-2">
-                    <i class="fas fa-user-shield text-amber-400"></i>
-                    <span>⚡ تعبئة البريد تلقائياً ودخول</span>
                 </button>
             </div>
             <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد 😊</p>
