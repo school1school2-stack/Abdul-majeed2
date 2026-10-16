@@ -114,7 +114,7 @@
         .search-box:focus { border-color: var(--maroon); box-shadow: 0 0 6px rgba(128,0,0,0.2); }
     </style>
 
-    <script>
+    <script[span_2](start_span)[span_2](end_span)>
         const firebaseConfig = {
           apiKey: "AIzaSyAJKKo_NfmOMA095ulSRDnwQvfHLeIz_s",
           authDomain: "samy-28452.firebaseapp.com",
@@ -661,7 +661,7 @@
             if (cleanName.includes('غائب بعذر')) { return { title: 'غائب بعذر', icon: '👤' }; }
             if (cleanName.includes('غائب')) { return { title: 'غائب', icon: '🔴' }; }
             if (cleanName.includes('متأخر')) { return { title: 'متأخر', icon: '⏰' }; }
-            if (cleanName.includes('عن بعد')) { return { title: 'عن بعد', icon: '💻' }; }
+            if (cleanName.includes('مستاذن')) { return { title: 'مستاذن', icon: '🏃' }; }
             if (cleanName.includes('هارب')) { return { title: 'هارب', icon: '🚶‍♂️' }; }
 
             for (let ca of customActions) {
@@ -1089,7 +1089,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('عن بعد') || title.includes('غائب بعذر')) {
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر')) {
                     attendanceEventsList.push(act);
                 }
 
@@ -1757,7 +1757,6 @@
             document.getElementById('student-modal').classList.remove('flex');
         };
 
-        // تم إلغاء الحفظ تماماً، وفتح نافذة الدخول إجبارياً في كل مرة
         window.onload = function() {
             showLoginModal();
         };
@@ -1778,7 +1777,6 @@
                 return;
             }
 
-            // قصر الدخول حصرياً على إيميل المشرف العام فقط
             if (emailInput === "school1school2@gmail.com") {
                 document.getElementById('teacher-login-modal').classList.add('hidden');
                 verifyAndLoadTeacher(emailInput);
@@ -2112,6 +2110,7 @@
                     <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
                     <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
                     <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
+                    <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-3 bg-sky-50 border border-sky-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🏃 مستاذن</button>
                 </div>
             </div>
 
