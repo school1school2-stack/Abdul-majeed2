@@ -137,14 +137,23 @@
         let currentTeacherSubject = "القرآن الكريم وعلومه";
 
         function getTeacherCollection() {
+            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
+                return "teacher_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
+            }
             return "allowed_students";
         }
 
         function getPendingCollection() {
+            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
+                return "pending_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
+            }
             return "pending_students";
         }
 
         function getClassConfigDoc() {
+            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
+                return "classes_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
+            }
             return "classes_config";
         }
 
@@ -623,26 +632,28 @@
                 `;
             });
 
-            const adminTheme = classSoftThemes[classList.length % classSoftThemes.length];
-            const approvedTotalCount = allStudents.length;
-            classesContainer.innerHTML += `
-                <div class="class-3d-card ${adminTheme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4 relative">
-                    ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md border-2 border-white animate-pulse">طلب جديد!</div>` : ''}
-                    <div onclick="openAdminControlPanel()" class="flex items-center justify-between cursor-pointer">
-                        <div class="flex items-center gap-4 sm:gap-5">
-                            <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-amber-200/60 flex items-center justify-center shrink-0">🔒</span>
-                            <div>
-                                <h3 class="class-title-font text-lg sm:text-xl tracking-wide ${adminTheme.text}">لوحة التحكم المدمجة</h3>
-                                <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${approvedTotalCount} طالب معتمد</p>
+            if (currentTeacherEmail === "school1school2@gmail.com") {
+                const adminTheme = classSoftThemes[classList.length % classSoftThemes.length];
+                const approvedTotalCount = allStudents.length;
+                classesContainer.innerHTML += `
+                    <div class="class-3d-card ${adminTheme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4 relative">
+                        ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md border-2 border-white animate-pulse">طلب جديد!</div>` : ''}
+                        <div onclick="openAdminControlPanel()" class="flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center gap-4 sm:gap-5">
+                                <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-amber-200/60 flex items-center justify-center shrink-0">🔒</span>
+                                <div>
+                                    <h3 class="class-title-font text-lg sm:text-xl tracking-wide ${adminTheme.text}">لوحة التحكم المدمجة</h3>
+                                    <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${approvedTotalCount} طالب معتمد</p>
+                                </div>
                             </div>
+                            <span class="bg-white/95 backdrop-blur-xs w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg text-[#800000] shadow-sm border border-amber-200 shrink-0">⚙️</span>
                         </div>
-                        <span class="bg-white/95 backdrop-blur-xs w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg text-[#800000] shadow-sm border border-amber-200 shrink-0">⚙️</span>
+                        <div class="pt-2 border-t border-amber-200/50">
+                            <button onclick="openAdminControlPanel()" class="w-full bg-[#800000] hover:bg-[#660000] text-amber-50 py-2.5 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔐 فتح لوحة التحكم وإدارة الاعتمادات</button>
+                        </div>
                     </div>
-                    <div class="pt-2 border-t border-amber-200/50">
-                        <button onclick="openAdminControlPanel()" class="w-full bg-[#800000] hover:bg-[#660000] text-amber-50 py-2.5 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔐 فتح لوحة التحكم وإدارة الاعتمادات</button>
-                    </div>
-                </div>
-            `;
+                `;
+            }
         }
 
         function getCleanActionDetails(rawTitle) {
@@ -1758,7 +1769,36 @@
         };
 
         window.onload = function() {
-            showLoginModal();
+            const urlParams = new URLSearchParams(window.location.search);
+            const teacherParam = urlParams.get('teacher');
+
+            if (teacherParam) {
+                currentTeacherEmail = teacherParam.trim().toLowerCase();
+                rtdb.ref('teachers_registry').once('value', snapshot => {
+                    const data = snapshot.val();
+                    let found = false;
+                    if (data) {
+                        Object.keys(data).forEach(k => {
+                            if (data[k].email.toLowerCase() === currentTeacherEmail) {
+                                currentTeacherName = data[k].name;
+                                currentTeacherSubject = data[k].subject;
+                                found = true;
+                            }
+                        });
+                    }
+                    if (!found) {
+                        currentTeacherName = "المعلم";
+                        currentTeacherSubject = "مادة دراسية";
+                    }
+                    
+                    document.getElementById('main-header-title').innerText = `نظام المتابعة الشاملة (${currentTeacherName})`;
+                    document.getElementById('main-header-subtitle').innerText = `المادة: ${currentTeacherSubject} | ثانوية الأمير عبدالمجيد`;
+                    
+                    initSystem();
+                });
+            } else {
+                showLoginModal();
+            }
         };
 
         function showLoginModal() {
@@ -1778,12 +1818,35 @@
             }
 
             if (emailInput === "school1school2@gmail.com") {
+                currentTeacherEmail = emailInput;
                 document.getElementById('teacher-login-modal').classList.add('hidden');
                 verifyAndLoadTeacher(emailInput);
                 return;
             } else {
-                loginError.innerText = "عذراً، هذا البريد غير مصرح له بدخول لوحة المشرف العام!";
-                loginError.classList.remove('hidden');
+                rtdb.ref('teachers_registry').once('value', snapshot => {
+                    const data = snapshot.val();
+                    let allowed = false;
+                    if (data) {
+                        Object.keys(data).forEach(k => {
+                            if (data[k].email.toLowerCase() === emailInput) {
+                                allowed = true;
+                                currentTeacherName = data[k].name;
+                                currentTeacherSubject = data[k].subject;
+                            }
+                        });
+                    }
+
+                    if (allowed) {
+                        currentTeacherEmail = emailInput;
+                        document.getElementById('teacher-login-modal').classList.add('hidden');
+                        document.getElementById('main-header-title').innerText = `نظام المتابعة الشاملة (${currentTeacherName})`;
+                        document.getElementById('main-header-subtitle').innerText = `المادة: ${currentTeacherSubject} | ثانوية الأمير عبدالمجيد`;
+                        initSystem();
+                    } else {
+                        loginError.innerText = "عذراً، هذا البريد غير مسجل كمعلم في النظام!";
+                        loginError.classList.remove('hidden');
+                    }
+                });
             }
         }
 
