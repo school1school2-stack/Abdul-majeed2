@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة الطلاب الشامل  👨‍🏫 ثانوية الأمير عبدالمجيد 😊</title>
+    <title>نظام متابعة الطلاب الشامل - د/ سامي محمد العمر 👨‍🏫 ثانوية الأمير عبدالمجيد 😊</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -1089,7 +1089,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستأذن ') || title.includes('غائب بعذر')) {
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('عن بعد') || title.includes('غائب بعذر')) {
                     attendanceEventsList.push(act);
                 }
 
@@ -1757,10 +1757,11 @@
             document.getElementById('student-modal').classList.remove('flex');
         };
 
-        // تم تعديل دالة التحقق لتتأكد حصرياً من الإيميل وتطلب إدخاله إن لم يوجد
+        // التحقق الصارم والمشدد عند الفتح
         window.onload = function() {
             const savedEmail = localStorage.getItem('teacher_email');
-            if (savedEmail && savedEmail.toLowerCase() === "school1school2@gmail.com") {
+            // يشترط حصرياً أن يكون مسجلاً مسبقاً بنفس إيميل المشرف حرفياً، وإلا يتم إجبار الجميع على شاشة الدخول
+            if (savedEmail && savedEmail.toLowerCase().trim() === "school1school2@gmail.com") {
                 verifyAndLoadTeacher(savedEmail);
             } else {
                 localStorage.removeItem('teacher_email');
@@ -1789,7 +1790,7 @@
                 return;
             }
 
-            // التحقق الصارم من البريد المعتمد للمشرف فقط
+            // قصر الدخول حصرياً على إيميل المشرف العام فقط
             if (emailInput === "school1school2@gmail.com") {
                 localStorage.setItem('teacher_email', emailInput);
                 document.getElementById('teacher-login-modal').classList.add('hidden');
@@ -1802,7 +1803,7 @@
         }
 
         async function verifyAndLoadTeacher(email) {
-            if (email.toLowerCase() === "school1school2@gmail.com") {
+            if (email.toLowerCase().trim() === "school1school2@gmail.com") {
                 document.getElementById('admin-supervisor-card').style.display = 'block';
                 document.getElementById('main-dashboard').style.display = 'none';
                 document.getElementById('main-header-title').innerText = "نظام المتابعة الشاملة";
