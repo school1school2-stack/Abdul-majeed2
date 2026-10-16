@@ -136,55 +136,38 @@
         let editingClassIndex = null;
         let pendingCountGlobal = 0;
 
-        // دالة التحقق من الرقم السري
-        window.checkPassword = function() {
-            const pwd = document.getElementById('sys-password').value;
-            if (pwd === 'Aztlg1512') {
-                const overlay = document.getElementById('login-overlay');
-                overlay.style.opacity = '0';
-                overlay.style.transform = 'scale(1.05)';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 500); 
-            } else {
-                alert('الرقم السري غير صحيح! الرجاء المحاولة مرة أخرى.');
-                document.getElementById('sys-password').value = '';
-                document.getElementById('sys-password').focus();
-            }
-        };
-
-const motivationalQuotes = [
-    "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
-    "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
-    "🌟 \"قمة المجد ليست في عدم السقوط أبداً، بل في القيام بعد كل سقوط.\"",
-    "📚 \"العلم نور والجهل ظلام.. والمواظبة هي طريق التميز والنجاح.\"",
-    "🚀 \"طريق الألف ميل يبدأ بفرصة وحصة دراسية واحدة، اجعل يومك مثمراً.\"",
-    "🏆 \"من فتح باب مدرسة، أغلق باب سجن.. تحية لكل طالب يطلب العلم بشغف.\"",
-    "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\"",
-    "🌱 \"كل خطوة صغيرة تقطعها اليوم نحو هدفك، تقربك مسافات طويلة نحو قمة النجاح.\"",
-    "🔥 \"لا تقارن نفسك بغيرك، بل قارن نفسك بما كنت عليه بالأمس، وحاول أن تكون أفضل دائماً.\"",
-    "🦅 \"العقبات والصعوبات ليست سوى حواجز اختبار لتعرف مدى إصرارك وقوتك الحقيقية.\"",
-    "⏳ \"الوقت الذي تستثمره في التعلم اليوم هو الأداة الأكثر قيمة التي تمتلكها لصناعة الغد.\"",
-    "💎 \"التعب الذي تشعر به أثناء الدراسة سيزول سريعاً، لكن فخر إنجازك سيبقى معك إلى الأبد.\"",
-    "🌟 \"استمر في السعي بثقة، فكل درس تتعلمه اليوم يضيف لبنة جديدة في جدار مستقبلك العظيم.\"",
-    "💪 \"النجاح يبدأ من الإيمان بقدرتك على تجاوز الصعاب مهما كانت معقدة.\"",
-    "🧠 \"عقلك هو أثمن ما تملك؛ استثمره بالقراءة والتعلم كل يوم لتصنع الفارق.\"",
-    "☀️ \"ابدأ صباحك بعزيمة متجددة، فاليوم هو فرصة جديدة لتحقيق ما لم تقم به بالأمس.\"",
-    "🔑 \"الانضباط هو الجسر الحقيقي الذي يربط بين أحلامك وبين إنجازاتها على أرض الواقع.\"",
-    "📖 \"كل صفحة تقرأها اليوم هي خطوة تفصلك عن الجهل وتقربك من التميز.\"",
-    "⚡ \"الشغف يمنحك البداية، لكن الاستمرارية والعزيمة هما ما يوصلانك إلى خط النهاية.\"",
-    "🌊 \"لا تخف من الأمواج العالية، فالسفن الماهرة تصنع أروع إنجازاتها في البحار الثائرة.\"",
-    "🎨 \"مستقبلك لوحة فنية، وأنت من تختار الألوان والجهد الذي تضعه لتخرج في أبهى صورة.\"",
-    "⛰️ \"الجبال العالية لا تتسلق بلمح البصر، بل بخطوات ثابتة وواثقة نحو القمة.\"",
-    "🔮 \"أفضل طريقة لتنبؤ مستقبلك هي أن تقوم بصناعته بنفسك اليوم، خطوة بخطوة.\"",
-    "🛡️ \"الأخطاء ليست نهاية المطاف، بل هي الدروس المجانية التي تجعلنا أكثر ذكاءً وقوة.\"",
-    "⚓ \"كن صبوراً، فالأشجار العميقة الجذور هي وحدها التي تقاوم أقوى العواصف.\"",
-    "🌠 \"الأحلام الكبيرة تحتاج إلى جهود عظيمة، فلا تستصغر أي جهد قمت به اليوم.\"",
-    "🛠️ \"العلم في الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
-    "🧭 \"دع شغفك هو بوصلتك، وعملك الجاد هو وقودك، ولا تيأس مهما كانت المسافة طويلة.\"",
-    "✍️ \"اكتب نجاحك اليوم بعرق جبينك وإصرارك، لتقرأه بفخر واعتزاز غداً.\"",
-    "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
-];
+        const motivationalQuotes = [
+            "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
+            "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
+            "🌟 \"قمة المجد ليست في عدم السقوط أبداً، بل في القيام بعد كل سقوط.\"",
+            "📚 \"العلم نور والجهل ظلام.. والمواظبة هي طريق التميز والنجاح.\"",
+            "🚀 \"طريق الألف ميل يبدأ بفرصة وحصة دراسية واحدة، اجعل يومك مثمراً.\"",
+            "🏆 \"من فتح باب مدرسة، أغلق باب سجن.. تحية لكل طالب يطلب العلم بشغف.\"",
+            "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\"",
+            "🌱 \"كل خطوة صغيرة تقطعها اليوم نحو هدفك، تقربك مسافات طويلة نحو قمة النجاح.\"",
+            "🔥 \"لا تقارن نفسك بغيرك، بل قارن نفسك بما كنت عليه بالأمس، وحاول أن تكون أفضل دائماً.\"",
+            "🦅 \"العقبات والصعوبات ليست سوى حواجز اختبار لتعرف مدى إصرارك وقوتك الحقيقية.\"",
+            "⏳ \"الوقت الذي تستثمره في التعلم اليوم هو الأداة الأكثر قيمة التي تمتلكها لصناعة الغد.\"",
+            "💎 \"التعب الذي تشعر به أثناء الدراسة سيزول سريعاً، لكن فخر إنجازك سيبقى معك إلى الأبد.\"",
+            "🌟 \"استمر في السعي بثقة، فكل درس تتعلمه اليوم يضيف لبنة جديدة في جدار مستقبلك العظيم.\"",
+            "💪 \"النجاح يبدأ من الإيمان بقدرتك على تجاوز الصعاب مهما كانت معقدة.\"",
+            "🧠 \"عقلك هو أثمن ما تملك؛ استثمره بالقراءة والتعلم كل يوم لتصنع الفارق.\"",
+            "☀️ \"ابدأ صباحك بعزيمة متجددة، فاليوم هو فرصة جديدة لتحقيق ما لم تقم به بالأمس.\"",
+            "🔑 \"الانضباط هو الجسر الحقيقي الذي يربط بين أحلامك وبين إنجازاتها على أرض الواقع.\"",
+            "📖 \"كل صفحة تقرأها اليوم هي خطوة تفصلك عن الجهل وتقربك من التميز.\"",
+            "⚡ \"الشغف يمنحك البداية، لكن الاستمرارية والعزيمة هما ما يوصلانك إلى خط النهاية.\"",
+            "🌊 \"لا تخف من الأمواج العالية، فالسفن الماهرة تصنع أروع إنجازاتها في البحار الثائرة.\"",
+            "🎨 \"مستقبلك لوحة فنية، وأنت من تختار الألوان والجهد الذي تضعه لتخرج في أبهى صورة.\"",
+            "⛰️ \"الجبال العالية لا تتسلق بلمح البصر، بل بخطوات ثابتة وواثقة نحو القمة.\"",
+            "🔮 \"أفضل طريقة لتنبؤ مستقبلك هي أن تقوم بصناعته بنفسك اليوم، خطوة بخطوة.\"",
+            "🛡️ \"الأخطاء ليست نهاية المطاف، بل هي الدروس المجانية التي تجعلنا أكثر ذكاءً وقوة.\"",
+            "⚓ \"كن صبوراً، فالأشجار العميقة الجذور هي وحدها التي تقاوم أقوى العواصف.\"",
+            "🌠 \"الأحلام الكبيرة تحتاج إلى جهود عظيمة، فلا تستصغر أي جهد قمت به اليوم.\"",
+            "🛠️ \"العلم في الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
+            "🧭 \"دع شغفك هو بوصلتك، وعملك الجاد هو وقودك، ولا تيأس مهما كانت المسافة طويلة.\"",
+            "✍️ \"اكتب نجاحك اليوم بعرق جبينك وإصرارك، لتقرأه بفخر واعتزاز غداً.\"",
+            "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
+        ];
 
         const themes = [
             { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50 text-amber-950 border-amber-200/80", btnPrimary: "bg-amber-900 hover:bg-amber-950 text-amber-50" },
@@ -345,6 +328,7 @@ const motivationalQuotes = [
                                         <option value="copy_name">📋 نسخ الاسم</option>
                                         <option value="edit_name">✏️ تعديل الاسم</option>
                                         <option value="copy_both">📑 نسخ الكل (الاسم والإيميل)</option>
+                                        <option value="whatsapp">📱 مشاركة عبر الواتساب</option>
                                         <option value="delete">🗑️ حذف الطالب</option>
                                     </optgroup>
                                 </select>
@@ -385,6 +369,47 @@ const motivationalQuotes = [
             });
         }
 
+        window.checkPassword = function() {
+            const pwd = document.getElementById('sys-password').value;
+            if (pwd === 'Aztlg1512') {
+                const overlay = document.getElementById('login-overlay');
+                overlay.style.opacity = '0';
+                overlay.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 500);
+            } else {
+                alert('الرقم السري غير صحيح! الرجاء المحاولة مرة أخرى.');
+                document.getElementById('sys-password').value = '';
+                document.getElementById('sys-password').focus();
+            }
+        };
+
+        window.shareViaWhatsApp = function(id) {
+            const student = allStudents.find(s => s.id === id);
+            if (!student) return;
+            
+            let total = 0; 
+            (student.actions || []).forEach(a => total += (a.score || 0));
+            let att = student.attendanceStats || { presents: 0, absents: 0, lates: 0 };
+            
+            let msg = `🎓 تقرير متابعة الطالب: ${student.name}\n`;
+            msg += `🏫 الفصل: ${student.className}\n\n`;
+            msg += `📌 الحضور: ${att.presents} | الغياب: ${att.absents} | التأخر: ${att.lates}\n`;
+            msg += `📊 مجموع النقاط والمشاركات: ${total}\n\n`;
+            
+            let negatives = (student.actions || []).filter(a => (a.score || 0) < 0).slice(0, 3);
+            if(negatives.length > 0) {
+                msg += `⚠️ آخر الملاحظات:\n`;
+                negatives.forEach(n => msg += `- ${n.title} (${n.timestamp})\n`);
+            } else {
+                msg += `✨ سلوك ممتاز ولا توجد ملاحظات سلبية.\n`;
+            }
+            
+            msg += `\n👨‍🏫 إعداد: أ/ عبدالعزيز الفيفي\nثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫`;
+            window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
+        };
+
         window.handleAction = async function(selectElement, email, currentName, studentId) {
             const action = selectElement.value;
             selectElement.value = ""; 
@@ -400,6 +425,7 @@ const motivationalQuotes = [
             else if (action === 'copy_name') copyText(currentName);
             else if (action === 'edit_name') editStudentName(email, currentName);
             else if (action === 'copy_both') copyText(`${currentName}\n${email}`);
+            else if (action === 'whatsapp') shareViaWhatsApp(studentId);
             else if (action === 'delete') deleteAllowed(email);
         };
 
@@ -414,7 +440,7 @@ const motivationalQuotes = [
         }
 
         async function copyText(text) {
-            try { await navigator.clipboard.writeText(text); alert("تم نسخ الرابط بنجاح!"); } 
+            try { await navigator.clipboard.writeText(text); alert("تم النسخ بنجاح!"); } 
             catch (err) { alert("فشل النسخ تلقائياً."); }
         }
 
@@ -437,11 +463,9 @@ const motivationalQuotes = [
                 const docCheck = await db.collection("allowed_students").doc(newEmail).get();
                 if (docCheck.exists) return alert("هذا البريد الإلكتروني موجود مسبقاً!");
                 
-                // جلب بيانات الطالب القديمة بالكامل
                 const oldDoc = await db.collection("allowed_students").doc(currentEmail).get();
                 const oldData = oldDoc.exists ? oldDoc.data() : { name: currentName, className: 'غير موزع', added_at: firebase.firestore.FieldValue.serverTimestamp() };
 
-                // نسخ البيانات للإيميل الجديد وحذف القديم
                 await db.collection("allowed_students").doc(newEmail).set(oldData);
                 await db.collection("allowed_students").doc(currentEmail).delete();
                 alert("تم تعديل الإيميل ونقل السجل بنجاح!");
@@ -1136,7 +1160,7 @@ const motivationalQuotes = [
                 <div class="text-center mb-6 border-b pb-4">
                     <div class="w-20 h-20 ${btnPrimaryClass} text-white rounded-full flex items-center justify-center text-4xl font-bold mx-auto mb-2 shadow-md">👤</div>
                     <h2 class="student-name-font text-3xl text-slate-900">${student.name}</h2>
-                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -1212,7 +1236,7 @@ const motivationalQuotes = [
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
                     <button onclick="openPreviewSummaryModal('${student.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">👁️ معاينة الملخص</button>
-                    <button onclick="shareStudentReportLink('${student.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">📲 إرسال لولي الأمر (واتس)</button>
+                    <button onclick="shareStudentReportLink('${student.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🌐 فتح التقرير كموقع</button>
                     <button onclick="window.print()" class="${btnPrimaryClass} text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🖨️ طباعة</button>
                     <button onclick="closeModal()" class="bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs hover:bg-slate-300 cursor-pointer shadow-md text-center">إغلاق</button>
                 </div>
@@ -1235,7 +1259,7 @@ const motivationalQuotes = [
                     <div class="text-center border-b border-amber-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-amber-950">📋 تقرير متابعة طالب مفصل</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
-                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">المعلم: أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">المعلم: أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                     </div>
 
                     <div class="space-y-4 text-xs font-bold text-slate-800">
@@ -1274,7 +1298,7 @@ const motivationalQuotes = [
                 </div>
 
                 <div class="flex gap-3">
-                    <button onclick="shareStudentReportLink('${student.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">📲 إرسال لولي الأمر (واتس)</button>
+                    <button onclick="shareStudentReportLink('${student.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🌐 فتح التقرير كموقع</button>
                     <button onclick="closePreviewSummaryModal()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-2xl text-xs font-bold hover:bg-slate-300 cursor-pointer shadow-md">إغلاق</button>
                 </div>
             `;
@@ -1291,26 +1315,113 @@ const motivationalQuotes = [
         window.shareStudentReportLink = function(id) {
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
-            
-            let total = 0; 
-            (student.actions || []).forEach(a => total += (a.score || 0));
-            let att = student.attendanceStats || { presents: 0, absents: 0, lates: 0 };
-            
-            let msg = `🎓 تقرير متابعة الطالب: ${student.name}\n`;
-            msg += `🏫 الفصل: ${student.className}\n\n`;
-            msg += `📌 الحضور: ${att.presents} | الغياب: ${att.absents} | التأخر: ${att.lates}\n`;
-            msg += `📊 مجموع النقاط والمشاركات: ${total}\n\n`;
-            
-            let negatives = (student.actions || []).filter(a => (a.score || 0) < 0).slice(0, 3);
-            if(negatives.length > 0) {
-                msg += `⚠️ آخر الملاحظات:\n`;
-                negatives.forEach(n => msg += `- ${n.title} (${n.timestamp})\n`);
-            } else {
-                msg += `✨ سلوك ممتاز ولا توجد ملاحظات سلبية.\n`;
-            }
-            
-            msg += `\n👨‍🏫 إعداد: أ/ عبدالعزيز الفيفي\nثانوية الأمير عبدالمجيد`;
-            window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
+
+            const summary = calculateStudentSummaryData(student);
+            const { att } = summary;
+
+            const webPageHTML = `
+                <!DOCTYPE html>
+                <html lang="ar" dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>تقرير الطالب: ${student.name}</title>
+                    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"><\/script>
+                    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Tajawal', sans-serif; background-color: #fdfaf1; }
+                        .student-title { font-family: 'Amiri', serif; }
+                    </style>
+                </head>
+                <body class="p-4 md:p-8 flex justify-center items-center min-h-screen">
+                    <div class="max-w-xl w-full bg-white border-2 border-amber-200 p-6 md:p-8 rounded-3xl shadow-2xl">
+                        
+                        <div class="text-center border-b border-amber-200 pb-4 mb-6">
+                            <span class="text-5xl mb-2 inline-block">🎓</span>
+                            <h1 class="student-title text-3xl font-bold text-slate-900">${student.name}</h1>
+                            <p class="text-sm font-bold text-amber-800 mt-1">الصف: ${student.className}</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">إعداد أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
+                        </div>
+
+                        <div class="space-y-4 text-xs font-bold text-slate-800">
+                            
+                            <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 shadow-xs">
+                                <span class="text-amber-950 font-black text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
+                                <div class="flex justify-between text-slate-700 my-2 px-2 border-b border-amber-200 pb-2">
+                                    <span>🟢 الحضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
+                                    <span>🔴 الغياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
+                                    <span>⏰ التأخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                </div>
+                                ${summary.attendanceEventsList.length === 0 ? 
+                                    '<p class="text-emerald-700 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : 
+                                    `<ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">
+                                        ${summary.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-800">${item.title}</span> - <span class="text-[11px] text-slate-500">${item.timestamp}</span></li>`).join('')}
+                                    </ul>`
+                                }
+                            </div>
+
+                            <div class="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-200 shadow-xs">
+                                <span class="text-emerald-950 font-black text-sm block mb-1">💡 التفاعل والمشاركات الإيجابية:</span>
+                                <div class="grid grid-cols-2 gap-2 text-center mt-2">
+                                    <div class="bg-white p-2.5 rounded-xl border border-emerald-200">
+                                        <span class="text-slate-600 block text-[11px]">مشاركات اليوم</span>
+                                        <span class="text-emerald-600 font-black text-base">${summary.positiveCountToday}</span>
+                                    </div>
+                                    <div class="bg-white p-2.5 rounded-xl border border-emerald-200">
+                                        <span class="text-slate-600 block text-[11px]">إجمالي النقاط المكتسبة</span>
+                                        <span class="text-emerald-600 font-black text-base">+${summary.totalPositiveScore}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-rose-50/60 p-4 rounded-2xl border border-rose-200 shadow-xs">
+                                <span class="text-rose-950 font-black text-sm block mb-1">⚠️ الملاحظات والسلوكيات:</span>
+                                ${summary.negativeList.length === 0 ? 
+                                    '<p class="text-emerald-600 font-semibold mt-1">لا توجد ملاحظات سلبية مسجلة (سلوك ممتاز) ✨</p>' : 
+                                    `<ul class="list-disc list-inside text-rose-700 space-y-1 mt-2">
+                                        ${summary.negativeList.map(item => `<li><span class="font-bold text-rose-900">${item.title}</span> - <span class="text-[11px] text-slate-600">${item.timestamp}</span></li>`).join('')}
+                                    </ul>`
+                                }
+                            </div>
+
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-xs">
+                                <span class="text-slate-900 font-black text-sm block mb-1">📘 الواجبات والملفات:</span>
+                                <div class="space-y-2 text-slate-700 mt-2">
+                                    <div>
+                                        <span class="font-bold text-slate-800 block">متابعة الواجبات:</span>
+                                        ${summary.homeworkList.length > 0 ? 
+                                            `<ul class="list-disc list-inside text-slate-600 text-[11px] space-y-0.5 mt-1">
+                                                ${summary.homeworkList.map(h => `<li>${h.title} (${h.timestamp})</li>`).join('')}
+                                            </ul>` : 
+                                            '<span class="text-emerald-600 font-bold text-[11px]">منتظم وبدون ملاحظات واجبات</span>'
+                                        }
+                                    </div>
+                                    <div class="pt-1 border-t border-slate-200">
+                                        <span class="font-bold text-slate-800 block">الملف المدرسي:</span>
+                                        ${summary.portfolioList.length > 0 ? 
+                                            `<ul class="list-disc list-inside text-slate-600 text-[11px] space-y-0.5 mt-1">
+                                                ${summary.portfolioList.map(p => `<li>${p.title} (${p.timestamp})</li>`).join('')}
+                                            </ul>` : 
+                                            '<span class="text-emerald-600 font-bold text-[11px]">مكتمل ومستوفي المطلوب</span>'
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-500 flex justify-between">
+                            <span>إعداد أ/ عبدالعزيز الفيفي</span>
+                            <span>الحقوق محفوظة 2026</span>
+                            <span>ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([webPageHTML], { type: 'text/html' });
+            window.open(URL.createObjectURL(blob), '_blank');
         };
 
         window.openClassReportPreview = function(className, type) {
@@ -1398,7 +1509,7 @@ const motivationalQuotes = [
                     <div class="text-center border-b border-amber-200 pb-3 mb-6 sticky top-0 bg-white z-10 py-2">
                         <h3 class="student-name-font text-2xl text-slate-900">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">المعلم: أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">المعلم: أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                     </div>
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
@@ -1493,13 +1604,13 @@ const motivationalQuotes = [
                             <span class="text-5xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الفردي الشامل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">إعداد أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">إعداد أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                         </div>
                         <div>${students.length === 0 ? '<p style="text-align: center; padding: 30px; color: #94a3b8; font-weight: bold;">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
                             <span>إعداد أ/ عبدالعزيز الفيفي</span>
                             <span>الحقوق محفوظة 2026</span>
-                            <span>ثانوية الأمير عبدالمجيد 👨‍🏫</span>
+                            <span>ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1510,7 +1621,6 @@ const motivationalQuotes = [
             window.open(URL.createObjectURL(blob), '_blank');
         }
 
-        // --- جدول الفصل الشامل (أعمدة الحضور، الغياب، التأخر) ---
         function openTableClassReportPreview(className) {
             const students = allStudents.filter(s => s.className === className);
             let totalPresentsClass = 0, totalAbsentsClass = 0, totalLatesClass = 0;
@@ -1546,7 +1656,7 @@ const motivationalQuotes = [
                     <div class="text-center border-b border-amber-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-900">📊 جدول الفصل الشامل والمفصل: ${className}</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | الكفايات اللغوية</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">المعلم: أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">المعلم: أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                     </div>
 
                     <div class="grid grid-cols-3 gap-3 text-center mb-4 text-xs font-bold">
@@ -1643,7 +1753,7 @@ const motivationalQuotes = [
                             <span class="text-5xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الشامل والمفصل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">إعداد أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">إعداد أ/ عبدالعزيز الفيفي | ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                         </div>
                         <div class="grid grid-cols-3 gap-3 text-center mb-6 text-xs font-bold">
                             <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-emerald-800 block text-sm">إجمالي الحضور بالفصل</span><span class="text-xl font-black text-emerald-600">${totalPresentsClass}</span></div>
@@ -1661,7 +1771,7 @@ const motivationalQuotes = [
                             </table>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
-                            <span>إعداد أ/ عبدالعزيز الفيفي</span><span>الحقوق محفوظة 2026</span><span>ثانوية الأمير عبدالمجيد 👨‍🏫</span>
+                            <span>إعداد أ/ عبدالعزيز الفيفي</span><span>الحقوق محفوظة 2026</span><span>ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1726,10 +1836,8 @@ const motivationalQuotes = [
                 <span class="text-xs font-bold text-slate-500 bg-white px-3.5 py-1.5 rounded-full border shadow-2xs">اختر الفصل أو اللوحة للبدء</span>
             </div>
             
-            <!-- شبكة البطاقات الموحدة (تشمل الفصول ولوحة التحكم كبطاقة متناسقة) -->
             <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 sm:gap-6 w-full max-w-full overflow-hidden"></div>
 
-            <!-- شريط العبارات التحفيزية الأنيق في أسفل الصفحة -->
             <div class="bg-white/80 backdrop-blur-xs border-2 border-amber-200/80 p-5 rounded-3xl shadow-sm text-center my-4 transition hover:shadow-md">
                 <p id="quote-text" class="student-name-font text-lg text-amber-950 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
@@ -1738,7 +1846,7 @@ const motivationalQuotes = [
             </div>
         </div>
 
-        <!-- 2. واجهة لوحة التحكم المدمجة (تظهر عند الضغط على أيقونتها) -->
+        <!-- 2. واجهة لوحة التحكم المدمجة -->
         <div id="admin-control-view" class="hidden py-2 space-y-4">
             <div class="flex items-center justify-between mb-2 bg-white p-3.5 rounded-2xl shadow-sm border">
                 <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
@@ -1767,7 +1875,7 @@ const motivationalQuotes = [
                 </div>
 
                 <div class="bulk-section">
-                    <label class="block mb-1 text-xs font-bold"><strong>لصق القائمة للاعتماد المباشر (الاسم ثم الإيميل):</strong></label>
+                    <label class="block mb-1 text-xs font-bold"><strong>لصق القائمة للاعتماد المباشر:</strong></label>
                     <textarea id="bulkInput" placeholder="الصق الاسم والإيميل هنا.."></textarea>
                     <div class="controls">
                         <button class="btn btn-upload" onclick="superSmartBulkAdd()">رفع واعتماد 🚀</button>
