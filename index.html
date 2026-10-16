@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة الطلاب الشامل - ثانوية الأمير عبد المجيد/    👨‍🏫</title>
+    <title>نظام متابعة الطلاب الشامل - د/ سامي محمد العمر 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري 😊</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -137,21 +137,21 @@
         let currentTeacherSubject = "القرآن الكريم وعلومه";
 
         function getTeacherCollection() {
-            if (!currentTeacherEmail || currentTeacherEmail === "sami@moe.gov.sa") {
+            if (!currentTeacherEmail || currentTeacherEmail === "school1school2@gmail.com") {
                 return "allowed_students";
             }
             return "allowed_students_" + currentTeacherEmail.replace(/\./g, '_');
         }
 
         function getPendingCollection() {
-            if (!currentTeacherEmail || currentTeacherEmail === "sami@moe.gov.sa") {
+            if (!currentTeacherEmail || currentTeacherEmail === "school1school2@gmail.com") {
                 return "pending_students";
             }
             return "pending_students_" + currentTeacherEmail.replace(/\./g, '_');
         }
 
         function getClassConfigDoc() {
-            if (!currentTeacherEmail || currentTeacherEmail === "sami@moe.gov.sa") {
+            if (!currentTeacherEmail || currentTeacherEmail === "school1school2@gmail.com") {
                 return "classes_config";
             }
             return "classes_config_" + currentTeacherEmail.replace(/\./g, '_');
@@ -1098,7 +1098,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('عن بعد') || title.includes('غائب بعذر')) {
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستأذن ') || title.includes('غائب بعذر')) {
                     attendanceEventsList.push(act);
                 }
 
@@ -1781,7 +1781,7 @@
         }
 
         function openAdminDirectLogin() {
-            document.getElementById('loginTeacherEmail').value = "admin@supervisor.com";
+            document.getElementById('loginTeacherEmail').value = "school1school2@gmail.com";
             submitTeacherLogin();
         }
 
@@ -1796,7 +1796,8 @@
                 return;
             }
 
-            if (emailInput === "admin@supervisor.com" || emailInput === "sami@moe.gov.sa") {
+            // الاعتماد الحصري لمشرف النظام على البريد المحدد فقط
+            if (emailInput === "school1school2@gmail.com") {
                 localStorage.setItem('teacher_email', emailInput);
                 document.getElementById('teacher-login-modal').classList.add('hidden');
                 verifyAndLoadTeacher(emailInput);
@@ -1821,11 +1822,12 @@
         }
 
         async function verifyAndLoadTeacher(email) {
-            if (email === "admin@supervisor.com") {
+            // التحقق من حساب المشرف العام بالبريد الجديد
+            if (email === "school1school2@gmail.com") {
                 document.getElementById('admin-supervisor-card').style.display = 'block';
                 document.getElementById('main-dashboard').style.display = 'none';
-                document.getElementById('main-header-title').innerText = "منصة المتابعة السحابية الشاملة";
-                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام لإدارة وتوليد منصات المعلمين";
+                document.getElementById('main-header-title').innerText = "نظام المتابعة السحابية الشاملة";
+                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام لإدارة وتوليد منصات المعلمين ثانوية الأمير عبدالمجيد مع فيس تعبيري 😊";
                 document.getElementById('teacher-logout-btn').classList.remove('hidden');
                 loadTeachersList();
                 return;
@@ -1840,18 +1842,6 @@
                     currentTeacherEmail = tData.email;
                     currentTeacherName = tData.name;
                     currentTeacherSubject = tData.subject;
-
-                    document.getElementById('admin-supervisor-card').style.display = 'none';
-                    document.getElementById('main-dashboard').style.display = 'block';
-                    document.getElementById('main-header-title').innerText = currentTeacherName + " 👨‍🏫";
-                    document.getElementById('main-header-subtitle').innerText = "المادة الدراسية: " + currentTeacherSubject;
-                    document.getElementById('teacher-logout-btn').classList.remove('hidden');
-
-                    initSystem();
-                } else if (email === "sami@moe.gov.sa") {
-                    currentTeacherEmail = "sami@moe.gov.sa";
-                    currentTeacherName = "د/ سامي محمد العمر";
-                    currentTeacherSubject = "القرآن الكريم وعلومه";
 
                     document.getElementById('admin-supervisor-card').style.display = 'none';
                     document.getElementById('main-dashboard').style.display = 'block';
@@ -1973,7 +1963,7 @@
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-center sm:text-right">
                 <h1 class="text-lg font-black tracking-wide" id="main-header-title">نظام المتابعة السحابي الشامل</h1>
-                <p class="text-xs opacity-90 mt-0.5 font-bold" id="main-header-subtitle">د/ سامي محمد العمر 👨‍🏫 | القرآن الكريم وعلومه</p>
+                <p class="text-xs opacity-90 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد 😊</p>
             </div>
             <div class="flex gap-2 items-center">
                 <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🏫 الفصول</button>
@@ -2112,7 +2102,7 @@
 
     <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right">
-            <div>منصة متابعة الطلاب الشاملة</div>
+            <div>ثانوية الأمير عبدالمجيد 😊</div>
             <div>الحقوق محفوظة 2026</div>
             <div>التعليم الذكي</div>
         </div>
