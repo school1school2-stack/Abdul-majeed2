@@ -1757,15 +1757,9 @@
             document.getElementById('student-modal').classList.remove('flex');
         };
 
-        // التحقق الصارم والمشدد عند الفتح
+        // تم إلغاء الحفظ تماماً، وفتح نافذة الدخول إجبارياً في كل مرة
         window.onload = function() {
-            const savedEmail = localStorage.getItem('teacher_email');
-            if (savedEmail && savedEmail.toLowerCase().trim() === "school1school2@gmail.com") {
-                verifyAndLoadTeacher(savedEmail);
-            } else {
-                localStorage.removeItem('teacher_email');
-                showLoginModal();
-            }
+            showLoginModal();
         };
 
         function showLoginModal() {
@@ -1786,7 +1780,6 @@
 
             // قصر الدخول حصرياً على إيميل المشرف العام فقط
             if (emailInput === "school1school2@gmail.com") {
-                localStorage.setItem('teacher_email', emailInput);
                 document.getElementById('teacher-login-modal').classList.add('hidden');
                 verifyAndLoadTeacher(emailInput);
                 return;
@@ -1806,14 +1799,12 @@
                 loadTeachersList();
                 return;
             } else {
-                localStorage.removeItem('teacher_email');
                 showLoginModal();
             }
         }
 
         function logoutTeacher() {
-            if (confirm("هل ترغب في تسجيل الخروج؟")) {
-                localStorage.removeItem('teacher_email');
+            if (confirm("هل ترغب في قفل الجلسة وتسجيل الخروج؟")) {
                 location.reload();
             }
         }
@@ -1894,12 +1885,6 @@
                     <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني المعتمد:</label>
                     <input type="email" id="loginTeacherEmail" autocomplete="off" spellcheck="false" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
                 </div>
-                
-                <!-- زر نسخ الإيميل السريع لحل مشكلة التصحيح التلقائي بالجوال -->
-                <button type="button" onclick="navigator.clipboard.writeText('school1school2@gmail.com'); alert('تم نسخ البريد الصحيح إلى الحافظة! الصقه الآن في خانة البريد 📋');" class="w-full bg-sky-50 hover:bg-sky-100 text-sky-800 py-2.5 rounded-xl font-bold text-xs border border-sky-200 transition cursor-pointer flex items-center justify-center gap-2">
-                    <i class="fas fa-copy"></i>
-                    <span>اضغط هنا لنسخ الإيميل الصحيح بضغطة زر</span>
-                </button>
 
                 <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 hidden"></div>
                 
@@ -1921,7 +1906,7 @@
             <div class="flex gap-2 items-center">
                 <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🏫 الفصول</button>
                 <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">⚙️ التقييمات</button>
-                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
             </div>
         </div>
     </header>
