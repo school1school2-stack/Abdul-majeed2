@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- مكتبة QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -1701,6 +1704,28 @@
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const reportId = urlParams.get('view_report');
+            const shortUrlId = urlParams.get('id');
+
+            // إذا كان الرابط هو اختصار روابط سحابي (مدعوم من Firebase)
+            if (shortUrlId) {
+                document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #800000; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">⏳</div>جاري قراءة الرابط من السحابة والتحويل...</div>`;
+                
+                const dbRef = firebase.database().ref();
+                firebase.database().ref(`short_urls/${shortUrlId}`).once('value').then((snapshot) => {
+                    if (snapshot.exists()) {
+                        let targetUrl = snapshot.val().longUrl;
+                        if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+                            targetUrl = 'https://' + targetUrl;
+                        }
+                        window.location.href = targetUrl;
+                    } else {
+                        document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #dc2626; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">❌</div>الرابط غير موجود أو منتهي الصلاحية!</div>`;
+                    }
+                }).catch(() => {
+                    document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #dc2626; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">❌</div>خطأ في الاتصال بسحابة Firebase.</div>`;
+                });
+                return;
+            }
             
             if(reportId) {
                 document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #800000; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">⏳</div>جاري تحميل التقرير...</div>`;
@@ -2044,6 +2069,106 @@
                 }       
             }
         };
+
+        // دالة توليد معرف عشوائي قصير جداً (5 خانات) لاختصار الروابط
+        function generateRandomId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 5; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // تفعيل أداة اختصار الروابط عند النقر داخل لوحة المشرف
+        document.addEventListener("DOMContentLoaded", () => {
+            const genBtn = document.getElementById('genBtn');
+            if(genBtn) {
+                genBtn.addEventListener('click', () => {
+                    const longUrl = document.getElementById('longUrl').value.trim();
+                    if (!longUrl) {
+                        alert('الرجاء إدخال رابط أولاً');
+                        return;
+                    }
+
+                    genBtn.disabled = true;
+                    genBtn.innerText = "جاري التوصيل بالسحابة...";
+
+                    const shortId = generateRandomId();
+
+                    firebase.database().ref('short_urls/' + shortId).set({
+                        longUrl: longUrl,
+                        createdAt: Date.now()
+                    })
+                    .then(() => {
+                        const baseUrl = window.location.origin + window.location.pathname;
+                        const shortUrl = `${baseUrl}?id=${shortId}`;
+
+                        document.getElementById('shortenedLink').innerText = shortUrl;
+                        document.getElementById('resultBox').style.display = 'block';
+
+                        document.getElementById('qrcode').innerHTML = '';
+                        new QRCode(document.getElementById("qrcode"), {
+                            text: shortUrl,
+                            width: 256,
+                            height: 256
+                        });
+
+                        genBtn.disabled = false;
+                        genBtn.innerText = "توليد رابط قصير جداً والـ QR";
+                    })
+                    .catch((error) => {
+                        alert("فشل الحفظ في السحابة: " + error.message);
+                        genBtn.disabled = false;
+                        genBtn.innerText = "توليد رابط قصير جداً والـ QR";
+                    });
+                });
+            }
+
+            const copyBtn = document.getElementById('copyBtn');
+            if(copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const linkText = document.getElementById('shortenedLink').innerText;
+                    navigator.clipboard.writeText(linkText).then(() => {
+                        alert('تم نسخ الرابط بنجاح!');
+                    });
+                });
+            }
+
+            const saveQrBtn = document.getElementById('saveQrBtn');
+            if(saveQrBtn) {
+                saveQrBtn.addEventListener('click', () => {
+                    const qrContainer = document.getElementById('qrcode');
+                    const canvas = qrContainer.querySelector('canvas');
+                    const img = qrContainer.querySelector('img');
+
+                    if (!canvas && !img) {
+                        alert('الرجاء توليد رمز الاستجابة السريعة أولاً.');
+                        return;
+                    }
+
+                    const targetSize = 300;
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = targetSize;
+                    tempCanvas.height = targetSize;
+                    const ctx = tempCanvas.getContext('2d');
+
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, targetSize, targetSize);
+
+                    const sourceElement = canvas || img;
+                    ctx.drawImage(sourceElement, 0, 0, targetSize, targetSize);
+
+                    const imageUrl = tempCanvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = imageUrl;
+                    link.download = 'qrcode.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+            }
+        });
     </script>
 </head>
 <body class="text-slate-900 h-full flex flex-col justify-between text-sm overflow-x-hidden">
@@ -2091,6 +2216,22 @@
             <div class="header">
                 <h2 class="text-xl font-black text-slate-900"><i class="fas fa-user-shield text-amber-600"></i> لوحة إدارة المعلمين العامة (خاص بالمشرف)</h2>
                 <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا:</p>
+            </div>
+
+            <!-- أداة اختصار الروابط المضافة حديثاً في لوحة المشرف -->
+            <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200 mb-5 text-right">
+                <h3 class="text-sm font-bold text-amber-950 mb-1"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي:</h3>
+                <p class="text-xs text-amber-800 mb-3 font-semibold">يتم حفظ الروابط الطويلة في السحابة للحصول على رابط قصير جداً وباركود (QR).</p>
+                <input type="url" id="longUrl" placeholder="ضع الرابط الطويل هنا..." class="w-full border p-2.5 rounded-xl text-xs font-bold bg-white mb-2" required>
+                <button id="genBtn" class="w-full bg-[#2ea44f] hover:bg-[#2c974b] text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">توليد رابط قصير جداً والـ QR 🚀</button>
+
+                <div class="result" id="resultBox" style="display:none; margin-top:15px; padding:12px; background:#eef9f1; border-radius:10px; border:1px solid #c3e6cb;">
+                    <strong style="font-size:12px; color:#155724;">الرابط المختصر القصير:</strong>
+                    <div id="shortenedLink" style="background:#fff; padding:8px; border:1px dashed #2ea44f; border-radius:6px; word-break:break-all; font-size:14px; margin:5px 0; color:#0366d6; font-weight:bold;"></div>
+                    <button id="copyBtn" class="w-full bg-[#0366d6] hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mb-2">نسخ الرابط 📋</button>
+                    <div id="qrcode" style="display:flex; justify-content:center; margin-top:10px;"></div>
+                    <button id="saveQrBtn" class="w-full bg-[#6f42c1] hover:bg-purple-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mt-2">حفظ QR كصورة 💾</button>
+                </div>
             </div>
 
             <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-200 mb-5 text-right">
