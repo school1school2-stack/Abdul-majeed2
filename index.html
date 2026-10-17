@@ -48,15 +48,14 @@
             font-weight: 700;
         }
 
-        .class-3d-card {
-            border: 1px solid rgba(203, 213, 225, 0.6);
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
-            transition: all 0.25s ease;
+        .class-minimal-card {
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
             background-color: #ffffff;
         }
-        .class-3d-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
+        .class-minimal-card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
             border-color: #cbd5e1;
         }
 
@@ -537,46 +536,49 @@
             renderView();
         };
 
-        /* ألوان هادئة ومريحة للعين مخصصة للأيقونات الكبيرة */
-        const iconSoftStyles = [
-            { bg: "bg-amber-500/10 text-amber-800 border-amber-200/50" },
-            { bg: "bg-emerald-500/10 text-emerald-800 border-emerald-200/50" },
-            { bg: "bg-sky-500/10 text-sky-800 border-sky-200/50" },
-            { bg: "bg-purple-500/10 text-purple-800 border-purple-200/50" },
-            { bg: "bg-rose-500/10 text-rose-800 border-rose-200/50" },
-            { bg: "bg-teal-500/10 text-teal-800 border-teal-200/50" }
-        ];
+        /* معالجة القائمة المنسدلة للفصل */
+        window.handleClassDropdownAction = function(selectElement, className) {
+            const action = selectElement.value;
+            selectElement.value = "";
+            if (action === 'enter') openClass(className);
+            else if (action === 'share_detailed') shareClassReportLink(className, 'detailed', null);
+            else if (action === 'share_table') shareClassReportLink(className, 'table', null);
+            else if (action === 'view_detailed') openClassReportPreview(className, 'detailed');
+            else if (action === 'view_table') openClassReportPreview(className, 'table');
+        };
 
         function renderView() {
             const classesContainer = document.getElementById('dynamic-classes-grid');
             if(!classesContainer) return;
             classesContainer.innerHTML = '';
 
-            classList.forEach((cls, idx) => {
+            classList.forEach((cls) => {
                 const count = allStudents.filter(s => s.className === cls).length;
-                const softStyle = iconSoftStyles[idx % iconSoftStyles.length];
                 
                 classesContainer.innerHTML += `
-                    <div class="class-3d-card p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border hover:border-slate-300 gap-4 bg-white">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3.5 sm:gap-4">
-                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl ${softStyle.bg} border flex items-center justify-center shrink-0 shadow-2xs">🏫</span>
-                                <div>
-                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">${cls}</h3>
-                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-slate-100 text-slate-600 border border-slate-200">${count} طلاب مخصصين</p>
-                                </div>
+                    <div class="class-minimal-card p-4 rounded-2xl flex items-center justify-between gap-3 bg-white">
+                        <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="openClass('${cls}')">
+                            <span class="text-2xl p-2.5 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">🏫</span>
+                            <div>
+                                <h3 class="class-title-font text-base text-slate-800 leading-tight">${cls}</h3>
+                                <p class="text-xs text-slate-500 font-semibold mt-0.5">${count} طالب مسجل</p>
                             </div>
-                            <!-- زر دخول الفصل بصورة واضحة وبتصميم أنيق ومريح -->
-                            <button onclick="openClass('${cls}')" title="دخول الفصل" class="bg-slate-800 hover:bg-slate-900 text-slate-100 px-3.5 py-2 rounded-xl flex items-center gap-2 text-xs font-bold shadow-xs cursor-pointer transition shrink-0 border border-slate-700">
-                                <i class="fas fa-door-open text-amber-300"></i>
-                                <span>دخول الفصل</span>
-                            </button>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3 border-t border-slate-100">
-                            <button onclick="shareClassReportLink('${cls}', 'detailed', this)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1.5 border border-slate-200">🔗 نسخ رابط التقرير الفردي</button>
-                            <button onclick="shareClassReportLink('${cls}', 'table', this)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1.5 border border-slate-200">🔗 نسخ رابط جدول الفصل</button>
-                            <button onclick="openClassReportPreview('${cls}', 'detailed')" class="bg-slate-50 hover:bg-slate-100 text-slate-600 py-2 px-3 rounded-xl font-bold text-xs cursor-pointer transition text-center flex items-center justify-center gap-1 border border-slate-200/80">👁️ عرض التقرير الفردي</button>
-                            <button onclick="openClassReportPreview('${cls}', 'table')" class="bg-slate-50 hover:bg-slate-100 text-slate-600 py-2 px-3 rounded-xl font-bold text-xs cursor-pointer transition text-center flex items-center justify-center gap-1 border border-slate-200/80">👁️ عرض جدول الفصل</button>
+
+                        <!-- قائمة منسدلة واحدة هادئة وبسيطة لخيارات الفصل -->
+                        <div class="shrink-0">
+                            <select class="action-select text-xs py-2 px-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 font-bold outline-none cursor-pointer hover:bg-slate-100 transition" onchange="handleClassDropdownAction(this, '${cls}')">
+                                <option value="" disabled selected>⚙️ الخيارات</option>
+                                <option value="enter">🚪 دخول الفصل</option>
+                                <optgroup label="👁️ المعاينة والمشاهدة">
+                                    <option value="view_detailed">👁️ عرض التقرير الفردي</option>
+                                    <option value="view_table">👁️ عرض جدول الفصل</option>
+                                </optgroup>
+                                <optgroup label="🔗 روابط المشاركة">
+                                    <option value="share_detailed">🔗 نسخ رابط التقرير الفردي</option>
+                                    <option value="share_table">🔗 نسخ رابط جدول الفصل</option>
+                                </optgroup>
+                            </select>
                         </div>
                     </div>
                 `;
@@ -585,36 +587,31 @@
             if (currentTeacherEmail === "school1school2@gmail.com") {
                 const approvedTotalCount = allStudents.length;
                 classesContainer.innerHTML += `
-                    <div class="class-3d-card p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border gap-4 relative bg-white">
-                        ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs animate-pulse">طلب جديد!</div>` : ''}
-                        <div onclick="openAdminControlPanel()" class="flex items-center justify-between cursor-pointer">
-                            <div class="flex items-center gap-3.5 sm:gap-4">
-                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center shrink-0">🔒</span>
-                                <div>
-                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">لوحة التحكم المدمجة</h3>
-                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-slate-100 text-slate-600 border border-slate-200">${approvedTotalCount} طالب معتمد</p>
-                                </div>
+                    <div class="class-minimal-card p-4 rounded-2xl flex items-center justify-between gap-3 bg-white relative">
+                        ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs animate-pulse">طلب جديد!</div>` : ''}
+                        <div onclick="openAdminControlPanel()" class="flex items-center gap-3 cursor-pointer flex-1">
+                            <span class="text-2xl p-2.5 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">🔒</span>
+                            <div>
+                                <h3 class="class-title-font text-base text-slate-800 leading-tight">لوحة التحكم المدمجة</h3>
+                                <p class="text-xs text-slate-500 font-semibold mt-0.5">${approvedTotalCount} طالب معتمد</p>
                             </div>
-                            <span class="bg-slate-50 w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-slate-600 border border-slate-200 shrink-0">⚙️</span>
                         </div>
-                        <div class="pt-2 border-t border-slate-100">
-                            <button onclick="openAdminControlPanel()" class="w-full bg-slate-800 hover:bg-slate-900 text-slate-100 py-2.5 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1">🔐 فتح لوحة التحكم وإدارة الاعتمادات</button>
-                        </div>
+                        <button onclick="openAdminControlPanel()" class="bg-slate-800 hover:bg-slate-900 text-slate-100 px-3.5 py-2 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition shrink-0">
+                            فتح اللوحة ⚙️
+                        </button>
                     </div>
                 `;
             } else {
                 classesContainer.innerHTML += `
-                    <div class="class-3d-card bg-white p-5 sm:p-6 rounded-3xl transition flex flex-col justify-center border border-dashed border-slate-300 cursor-pointer hover:border-slate-400" onclick="openGlobalStudentsDistribution()">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3.5 sm:gap-4">
-                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center shrink-0">🗂️</span>
-                                <div>
-                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">الطلاب وتوزيعهم</h3>
-                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-indigo-50 text-indigo-700 border border-indigo-100">سحب طلاب للمنصة</p>
-                                </div>
+                    <div class="class-minimal-card p-4 rounded-2xl flex items-center justify-between gap-3 bg-white border-dashed border-slate-300 cursor-pointer hover:border-slate-400" onclick="openGlobalStudentsDistribution()">
+                        <div class="flex items-center gap-3 flex-1">
+                            <span class="text-2xl p-2.5 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0 border border-indigo-100">🗂️</span>
+                            <div>
+                                <h3 class="class-title-font text-base text-slate-800 leading-tight">الطلاب وتوزيعهم</h3>
+                                <p class="text-xs text-indigo-600 font-semibold mt-0.5">سحب طلاب للمنصة</p>
                             </div>
-                            <span class="bg-indigo-50 w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-indigo-700 border border-indigo-100 shrink-0">➕</span>
                         </div>
+                        <span class="bg-indigo-50 text-indigo-700 font-bold text-xs px-3 py-1.5 rounded-xl border border-indigo-100">➕ إضافة</span>
                     </div>
                 `;
             }
@@ -789,7 +786,7 @@
                 classList.splice(index, 1);
                 for(let stu of allStudents) {
                     if(stu.className === removedName) {
-                        stu.className = 'غير موزاد';
+                        stu.className = 'غير موزع';
                         await db.collection(getTeacherCollection()).doc(stu.id).update({ className: 'غير موزع' });
                     }
                 }
@@ -2065,7 +2062,7 @@
                 <span class="text-xs font-bold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">اختر الفصل للبدء</span>
             </div>
             
-            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-5 w-full max-w-full overflow-hidden"></div>
+            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3.5 w-full max-w-full overflow-hidden"></div>
 
             <div class="bg-white/80 backdrop-blur-xs border border-slate-200 p-4 rounded-2xl shadow-2xs text-center my-4">
                 <p id="quote-text" class="student-name-font text-base text-slate-800 leading-relaxed">
