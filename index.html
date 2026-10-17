@@ -582,7 +582,7 @@
                 const theme = classSoftThemes[idx % classSoftThemes.length];
                 
                 classesContainer.innerHTML += `
-                    <div class="class-3d-card ${theme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4">
+                    <div class="class-3d-card ${theme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4 cursor-pointer" onclick="openClass('${cls}')">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-4 sm:gap-5">
                                 <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-amber-200/60 flex items-center justify-center shrink-0">🏫</span>
@@ -593,10 +593,9 @@
                             </div>
                         </div>
                         
-                        <div class="pt-2 border-t border-amber-200/50 flex items-center gap-2">
+                        <div class="pt-2 border-t border-amber-200/50 flex items-center gap-2" onclick="event.stopPropagation()">
                             <select class="action-select w-full py-2.5 px-3 rounded-2xl border-2 border-amber-200/80 bg-white font-bold text-xs shadow-2xs outline-none cursor-pointer hover:border-[#800000] transition" onchange="handleClassDropdownAction(this, '${cls}')">
-                                <option value="" disabled selected>⚡ اختر الإجراء أو الخيار للفصل...</option>
-                                <option value="enter_class">🚪 دخول الفصل المباشر</option>
+                                <option value="" disabled selected>⚡ خيارات إضافية و تقارير الفصل...</option>
                                 <option value="preview_detailed">👁️ عرض التقرير الفردي</option>
                                 <option value="preview_table">👁️ عرض جدول الفصل</option>
                                 <option value="share_detailed">🔗 نسخ رابط التقرير الفردي</option>
@@ -650,9 +649,7 @@
             const action = selectElement.value;
             selectElement.value = ""; 
             
-            if (action === 'enter_class') {
-                openClass(className);
-            } else if (action === 'preview_detailed') {
+            if (action === 'preview_detailed') {
                 openClassReportPreview(className, 'detailed');
             } else if (action === 'preview_table') {
                 openClassReportPreview(className, 'table');
@@ -1979,7 +1976,6 @@
                 const email = student.email;
                 const name = student.name;
                 
-                // التحديث هنا: يعتبر مضافاً فقط إذا كان ينتمي بالفعل لفصل (ليس "غير موزع")
                 const assignedStudent = allStudents.find(s => s.email === email && s.className && s.className !== 'غير موزع');
                 const isAssigned = !!assignedStudent;
 
