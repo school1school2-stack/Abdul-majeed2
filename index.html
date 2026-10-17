@@ -13,14 +13,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { 
-            --maroon: #800000; 
-            --gold: #d4af37; 
-            --bg: #faf9f6; 
-            --danger: #d9534f; 
-            --success: #4bae4f; 
-            --info: #2196f3; 
-        }
+        :root { --maroon: #800000; --gold: #d4af37; --bg: #fdfaf1; --danger: #c62828; --success: #28a745; --info: #17a2b8; }
         
         html, body { 
             font-family: 'Tajawal', sans-serif; 
@@ -49,80 +42,80 @@
         }
 
         .class-3d-card {
-            border: 1px solid rgba(203, 213, 225, 0.6);
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
-            transition: all 0.25s ease;
-            background-color: #ffffff;
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 8px 24px -4px rgba(128, 0, 0, 0.08), 0 3px 8px -2px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
         }
         .class-3d-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
-            border-color: #cbd5e1;
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 14px 35px -5px rgba(128, 0, 0, 0.15);
+            border-color: var(--maroon);
         }
 
         .student-square-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            transition: all 0.25s ease;
+            background: linear-gradient(135deg, #ffffff 0%, #fafaf9 100%);
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
+            transition: all 0.3s ease;
             min-height: 220px;
         }
         .student-square-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-            border-color: #cbd5e1;
+            transform: translateY(-3px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+            border-color: #94a3b8;
         }
         
         .admin-card { 
             background: white; 
             border-radius: 20px; 
             padding: 20px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
-            border-top: 5px solid var(--maroon); 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); 
+            border-top: 6px solid var(--maroon); 
             font-size: 0.85rem;
         }
-        .header { text-align: center; border-bottom: 2px solid #f1f5f9; margin-bottom: 15px; padding-bottom: 8px; }
-        .bulk-section { background: #fefefe; padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1.5px dashed #cbd5e1; }
-        textarea { width: 100%; height: 90px; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.85rem; resize: vertical; box-sizing: border-box; }
+        .header { text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 15px; padding-bottom: 8px; }
+        .bulk-section { background: #fdfbf7; padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1.5px dashed var(--maroon); }
+        textarea { width: 100%; height: 90px; padding: 8px; border-radius: 8px; border: 1px solid #ccc; font-size: 0.85rem; resize: vertical; box-sizing: border-box; }
         .controls { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
         .btn { padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: 0.3s; }
-        .btn-upload { background: var(--maroon); color: #ffffff; }
-        .btn-copy { background: #475569; color: white; }
+        .btn-upload { background: var(--maroon); color: var(--gold); }
+        .btn-copy { background: var(--info); color: white; }
         .btn-delete-all { background: var(--danger); color: white; }
         
-        .pending-section { background: #fffdf5; border: 1px solid #fef08a; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: none; }
-        .pending-section h3 { color: #c2410c; margin-top: 0; font-size: 1rem; }
+        .pending-section { background: #fff8e1; border: 1.5px solid #ffc107; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: none; }
+        .pending-section h3 { color: #d32f2f; margin-top: 0; font-size: 1rem; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; font-size: 0.85rem; }
-        th { background: #1e293b; color: #f8fafc; padding: 10px; font-size: 0.85rem; font-weight: 600; }
-        td { border-bottom: 1px solid #f1f5f9; padding: 8px; text-align: right; vertical-align: middle; }
+        th { background: var(--maroon); color: var(--gold); padding: 10px; font-size: 0.9rem; }
+        td { border-bottom: 1px solid #eee; padding: 8px; text-align: right; vertical-align: middle; }
         
-        .btn-approve { background: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
-        .btn-reject { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        .btn-approve { background: var(--success); color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        .btn-reject { background: var(--danger); color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
         
         .action-select {
             padding: 6px 10px;
             border-radius: 6px;
-            border: 1px solid #cbd5e1;
-            background-color: #f8fafc;
+            border: 1px solid #b0bec5;
+            background-color: #f8f9fa;
             font-family: inherit;
             font-size: 0.8rem;
             font-weight: bold;
-            color: #334155;
+            color: var(--maroon);
             cursor: pointer;
             outline: none;
             transition: 0.2s;
         }
-        .action-select:hover { border-color: #94a3b8; background-color: #fff; }
+        .action-select:hover { border-color: var(--maroon); background-color: #fff; }
 
-        .stats-bar { display: flex; justify-content: space-between; background: #f8fafc; padding: 10px 14px; border-radius: 8px; font-weight: bold; color: #334155; font-size: 0.9rem; margin-bottom: 15px; border: 1px solid #e2e8f0; }
+        .stats-bar { display: flex; justify-content: space-between; background: #f1f5f9; padding: 10px 14px; border-radius: 8px; font-weight: bold; color: var(--maroon); font-size: 0.95rem; margin-bottom: 15px; }
         .search-container { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; flex-wrap: wrap; gap: 8px; }
-        .search-container h3 { margin: 0; font-size: 0.95rem; color: #334155; }
-        .search-box { padding: 8px 12px; width: 100%; max-width: 250px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.85rem; outline: none; transition: 0.3s; }
-        .search-box:focus { border-color: #94a3b8; }
+        .search-container h3 { margin: 0; font-size: 0.95rem; color: var(--maroon); }
+        .search-box { padding: 8px 12px; width: 100%; max-width: 250px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.85rem; outline: none; transition: 0.3s; }
+        .search-box:focus { border-color: var(--maroon); box-shadow: 0 0 6px rgba(128,0,0,0.2); }
     </style>
 
     <script>
+        // إعدادات سحابة aaaa-a2380 
         const firebaseConfig = {
             apiKey: "AIzaSyDhd5CSkNMoppGby6uKxHsQCBPmi6xxO58",
             authDomain: "aaaa-a2380.firebaseapp.com",
@@ -187,9 +180,9 @@
         ];
 
         const themes = [
-            { name: "العاجي الفاخر", bg: "#fcfbf7", headerBg: "bg-stone-100/80 text-stone-900 border-stone-200/80", btnPrimary: "bg-stone-800 hover:bg-stone-900 text-stone-50" },
-            { name: "اللؤلؤ النقي", bg: "#f8fafc", headerBg: "bg-slate-100/80 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
-            { name: "السموكي الناعم", bg: "#f1f5f9", headerBg: "bg-sky-50/80 text-sky-950 border-sky-100", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" }
+            { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50 text-amber-950 border-amber-200/80", btnPrimary: "bg-amber-900 hover:bg-amber-950 text-amber-50" },
+            { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
+            { name: "السموكي الناعم", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-50 text-sky-950 border-sky-200", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" }
         ];
 
         function applyRandomTheme() {
@@ -198,9 +191,9 @@
             document.body.style.background = selectedTheme.bg;
             
             const header = document.getElementById('main-header');
-            if(header) header.className = `p-4 shadow-xs border-b shrink-0 z-30 transition-all duration-500 backdrop-blur-md ${selectedTheme.headerBg}`;
+            if(header) header.className = `p-4 shadow-sm border-b shrink-0 z-30 transition-all duration-500 ${selectedTheme.headerBg}`;
             const footer = document.getElementById('main-footer');
-            if(footer) footer.className = `py-3 px-6 border-t shrink-0 z-30 transition-all duration-500 backdrop-blur-md ${selectedTheme.headerBg}`;
+            if(footer) footer.className = `py-3 px-6 border-t shrink-0 z-30 transition-all duration-500 ${selectedTheme.headerBg}`;
 
             const quoteEl = document.getElementById('quote-text');
             if (quoteEl) {
@@ -213,14 +206,14 @@
         }
 
         const defaultActions = [
-            { icon: '✅', name: 'إجابة صحيحة', score: 1.0, color: '#10b981' },
-            { icon: '❌', name: 'إجابة خاطئة', score: -1.0, color: '#ef4444' },
-            { icon: '💡', name: 'مشاركة', score: 1.0, color: '#0284c7' },
-            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#0d9488' },
-            { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#f43f5e' },
-            { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#e11d48' },
-            { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#d97706' },
-            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#7c3aed' }
+            { icon: '✅', name: 'إجابة صحيحة', score: 1.0, color: '#28a745' },
+            { icon: '❌', name: 'إجابة خاطئة', score: -1.0, color: '#dc3545' },
+            { icon: '💡', name: 'مشاركة', score: 1.0, color: '#17a2b8' },
+            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#20c997' },
+            { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#e83e8c' },
+            { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#dc3545' },
+            { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#ffc107' },
+            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#6610f2' }
         ];
 
         function initSystem() {
@@ -324,11 +317,11 @@
                         classOptionsHtml += `<option value="class_غير موزع">❌ إزالة من الفصل</option>`;
 
                         tr.innerHTML = `
-                            <td style="text-align: right; font-weight: bold; font-size: 0.85rem; color: #1e293b;">
+                            <td style="text-align: right; font-weight: bold; font-size: 0.9rem; color: #1e293b;">
                                 ${name}
-                                <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">الفصل: ${data.className || 'غير موزع'}</div>
+                                <div style="font-size: 0.75rem; color: #800000; margin-top: 2px;">الفصل: ${data.className || 'غير موزع'}</div>
                             </td>
-                            <td style="font-size: 0.8rem; color: #64748b;">${email}</td>
+                            <td style="font-size: 0.8rem; color: #475569;">${email}</td>
                             <td>
                                 <select class="action-select" onchange="handleAction(this, '${email}', '${name.replace(/'/g, "\\'")}','${doc.id}')">
                                     <option value="" disabled selected>⚙️ خيارات الإجراء</option>
@@ -537,14 +530,13 @@
             renderView();
         };
 
-        /* ألوان هادئة ومريحة للعين مخصصة للأيقونات الكبيرة */
-        const iconSoftStyles = [
-            { bg: "bg-amber-500/10 text-amber-800 border-amber-200/50" },
-            { bg: "bg-emerald-500/10 text-emerald-800 border-emerald-200/50" },
-            { bg: "bg-sky-500/10 text-sky-800 border-sky-200/50" },
-            { bg: "bg-purple-500/10 text-purple-800 border-purple-200/50" },
-            { bg: "bg-rose-500/10 text-rose-800 border-rose-200/50" },
-            { bg: "bg-teal-500/10 text-teal-800 border-teal-200/50" }
+        const classSoftThemes = [
+            { bg: "bg-gradient-to-br from-amber-50/90 via-white to-orange-50/40", text: "text-stone-900" },
+            { bg: "bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/40", text: "text-stone-900" },
+            { bg: "bg-gradient-to-br from-sky-50/90 via-white to-blue-50/40", text: "text-stone-900" },
+            { bg: "bg-gradient-to-br from-purple-50/90 via-white to-indigo-50/40", text: "text-stone-900" },
+            { bg: "bg-gradient-to-br from-rose-50/90 via-white to-pink-50/40", text: "text-stone-900" },
+            { bg: "bg-gradient-to-br from-cyan-50/90 via-white to-sky-50/40", text: "text-stone-900" }
         ];
 
         function renderView() {
@@ -554,66 +546,66 @@
 
             classList.forEach((cls, idx) => {
                 const count = allStudents.filter(s => s.className === cls).length;
-                const softStyle = iconSoftStyles[idx % iconSoftStyles.length];
+                const theme = classSoftThemes[idx % classSoftThemes.length];
                 
                 classesContainer.innerHTML += `
-                    <div class="class-3d-card p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border hover:border-slate-300 gap-4 bg-white">
+                    <div class="class-3d-card ${theme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3.5 sm:gap-4">
-                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl ${softStyle.bg} border flex items-center justify-center shrink-0 shadow-2xs">🏫</span>
+                            <div class="flex items-center gap-4 sm:gap-5">
+                                <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-amber-200/60 flex items-center justify-center shrink-0">🏫</span>
                                 <div>
-                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">${cls}</h3>
-                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-slate-100 text-slate-600 border border-slate-200">${count} طلاب مخصصين</p>
+                                    <h3 class="class-title-font text-lg sm:text-xl tracking-wide ${theme.text}">${cls}</h3>
+                                    <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${count} طلاب مخصصين</p>
                                 </div>
                             </div>
-                            <!-- زر دخول الفصل بصورة واضحة وبتصميم أنيق ومريح -->
-                            <button onclick="openClass('${cls}')" title="دخول الفصل" class="bg-slate-800 hover:bg-slate-900 text-slate-100 px-3.5 py-2 rounded-xl flex items-center gap-2 text-xs font-bold shadow-xs cursor-pointer transition shrink-0 border border-slate-700">
+                            <button onclick="openClass('${cls}')" title="دخول الفصل مباشرة" class="bg-[#800000] hover:bg-[#660000] text-amber-100 px-3 py-2 rounded-2xl flex items-center gap-1.5 text-xs font-bold shadow-md cursor-pointer transition shrink-0 border border-amber-300">
                                 <i class="fas fa-door-open text-amber-300"></i>
                                 <span>دخول الفصل</span>
                             </button>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3 border-t border-slate-100">
-                            <button onclick="shareClassReportLink('${cls}', 'detailed', this)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1.5 border border-slate-200">🔗 نسخ رابط التقرير الفردي</button>
-                            <button onclick="shareClassReportLink('${cls}', 'table', this)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1.5 border border-slate-200">🔗 نسخ رابط جدول الفصل</button>
-                            <button onclick="openClassReportPreview('${cls}', 'detailed')" class="bg-slate-50 hover:bg-slate-100 text-slate-600 py-2 px-3 rounded-xl font-bold text-xs cursor-pointer transition text-center flex items-center justify-center gap-1 border border-slate-200/80">👁️ عرض التقرير الفردي</button>
-                            <button onclick="openClassReportPreview('${cls}', 'table')" class="bg-slate-50 hover:bg-slate-100 text-slate-600 py-2 px-3 rounded-xl font-bold text-xs cursor-pointer transition text-center flex items-center justify-center gap-1 border border-slate-200/80">👁️ عرض جدول الفصل</button>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-amber-200/50">
+                            <button onclick="shareClassReportLink('${cls}', 'detailed', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير الفردي</button>
+                            <button onclick="shareClassReportLink('${cls}', 'table', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔗 نسخ رابط جدول الفصل</button>
+                            <button onclick="openClassReportPreview('${cls}', 'detailed')" class="bg-stone-800 hover:bg-stone-900 text-amber-100 py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">👁️ عرض التقرير الفردي</button>
+                            <button onclick="openClassReportPreview('${cls}', 'table')" class="bg-amber-700 hover:bg-amber-800 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">👁️ عرض جدول الفصل</button>
                         </div>
                     </div>
                 `;
             });
 
             if (currentTeacherEmail === "school1school2@gmail.com") {
+                const adminTheme = classSoftThemes[classList.length % classSoftThemes.length];
                 const approvedTotalCount = allStudents.length;
                 classesContainer.innerHTML += `
-                    <div class="class-3d-card p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border gap-4 relative bg-white">
-                        ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs animate-pulse">طلب جديد!</div>` : ''}
+                    <div class="class-3d-card ${adminTheme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4 relative">
+                        ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md border-2 border-white animate-pulse">طلب جديد!</div>` : ''}
                         <div onclick="openAdminControlPanel()" class="flex items-center justify-between cursor-pointer">
-                            <div class="flex items-center gap-3.5 sm:gap-4">
-                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center shrink-0">🔒</span>
+                            <div class="flex items-center gap-4 sm:gap-5">
+                                <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-amber-200/60 flex items-center justify-center shrink-0">🔒</span>
                                 <div>
-                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">لوحة التحكم المدمجة</h3>
-                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-slate-100 text-slate-600 border border-slate-200">${approvedTotalCount} طالب معتمد</p>
+                                    <h3 class="class-title-font text-lg sm:text-xl tracking-wide ${adminTheme.text}">لوحة التحكم المدمجة</h3>
+                                    <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${approvedTotalCount} طالب معتمد</p>
                                 </div>
                             </div>
-                            <span class="bg-slate-50 w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-slate-600 border border-slate-200 shrink-0">⚙️</span>
+                            <span class="bg-white/95 backdrop-blur-xs w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg text-[#800000] shadow-sm border border-amber-200 shrink-0">⚙️</span>
                         </div>
-                        <div class="pt-2 border-t border-slate-100">
-                            <button onclick="openAdminControlPanel()" class="w-full bg-slate-800 hover:bg-slate-900 text-slate-100 py-2.5 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1">🔐 فتح لوحة التحكم وإدارة الاعتمادات</button>
+                        <div class="pt-2 border-t border-amber-200/50">
+                            <button onclick="openAdminControlPanel()" class="w-full bg-[#800000] hover:bg-[#660000] text-amber-50 py-2.5 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔐 فتح لوحة التحكم وإدارة الاعتمادات</button>
                         </div>
                     </div>
                 `;
             } else {
                 classesContainer.innerHTML += `
-                    <div class="class-3d-card bg-white p-5 sm:p-6 rounded-3xl transition flex flex-col justify-center border border-dashed border-slate-300 cursor-pointer hover:border-slate-400" onclick="openGlobalStudentsDistribution()">
+                    <div class="class-3d-card bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-5 sm:p-6 rounded-3xl transition flex flex-col justify-center border shadow-md hover:shadow-xl border-dashed border-2 border-indigo-300 cursor-pointer" onclick="openGlobalStudentsDistribution()">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3.5 sm:gap-4">
-                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center shrink-0">🗂️</span>
+                            <div class="flex items-center gap-4 sm:gap-5">
+                                <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-indigo-200/60 flex items-center justify-center shrink-0">🗂️</span>
                                 <div>
-                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">الطلاب وتوزيعهم</h3>
-                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-indigo-50 text-indigo-700 border border-indigo-100">سحب طلاب للمنصة</p>
+                                    <h3 class="class-title-font text-lg sm:text-xl tracking-wide text-indigo-900">الطلاب وتوزيعهم</h3>
+                                    <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-indigo-100 text-indigo-800 border border-indigo-200">سحب طلاب للمنصة</p>
                                 </div>
                             </div>
-                            <span class="bg-indigo-50 w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-indigo-700 border border-indigo-100 shrink-0">➕</span>
+                            <span class="bg-white/95 backdrop-blur-xs w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg text-indigo-700 shadow-sm border border-indigo-200 shrink-0">➕</span>
                         </div>
                     </div>
                 `;
@@ -668,14 +660,14 @@
                     });
 
                     Object.values(actionCounts).forEach(item => {
-                        let badgeBg = "bg-slate-700 text-white";
-                        if(item.totalScore > 0) badgeBg = "bg-emerald-600 text-white";
-                        if(item.totalScore < 0) badgeBg = "bg-rose-600 text-white";
+                        let badgeBg = "bg-sky-500 text-white";
+                        if(item.totalScore > 0) badgeBg = "bg-emerald-500 text-white";
+                        if(item.totalScore < 0) badgeBg = "bg-rose-500 text-white";
                         actionsListHtml += `
-                            <div onclick="openActionModal('${student.id}')" class="flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-xl cursor-pointer transition hover:bg-slate-50 shrink-0 shadow-2xs whitespace-nowrap" title="${item.title}">
-                                <span class="text-lg">${item.icon}</span>
-                                <span class="text-xs font-bold text-slate-700">${item.title}</span>
-                                <span class="w-4 h-4 rounded-full ${badgeBg} text-[10px] font-black flex items-center justify-center shadow-2xs mr-1">${item.count > 1 ? item.count : item.totalScore}</span>
+                            <div onclick="openActionModal('${student.id}')" class="flex items-center gap-2 bg-white border border-slate-200 px-3 py-2 rounded-xl cursor-pointer transition hover:bg-slate-50 shrink-0 shadow-2xs whitespace-nowrap" title="${item.title}">
+                                <span class="text-xl">${item.icon}</span>
+                                <span class="text-sm font-bold text-slate-800">${item.title}</span>
+                                <span class="w-5 h-5 rounded-full ${badgeBg} text-[11px] font-black flex items-center justify-center shadow-xs mr-1">${item.count > 1 ? item.count : item.totalScore}</span>
                             </div>
                         `;
                     });
@@ -689,27 +681,27 @@
                 if(totalStudentScore === 0) scoreBadgeColor = "bg-slate-50 text-slate-600 border-slate-200";
 
                 container.innerHTML += `
-                    <div class="student-square-card p-5 rounded-3xl flex flex-col justify-between transition gap-4">
-                        <div class="flex items-center gap-3 cursor-pointer relative" onclick="openModal('${student.id}')" title="اضغط لعرض التقرير المفصل">
-                            ${totalActionsCount > 0 ? `<div class="absolute -top-3 -right-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs border border-white">${totalActionsCount}+</div>` : ''}
-                            <div class="w-14 h-14 bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center text-3xl font-black shrink-0 border border-slate-200">👤</div>
+                    <div class="student-square-card p-6 rounded-3xl flex flex-col justify-between transition gap-4">
+                        <div class="flex items-center gap-4 cursor-pointer relative" onclick="openModal('${student.id}')" title="اضغط لعرض التقرير المفصل">
+                            ${totalActionsCount > 0 ? `<div class="absolute -top-3 -right-2 bg-emerald-500 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md border-2 border-white">${totalActionsCount}+</div>` : ''}
+                            <div class="w-16 h-16 text-[#800000] flex items-center justify-center text-4xl font-black shrink-0">👤</div>
                             <div class="overflow-hidden flex-grow">
-                                <div class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs flex items-center justify-between gap-2">
-                                    <h3 class="student-name-font text-slate-900 tracking-wide truncate hover:text-slate-700 transition">${student.name}</h3>
-                                    <span class="text-xs font-black px-2 py-0.5 rounded-lg border ${scoreBadgeColor} shrink-0">${formattedScore}</span>
+                                <div class="bg-[#fdf8f0] border-2 border-[#800000]/20 px-4 py-2 rounded-2xl shadow-xs flex items-center justify-between gap-3">
+                                    <h3 class="student-name-font text-slate-900 tracking-wide truncate hover:text-[#800000] transition">${student.name}</h3>
+                                    <span class="text-sm font-black px-2.5 py-1 rounded-xl border-2 ${scoreBadgeColor} shrink-0">${formattedScore}</span>
                                 </div>
                                 <p class="text-xs text-slate-400 font-bold truncate mt-1 px-1">${student.email || 'بدون إيميل'}</p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2 overflow-x-auto py-1.5 bg-slate-50 px-2 rounded-xl min-h-[48px] w-full border border-slate-100" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
+                        <div class="flex items-center gap-2 overflow-x-auto py-2 bg-slate-100/80 px-2.5 rounded-2xl min-h-[56px] w-full" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
                             ${actionsListHtml}
                         </div>
 
-                        <div class="grid grid-cols-3 gap-2 pt-1">
-                            <button onclick="openActionModal('${student.id}')" class="bg-slate-800 hover:bg-slate-900 text-slate-100 py-2.5 rounded-xl text-xs font-bold shadow-2xs cursor-pointer transition text-center">📝 رصد</button>
-                            <button onclick="openModal('${student.id}')" class="bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded-xl text-xs font-bold shadow-2xs cursor-pointer transition text-center">📊 التقرير</button>
-                            <button onclick="removeStudentFromClass('${student.id}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 py-2.5 rounded-xl text-xs font-bold shadow-2xs cursor-pointer transition text-center">🗑️ حذف</button>
+                        <div class="grid grid-cols-3 gap-2.5 pt-1">
+                            <button onclick="openActionModal('${student.id}')" class="bg-stone-800 hover:bg-stone-900 text-amber-100 py-3 rounded-2xl text-sm font-bold shadow-md cursor-pointer transition text-center">📝 رصد</button>
+                            <button onclick="openModal('${student.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-sm font-bold shadow-md cursor-pointer transition text-center">📊 التقرير</button>
+                            <button onclick="removeStudentFromClass('${student.id}')" class="bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-2xl text-sm font-bold shadow-md cursor-pointer transition text-center">🗑️ حذف</button>
                         </div>
                     </div>
                 `;
@@ -734,16 +726,17 @@
             const actionsTabContent = document.getElementById('actions-tab-content');
             const btnClasses = document.getElementById('btn-tab-classes');
             const btnActions = document.getElementById('btn-tab-actions');
+            const activeColorClass = window.currentTheme ? window.currentTheme.btnPrimary.split(' ')[0] : 'bg-slate-700';
 
             if(tab === 'classes') {
                 classesTabContent.classList.remove('hidden');
                 actionsTabContent.classList.add('hidden');
-                btnClasses.className = `flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-white shadow-2xs transition-all cursor-pointer`;
+                btnClasses.className = `flex-1 py-2.5 rounded-xl font-bold text-xs ${activeColorClass} text-white shadow transition-all cursor-pointer`;
                 btnActions.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer";
             } else {
                 classesTabContent.classList.add('hidden');
                 actionsTabContent.classList.remove('hidden');
-                btnActions.className = `flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-white shadow-2xs transition-all cursor-pointer`;
+                btnActions.className = `flex-1 py-2.5 rounded-xl font-bold text-xs ${activeColorClass} text-white shadow transition-all cursor-pointer`;
                 btnClasses.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 transition-all cursor-pointer";
                 renderSettingsActionsDropdown();
             }
@@ -789,7 +782,7 @@
                 classList.splice(index, 1);
                 for(let stu of allStudents) {
                     if(stu.className === removedName) {
-                        stu.className = 'غير موزاد';
+                        stu.className = 'غير موزع';
                         await db.collection(getTeacherCollection()).doc(stu.id).update({ className: 'غير موزع' });
                     }
                 }
@@ -815,7 +808,7 @@
                     <div class="bg-white p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs shadow-2xs">
                         <span class="font-bold text-slate-800">${cls}</span>
                         <div class="flex gap-1.5">
-                            <button onclick="editClassItem(${index})" class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg font-bold cursor-pointer">✏️ تعديل</button>
+                            <button onclick="editClassItem(${index})" class="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-lg font-bold cursor-pointer">✏️ تعديل</button>
                             <button onclick="deleteClassItem(${index})" class="bg-rose-50 text-rose-600 px-2.5 py-1 rounded-lg font-bold cursor-pointer">🗑️ حذف</button>
                         </div>
                     </div>
@@ -892,14 +885,14 @@
             customActions.forEach(act => {
                 const actColor = act.color || '#64748b';
                 container.innerHTML += `
-                    <div class="bg-white p-3 rounded-2xl border border-slate-200 flex items-center justify-between shadow-2xs hover:shadow-xs transition">
-                        <button onclick="recordAction('${act.name}', ${act.score}, null)" class="flex items-center gap-3 flex-grow text-right cursor-pointer">
-                            <span class="w-10 h-10 rounded-xl flex items-center justify-center text-lg border" style="background-color: ${actColor}10; border-color: ${actColor}30;">
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-100 flex items-center justify-between shadow-xs hover:shadow transition">
+                        <button onclick="recordAction('${act.name}', ${act.score}, null)" class="flex items-center gap-3.5 flex-grow text-right cursor-pointer">
+                            <span class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl border" style="background-color: ${actColor}15; border-color: ${actColor}40;">
                                 ${act.icon || '⭐'}
                             </span>
-                            <span class="font-bold text-sm text-slate-800">${act.name}</span>
+                            <span class="font-bold text-base text-slate-900">${act.name}</span>
                         </button>
-                        <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">${act.score > 0 ? '+' + act.score : act.score}</span>
+                        <span class="text-sm font-black px-3 py-1 rounded-xl bg-slate-100 text-slate-700">${act.score > 0 ? '+' + act.score : act.score}</span>
                     </div>
                 `;
             });
@@ -1027,98 +1020,99 @@
 
             const summaryData = calculateStudentSummaryData(student);
             const { att, actions } = summaryData;
+            const btnPrimaryClass = window.currentTheme ? window.currentTheme.btnPrimary.split(' ')[0] : 'bg-slate-800';
 
             const modalContent = document.getElementById('modal-content');
             modalContent.innerHTML = `
                 <div class="text-center mb-6 border-b pb-4">
-                    <div class="w-16 h-16 bg-slate-800 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-xs">👤</div>
-                    <h2 class="student-name-font text-2xl text-slate-900">${student.name}</h2>
-                    <p class="text-xs font-bold text-slate-500 mt-1">${student.className} | منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                    <div class="w-20 h-20 ${btnPrimaryClass} text-white rounded-full flex items-center justify-center text-4xl font-bold mx-auto mb-2 shadow-md">👤</div>
+                    <h2 class="student-name-font text-3xl text-slate-900">${student.name}</h2>
+                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                        <h4 class="font-bold text-slate-800 text-xs mb-3 flex items-center gap-2">
+                        <h4 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
                             <span>📌 الحضور والغياب والتأخر</span>
-                            <span class="text-[10px] text-slate-400">(تعديل سري)</span>
+                            <span class="text-xs text-slate-500">(تعديل سري)</span>
                         </h4>
                         <div class="grid grid-cols-4 gap-1.5 text-center">
-                            <div class="bg-emerald-50/60 p-2 rounded-xl border border-emerald-100">
-                                <span class="block text-[10px] font-bold text-emerald-800">حضور (${att.presents || 0})</span>
+                            <div class="bg-emerald-50 p-2 rounded-xl border border-emerald-100">
+                                <span class="block text-[11px] font-bold text-emerald-700">حضور (${att.presents || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
-                                    <button onclick="adjustAttendance('presents', 1)" class="bg-emerald-600 text-white w-5 h-5 rounded font-black text-xs hover:bg-emerald-700">+</button>
-                                    <button onclick="adjustAttendance('presents', -1)" class="bg-emerald-800 text-white w-5 h-5 rounded font-black text-xs hover:bg-emerald-900">-</button>
+                                    <button onclick="adjustAttendance('presents', 1)" class="bg-emerald-600 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-emerald-700">+</button>
+                                    <button onclick="adjustAttendance('presents', -1)" class="bg-emerald-800 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-emerald-900">-</button>
                                 </div>
                             </div>
-                            <div class="bg-rose-50/60 p-2 rounded-xl border border-rose-100">
-                                <span class="block text-[10px] font-bold text-rose-800">غياب (${att.absents || 0})</span>
+                            <div class="bg-rose-50 p-2 rounded-xl border border-rose-100">
+                                <span class="block text-[11px] font-bold text-rose-700">غياب (${att.absents || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
-                                    <button onclick="adjustAttendance('absents', 1)" class="bg-rose-600 text-white w-5 h-5 rounded font-black text-xs hover:bg-rose-700">+</button>
-                                    <button onclick="adjustAttendance('absents', -1)" class="bg-rose-800 text-white w-5 h-5 rounded font-black text-xs hover:bg-rose-900">-</button>
+                                    <button onclick="adjustAttendance('absents', 1)" class="bg-rose-600 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-rose-700">+</button>
+                                    <button onclick="adjustAttendance('absents', -1)" class="bg-rose-800 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-rose-900">-</button>
                                 </div>
                             </div>
-                            <div class="bg-amber-50/60 p-2 rounded-xl border border-amber-100">
-                                <span class="block text-[10px] font-bold text-amber-800">تاخر (${att.lates || 0})</span>
+                            <div class="bg-amber-50 p-2 rounded-xl border border-amber-100">
+                                <span class="block text-[11px] font-bold text-amber-700">تاخر (${att.lates || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
-                                    <button onclick="adjustAttendance('lates', 1)" class="bg-amber-600 text-white w-5 h-5 rounded font-black text-xs hover:bg-amber-700">+</button>
-                                    <button onclick="adjustAttendance('lates', -1)" class="bg-amber-800 text-white w-5 h-5 rounded font-black text-xs hover:bg-amber-900">-</button>
+                                    <button onclick="adjustAttendance('lates', 1)" class="bg-amber-600 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-amber-700">+</button>
+                                    <button onclick="adjustAttendance('lates', -1)" class="bg-amber-800 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-amber-900">-</button>
                                 </div>
                             </div>
-                            <div class="bg-stone-100 p-2 rounded-xl border border-stone-200">
-                                <span class="block text-[10px] font-bold text-stone-700">خروج بدون إذن (${att.unauthorizedExits || 0})</span>
+                            <div class="bg-stone-100 p-2 rounded-xl border border-stone-300">
+                                <span class="block text-[10px] font-bold text-stone-800">خروج بدون إذن (${att.unauthorizedExits || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
-                                    <button onclick="adjustAttendance('unauthorizedExits', 1)" class="bg-stone-700 text-white w-5 h-5 rounded font-black text-xs hover:bg-stone-800">+</button>
-                                    <button onclick="adjustAttendance('unauthorizedExits', -1)" class="bg-stone-900 text-white w-5 h-5 rounded font-black text-xs hover:bg-black">-</button>
+                                    <button onclick="adjustAttendance('unauthorizedExits', 1)" class="bg-stone-700 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-stone-800">+</button>
+                                    <button onclick="adjustAttendance('unauthorizedExits', -1)" class="bg-stone-900 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-black">-</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col justify-between">
-                        <h4 class="font-bold text-slate-800 text-xs mb-2">📊 ملخص التقييم السريع</h4>
+                        <h4 class="font-bold text-slate-900 text-sm mb-2">📊 ملخص التقييم السريع</h4>
                         <div class="grid grid-cols-2 gap-2 text-center my-auto">
-                            <div class="bg-emerald-50/60 p-2 rounded-xl border border-emerald-100">
-                                <span class="text-[10px] font-bold text-emerald-800 block">إيجابيات اليوم</span>
-                                <span class="text-lg font-black text-emerald-600">${summaryData.positiveCountToday}+</span>
+                            <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                                <span class="text-[11px] font-bold text-emerald-800 block">إيجابيات اليوم</span>
+                                <span class="text-xl font-black text-emerald-600">${summaryData.positiveCountToday}+</span>
                             </div>
-                            <div class="bg-rose-50/60 p-2 rounded-xl border border-rose-100">
-                                <span class="text-[10px] font-bold text-rose-800 block">ملاحظات سلبية</span>
-                                <span class="text-lg font-black text-rose-600">${summaryData.negativeList.length}</span>
+                            <div class="bg-rose-50 p-2.5 rounded-xl border border-rose-200">
+                                <span class="text-[11px] font-bold text-rose-800 block">ملاحظات سلبية</span>
+                                <span class="text-xl font-black text-rose-600">${summaryData.negativeList.length}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-6">
-                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center justify-between">
+                    <h4 class="font-bold text-slate-900 text-base mb-3 flex items-center justify-between">
                         <span>📅 سجل النشاطات والسلوكيات التراكمي</span>
-                        <span class="text-xs text-slate-500 font-semibold">موثق بالتاريخ والوقت</span>
+                        <span class="text-xs text-rose-600 font-bold">موثق بالتاريخ والوقت</span>
                     </h4>
-                    <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
-                        ${actions.length === 0 ? '<p class="text-xs text-slate-400 text-center py-6">لا توجد نشاطات مسجلة حالياً</p>' : 
+                    <div class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                        ${actions.length === 0 ? '<p class="text-sm text-slate-400 text-center py-6">لا توجد نشاطات مسجلة حالياً</p>' : 
                             actions.map((act, index) => {
                                 let details = getCleanActionDetails(act.title);
                                 return `
-                                <div class="bg-white p-3 rounded-xl border border-slate-200 flex justify-between items-center text-xs shadow-2xs">
-                                    <div class="flex items-center gap-2.5">
-                                        <span class="text-lg">${details.icon}</span>
+                                <div class="bg-white p-3.5 rounded-xl border border-slate-200 flex justify-between items-center text-sm shadow-2xs">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xl">${details.icon}</span>
                                         <div>
-                                            <span class="font-bold text-slate-800 block text-xs">${details.title} (${act.score > 0 ? '+' + act.score : act.score})</span>
-                                            <span class="text-[10px] text-slate-400 font-medium block">${act.timestamp}</span>
+                                            <span class="font-bold text-slate-900 block text-xs">${details.title} (${act.score > 0 ? '+' + act.score : act.score})</span>
+                                            <span class="text-[10px] text-rose-600 font-bold mt-0.5 block">${act.timestamp}</span>
                                         </div>
                                     </div>
-                                    <button onclick="deleteStudentAction(${index})" class="bg-rose-50 text-rose-600 px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-rose-100 cursor-pointer">🗑️ حذف</button>
+                                    <button onclick="deleteStudentAction(${index})" class="bg-rose-50 text-rose-600 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-rose-100 cursor-pointer">🗑️ حذف</button>
                                 </div>
                             `;}).join('')
                         }
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
-                    <button onclick="openPreviewSummaryModal('${student.id}')" class="bg-slate-700 hover:bg-slate-800 text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-2xs text-center flex items-center justify-center gap-1">👁️ معاينة الملخص</button>
-                    <button onclick="shareStudentReportLink('${student.id}', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-2xs text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير</button>
-                    <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-2xs text-center flex items-center justify-center gap-1">🖨️ طباعة</button>
-                    <button onclick="closeModal()" class="bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-xs hover:bg-slate-200 cursor-pointer shadow-2xs text-center">إغلاق</button>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
+                    <button onclick="openPreviewSummaryModal('${student.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">👁️ معاينة الملخص</button>
+                    <button onclick="shareStudentReportLink('${student.id}', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير</button>
+                    <button onclick="window.print()" class="${btnPrimaryClass} text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🖨️ طباعة</button>
+                    <button onclick="closeModal()" class="bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs hover:bg-slate-300 cursor-pointer shadow-md text-center">إغلاق</button>
                 </div>
             `;
             document.getElementById('student-modal').classList.remove('hidden');
@@ -1134,45 +1128,45 @@
 
             const previewContainer = document.getElementById('preview-modal-content');
             previewContainer.innerHTML = `
-                <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl mb-4 text-right">
-                    <div class="text-center border-b border-slate-200 pb-3 mb-4">
-                        <h3 class="student-name-font text-2xl text-slate-800">📋 تقرير متابعة طالب مفصل</h3>
-                        <p class="text-xs font-bold text-slate-600 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                <div class="bg-amber-50/50 border-2 border-amber-200 p-5 rounded-3xl mb-5 text-right">
+                    <div class="text-center border-b border-amber-200 pb-3 mb-4">
+                        <h3 class="student-name-font text-2xl text-amber-950">📋 تقرير متابعة طالب مفصل</h3>
+                        <p class="text-xs font-bold text-amber-800 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
+                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
-                    <div class="space-y-3 text-xs font-bold text-slate-700">
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
-                            <span class="text-slate-800 font-bold block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
-                            <div class="flex gap-3 text-slate-600 mt-1 flex-wrap">
+                    <div class="space-y-4 text-xs font-bold text-slate-800">
+                        <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                            <span class="text-slate-900 font-black text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
+                            <div class="flex gap-3 text-slate-700 mt-1 flex-wrap">
                                 <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                 <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                 <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
                                 <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                             </div>
                         </div>
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
-                            <span class="text-slate-800 font-bold block mb-1">💡 التفاعل والمشاركات الإيجابية:</span>
+                        <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                            <span class="text-slate-900 font-black text-sm block mb-1">💡 التفاعل والمشاركات الإيجابية:</span>
                             <p class="text-slate-600">عدد التقييمات الإيجابية اليوم: <span class="text-emerald-600 font-black">${summary.positiveCountToday}</span></p>
                             <p class="text-slate-600">إجمالي النقاط الإيجابية المكتسبة: <span class="text-emerald-600 font-black">+${summary.totalPositiveScore}</span></p>
                         </div>
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
-                            <span class="text-slate-800 font-bold block mb-1">⚠️ الملاحظات والسلوكيات:</span>
+                        <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                            <span class="text-slate-900 font-black text-sm block mb-1">⚠️ الملاحظات والسلوكيات:</span>
                             ${summary.negativeList.length === 0 ? '<p class="text-emerald-600 font-semibold">لا توجد ملاحظات سلبية مسجلة (سلوك ممتاز) ✨</p>' : 
-                                `<ul class="list-disc list-inside text-rose-600 space-y-1 mt-1">${summary.negativeList.map(item => `<li>${item.title} (${item.timestamp})</li>`).join('')}</ul>`
+                                `<ul class="list-disc list-inside text-rose-700 space-y-1 mt-1">${summary.negativeList.map(item => `<li>${item.title} (${item.timestamp})</li>`).join('')}</ul>`
                             }
                         </div>
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
-                            <span class="text-slate-800 font-bold block mb-1">📘 الواجبات والملفات:</span>
-                            <div class="space-y-1 text-slate-600 mt-1">
+                        <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                            <span class="text-slate-900 font-black text-sm block mb-1">📘 الواجبات والملفات:</span>
+                            <div class="space-y-1 text-slate-700 mt-1">
                                 <p>متابعة الواجبات: ${summary.homeworkList.length > 0 ? summary.homeworkList.map(h => `${h.title} (${h.timestamp})`).join('، ') : 'منتظم'}</p>
                                 <p>الملف المدرسي: ${summary.portfolioList.length > 0 ? summary.portfolioList.map(p => `${p.title} (${p.timestamp})`).join('، ') : 'مكتمل'}</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="shareStudentReportLink('${student.id}', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow-2xs cursor-pointer text-center">🔗 نسخ رابط التقرير</button>
-                    <button onclick="closePreviewSummaryModal()" class="bg-slate-100 text-slate-700 px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-200 cursor-pointer shadow-2xs">إغلاق</button>
+                <div class="flex gap-3">
+                    <button onclick="shareStudentReportLink('${student.id}', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🔗 نسخ رابط التقرير</button>
+                    <button onclick="closePreviewSummaryModal()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-2xl text-xs font-bold hover:bg-slate-300 cursor-pointer shadow-md">إغلاق</button>
                 </div>
             `;
             document.getElementById('preview-modal').classList.remove('hidden');
@@ -1233,59 +1227,59 @@
                     <title>تقرير الطالب: ${student.name}</title>
                     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"><\/script>
                     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
-                    <style>body { font-family: 'Tajawal', sans-serif; background-color: #faf9f6; } .student-title { font-family: 'Amiri', serif; }</style>
+                    <style>body { font-family: 'Tajawal', sans-serif; background-color: #fdfaf1; } .student-title { font-family: 'Amiri', serif; }</style>
                 </head>
                 <body class="p-4 md:p-8 flex justify-center items-center min-h-screen">
-                    <div class="max-w-xl w-full bg-white border border-slate-200 p-6 md:p-8 rounded-3xl shadow-xl">
-                        <div class="text-center border-b border-slate-200 pb-4 mb-6">
-                            <span class="text-4xl mb-2 inline-block">🎓</span>
-                            <h1 class="student-title text-3xl font-bold text-slate-800">${student.name}</h1>
-                            <p class="text-sm font-bold text-slate-600 mt-1">الصف: ${student.className}</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                    <div class="max-w-xl w-full bg-white border-2 border-amber-200 p-6 md:p-8 rounded-3xl shadow-2xl">
+                        <div class="text-center border-b border-amber-200 pb-4 mb-6">
+                            <span class="text-5xl mb-2 inline-block">🎓</span>
+                            <h1 class="student-title text-3xl font-bold text-slate-900">${student.name}</h1>
+                            <p class="text-sm font-bold text-amber-800 mt-1">الصف: ${student.className}</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
-                        <div class="space-y-4 text-xs font-bold text-slate-700">
-                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-2xs">
-                                <span class="text-slate-800 font-bold text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
-                                <div class="flex justify-between text-slate-600 my-2 px-2 border-b border-slate-200 pb-2 flex-wrap gap-2">
+                        <div class="space-y-4 text-xs font-bold text-slate-800">
+                            <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 shadow-xs">
+                                <span class="text-amber-950 font-black text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
+                                <div class="flex justify-between text-slate-700 my-2 px-2 border-b border-amber-200 pb-2 flex-wrap gap-2">
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
                                     <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
-                                ${summary.attendanceEventsList.length === 0 ? '<p class="text-emerald-600 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : `<ul class="list-disc list-inside text-slate-600 space-y-1 mt-2">${summary.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-600">${item.title}</span> - <span class="text-[11px] text-slate-400">${item.timestamp}</span></li>`).join('')}</ul>`}
+                                ${summary.attendanceEventsList.length === 0 ? '<p class="text-emerald-700 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : `<ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">${summary.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-800">${item.title}</span> - <span class="text-[11px] text-slate-500">${item.timestamp}</span></li>`).join('')}</ul>`}
                             </div>
-                            <div class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 shadow-2xs">
-                                <span class="text-emerald-900 font-bold text-sm block mb-1">💡 التفاعل والمشاركات الإيجابية:</span>
+                            <div class="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-200 shadow-xs">
+                                <span class="text-emerald-950 font-black text-sm block mb-1">💡 التفاعل والمشاركات الإيجابية:</span>
                                 <div class="grid grid-cols-2 gap-2 text-center mt-2">
-                                    <div class="bg-white p-2.5 rounded-xl border border-emerald-100">
-                                        <span class="text-slate-500 block text-[11px]">مشاركات اليوم</span>
+                                    <div class="bg-white p-2.5 rounded-xl border border-emerald-200">
+                                        <span class="text-slate-600 block text-[11px]">مشاركات اليوم</span>
                                         <span class="text-emerald-600 font-black text-base">${summary.positiveCountToday}</span>
                                     </div>
-                                    <div class="bg-white p-2.5 rounded-xl border border-emerald-100">
-                                        <span class="text-slate-500 block text-[11px]">إجمالي النقاط المكتسبة</span>
+                                    <div class="bg-white p-2.5 rounded-xl border border-emerald-200">
+                                        <span class="text-slate-600 block text-[11px]">إجمالي النقاط المكتسبة</span>
                                         <span class="text-emerald-600 font-black text-base">+${summary.totalPositiveScore}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-rose-50/50 p-4 rounded-2xl border border-rose-100 shadow-2xs">
-                                <span class="text-rose-900 font-bold text-sm block mb-1">⚠️ الملاحظات والسلوكيات:</span>
-                                ${summary.negativeList.length === 0 ? '<p class="text-emerald-600 font-semibold mt-1">لا توجد ملاحظات سلبية مسجلة (سلوك ممتاز) ✨</p>' : `<ul class="list-disc list-inside text-rose-600 space-y-1 mt-2">${summary.negativeList.map(item => `<li><span class="font-bold text-rose-700">${item.title}</span> - <span class="text-[11px] text-slate-500">${item.timestamp}</span></li>`).join('')}</ul>`}
+                            <div class="bg-rose-50/60 p-4 rounded-2xl border border-rose-200 shadow-xs">
+                                <span class="text-rose-950 font-black text-sm block mb-1">⚠️ الملاحظات والسلوكيات:</span>
+                                ${summary.negativeList.length === 0 ? '<p class="text-emerald-600 font-semibold mt-1">لا توجد ملاحظات سلبية مسجلة (سلوك ممتاز) ✨</p>' : `<ul class="list-disc list-inside text-rose-700 space-y-1 mt-2">${summary.negativeList.map(item => `<li><span class="font-bold text-rose-900">${item.title}</span> - <span class="text-[11px] text-slate-600">${item.timestamp}</span></li>`).join('')}</ul>`}
                             </div>
-                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-2xs">
-                                <span class="text-slate-800 font-bold text-sm block mb-1">📘 الواجبات والملفات:</span>
-                                <div class="space-y-2 text-slate-600 mt-2">
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-xs">
+                                <span class="text-slate-900 font-black text-sm block mb-1">📘 الواجبات والملفات:</span>
+                                <div class="space-y-2 text-slate-700 mt-2">
                                     <div>
-                                        <span class="font-bold text-slate-700 block">متابعة الواجبات:</span>
-                                        ${summary.homeworkList.length > 0 ? `<ul class="list-disc list-inside text-slate-500 text-[11px] space-y-0.5 mt-1">${summary.homeworkList.map(h => `<li>${h.title} (${h.timestamp})</li>`).join('')}</ul>` : '<span class="text-emerald-600 font-bold text-[11px]">منتظم وبدون ملاحظات واجبات</span>'}
+                                        <span class="font-bold text-slate-800 block">متابعة الواجبات:</span>
+                                        ${summary.homeworkList.length > 0 ? `<ul class="list-disc list-inside text-slate-600 text-[11px] space-y-0.5 mt-1">${summary.homeworkList.map(h => `<li>${h.title} (${h.timestamp})</li>`).join('')}</ul>` : '<span class="text-emerald-600 font-bold text-[11px]">منتظم وبدون ملاحظات واجبات</span>'}
                                     </div>
                                     <div class="pt-1 border-t border-slate-200">
-                                        <span class="font-bold text-slate-700 block">الملف المدرسي:</span>
-                                        ${summary.portfolioList.length > 0 ? `<ul class="list-disc list-inside text-slate-500 text-[11px] space-y-0.5 mt-1">${summary.portfolioList.map(p => `<li>${p.title} (${p.timestamp})</li>`).join('')}</ul>` : '<span class="text-emerald-600 font-bold text-[11px]">مكتمل ومستوفي المطلوب</span>'}
+                                        <span class="font-bold text-slate-800 block">الملف المدرسي:</span>
+                                        ${summary.portfolioList.length > 0 ? `<ul class="list-disc list-inside text-slate-600 text-[11px] space-y-0.5 mt-1">${summary.portfolioList.map(p => `<li>${p.title} (${p.timestamp})</li>`).join('')}</ul>` : '<span class="text-emerald-600 font-bold text-[11px]">مكتمل ومستوفي المطلوب</span>'}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-400 flex justify-between">
+                        <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-500 flex justify-between">
                             <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
@@ -1310,25 +1304,25 @@
             let studentsCardsHtml = students.map((st, idx) => {
                 const sum = calculateStudentSummaryData(st);
                 const { att } = sum;
-                let negativeHtml = sum.negativeList.length === 0 ? '<p class="text-emerald-600 font-semibold mt-1">لا توجد ملاحظات سلبية مسجلة (سلوك ممتاز) ✨</p>' : `<ul class="list-disc list-inside text-rose-600 space-y-1 mt-1">${sum.negativeList.map(item => `<li>${item.title} (${item.timestamp})</li>`).join('')}</ul>`;
-                let attendanceHtml = sum.attendanceEventsList.length === 0 ? '<p class="text-emerald-600 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : `<ul class="list-disc list-inside text-slate-600 space-y-1 mt-1">${sum.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-600">${item.title}</span> - <span class="text-[11px] text-slate-400">${item.timestamp}</span></li>`).join('')}</ul>`;
+                let negativeHtml = sum.negativeList.length === 0 ? '<p class="text-emerald-600 font-semibold mt-1">لا توجد ملاحظات سلبية مسجلة (سلوك ممتاز) ✨</p>' : `<ul class="list-disc list-inside text-rose-700 space-y-1 mt-1">${sum.negativeList.map(item => `<li>${item.title} (${item.timestamp})</li>`).join('')}</ul>`;
+                let attendanceHtml = sum.attendanceEventsList.length === 0 ? '<p class="text-emerald-700 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : `<ul class="list-disc list-inside text-slate-700 space-y-1 mt-1">${sum.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-800">${item.title}</span> - <span class="text-[11px] text-slate-500">${item.timestamp}</span></li>`).join('')}</ul>`;
 
                 return `
-                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-3xl mb-5 text-right shadow-2xs">
-                        <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                    <div class="bg-amber-50/40 border-2 border-amber-200 p-5 rounded-3xl mb-6 text-right shadow-sm">
+                        <div class="flex items-center justify-between border-b border-amber-200 pb-3 mb-4">
                             <div>
-                                <h4 class="student-name-font text-xl text-slate-800">🎓 ${idx + 1}. الطالب: ${st.name}</h4>
-                                <p class="text-xs font-bold text-slate-400 mt-0.5">البريد: ${st.email || 'بدون إيميل'}</p>
+                                <h4 class="student-name-font text-2xl text-amber-950">🎓 ${idx + 1}. الطالب: ${st.name}</h4>
+                                <p class="text-xs font-bold text-slate-600 mt-0.5">البريد: ${st.email || 'بدون إيميل'}</p>
                             </div>
-                            <div class="bg-white px-3 py-1 rounded-xl border border-slate-200 text-center shadow-2xs">
-                                <span class="block text-[10px] text-slate-400 font-bold">النقاط الكلية</span>
-                                <span class="text-sm font-black ${sum.totalScore >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</span>
+                            <div class="bg-white px-3.5 py-1.5 rounded-2xl border border-amber-200 text-center shadow-2xs">
+                                <span class="block text-[10px] text-slate-500 font-bold">النقاط الكلية</span>
+                                <span class="text-base font-black ${sum.totalScore >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</span>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-bold text-slate-700">
-                            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
-                                <span class="text-slate-800 font-bold text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
-                                <div class="flex gap-3 text-slate-600 my-1 pb-2 border-b border-slate-100 flex-wrap">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-bold text-slate-800">
+                            <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                                <span class="text-slate-900 font-black text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
+                                <div class="flex gap-3 text-slate-700 my-1 pb-2 border-b border-slate-100 flex-wrap">
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
@@ -1336,18 +1330,18 @@
                                 </div>
                                 ${attendanceHtml}
                             </div>
-                            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
-                                <span class="text-slate-800 font-bold text-sm block mb-1">💡 التفاعل والمشاركات الإيجابية:</span>
+                            <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                                <span class="text-slate-900 font-black text-sm block mb-1">💡 التفاعل والمشاركات الإيجابية:</span>
                                 <p class="text-slate-600 mt-1">مشاركات اليوم: <span class="text-emerald-600 font-black">${sum.positiveCountToday}</span></p>
                                 <p class="text-slate-600">إجمالي النقاط الإيجابية: <span class="text-emerald-600 font-black">+${sum.totalPositiveScore}</span></p>
                             </div>
-                            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
-                                <span class="text-slate-800 font-bold text-sm block mb-1">⚠️ الملاحظات والسلوكيات السلبية:</span>
+                            <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                                <span class="text-slate-900 font-black text-sm block mb-1">⚠️ الملاحظات والسلوكيات السلبية:</span>
                                 ${negativeHtml}
                             </div>
-                            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
-                                <span class="text-slate-800 font-bold text-sm block mb-1">📘 الواجبات والملفات المدرسية:</span>
-                                <div class="space-y-1 text-slate-600 mt-1">
+                            <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                                <span class="text-slate-900 font-black text-sm block mb-1">📘 الواجبات والملفات المدرسية:</span>
+                                <div class="space-y-1 text-slate-700 mt-1">
                                     <p>متابعة الواجبات: ${sum.homeworkList.length > 0 ? sum.homeworkList.map(h => `${h.title} (${h.timestamp})`).join('، ') : 'منتظم'}</p>
                                     <p>الملف المدرسي: ${sum.portfolioList.length > 0 ? sum.portfolioList.map(p => `${p.title} (${p.timestamp})`).join('، ') : 'مكتمل'}</p>
                                 </div>
@@ -1359,17 +1353,17 @@
 
             const previewContainer = document.getElementById('preview-modal-content');
             previewContainer.innerHTML = `
-                <div class="bg-white border border-slate-200 p-5 rounded-3xl mb-4 text-right max-h-[80vh] overflow-y-auto">
-                    <div class="text-center border-b border-slate-200 pb-3 mb-5 sticky top-0 bg-white z-10 py-2">
-                        <h3 class="student-name-font text-2xl text-slate-800">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
-                        <p class="text-xs font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                <div class="bg-white border-2 border-amber-200 p-6 rounded-3xl mb-5 text-right max-h-[80vh] overflow-y-auto">
+                    <div class="text-center border-b border-amber-200 pb-3 mb-6 sticky top-0 bg-white z-10 py-2">
+                        <h3 class="student-name-font text-2xl text-slate-900">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
+                        <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="shareClassReportLink('${className}', 'detailed', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow-2xs cursor-pointer text-center">🔗 نسخ رابط التقرير الفردي</button>
-                    <button onclick="closePreviewSummaryModal()" class="bg-slate-100 text-slate-700 px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-200 cursor-pointer shadow-2xs">إغلاق</button>
+                <div class="flex gap-3">
+                    <button onclick="shareClassReportLink('${className}', 'detailed', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🔗 نسخ رابط التقرير الفردي</button>
+                    <button onclick="closePreviewSummaryModal()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-2xl text-xs font-bold hover:bg-slate-300 cursor-pointer shadow-md">إغلاق</button>
                 </div>
             `;
             document.getElementById('preview-modal').classList.remove('hidden');
@@ -1381,25 +1375,25 @@
             let studentsCardsHtml = students.map((st, idx) => {
                 const sum = calculateStudentSummaryData(st);
                 const { att } = sum;
-                let negativeHtml = sum.negativeList.length === 0 ? '<p style="color: #059669; font-weight: 600; margin-top: 4px;">لا توجد ملاحظات سلبية مسجلة (سلوك ممتاز) ✨</p>' : `<ul style="list-style-type: disc; margin-right: 18px; color: #dc2626; margin-top: 4px;">${sum.negativeList.map(item => `<li>${item.title} (${item.timestamp})</li>`).join('')}</ul>`;
-                let attendanceHtml = sum.attendanceEventsList.length === 0 ? '<p style="color: #059669; font-weight: 600; margin-top: 4px;">منتظم بالحضور والدوام ✨</p>' : `<ul style="list-style-type: disc; margin-right: 18px; color: #475569; margin-top: 4px;">${sum.attendanceEventsList.map(item => `<li><strong style="color: #dc2626;">${item.title}</strong> - <span style="font-size: 11px; color: #94a3b8;">${item.timestamp}</span></li>`).join('')}</ul>`;
+                let negativeHtml = sum.negativeList.length === 0 ? '<p style="color: #059669; font-weight: 600; margin-top: 4px;">لا توجد ملاحظات سلبية مسجلة (سلوك ممتاز) ✨</p>' : `<ul style="list-style-type: disc; margin-right: 18px; color: #b91c1c; margin-top: 4px;">${sum.negativeList.map(item => `<li>${item.title} (${item.timestamp})</li>`).join('')}</ul>`;
+                let attendanceHtml = sum.attendanceEventsList.length === 0 ? '<p style="color: #047857; font-weight: 600; margin-top: 4px;">منتظم بالحضور والدوام ✨</p>' : `<ul style="list-style-type: disc; margin-right: 18px; color: #334155; margin-top: 4px;">${sum.attendanceEventsList.map(item => `<li><strong style="color: #b91c1c;">${item.title}</strong> - <span style="font-size: 11px; color: #64748b;">${item.timestamp}</span></li>`).join('')}</ul>`;
 
                 return `
-                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 18px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 12px;">
+                    <div style="background-color: #fffdfa; border: 2px solid #fde68a; padding: 20px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #fde68a; padding-bottom: 12px; margin-bottom: 15px;">
                             <div>
-                                <h3 style="font-family: 'Amiri', serif; font-size: 1.35rem; color: #1e293b; margin: 0;">🎓 ${idx + 1}. الطالب: ${st.name}</h3>
-                                <p style="font-size: 11px; color: #94a3b8; margin: 2px 0 0 0;">البريد: ${st.email || 'بدون إيميل'}</p>
+                                <h3 style="font-family: 'Amiri', serif; font-size: 1.5rem; color: #78350f; margin: 0;">🎓 ${idx + 1}. الطالب: ${st.name}</h3>
+                                <p style="font-size: 11px; color: #64748b; margin: 2px 0 0 0;">البريد: ${st.email || 'بدون إيميل'}</p>
                             </div>
-                            <div style="background: white; padding: 6px 12px; border-radius: 10px; border: 1px solid #e2e8f0; text-align: center;">
-                                <span style="display: block; font-size: 10px; color: #94a3b8; font-weight: bold;">النقاط الكلية</span>
-                                <span style="font-size: 1rem; font-weight: 900; color: ${sum.totalScore >= 0 ? '#059669' : '#dc2626'};">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</span>
+                            <div style="background: white; padding: 8px 14px; border-radius: 14px; border: 1px solid #fde68a; text-align: center;">
+                                <span style="display: block; font-size: 10px; color: #64748b; font-weight: bold;">النقاط الكلية</span>
+                                <span style="font-size: 1.1rem; font-weight: 900; color: ${sum.totalScore >= 0 ? '#059669' : '#dc2626'};">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</span>
                             </div>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; color: #334155;">
-                            <div style="background: white; padding: 12px; border-radius: 12px; border: 1px solid #f1f5f9;">
-                                <strong style="display: block; margin-bottom: 4px; font-size: 12px; color: #1e293b;">📌 سجل الحضور والغياب والتأخر:</strong>
-                                <div style="display: flex; gap: 10px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #f8fafc; flex-wrap: wrap;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px; color: #1e293b;">
+                            <div style="background: white; padding: 14px; border-radius: 14px; border: 1px solid #fef3c7;">
+                                <strong style="display: block; margin-bottom: 6px; font-size: 13px;">📌 سجل الحضور والغياب والتأخر:</strong>
+                                <div style="display: flex; gap: 10px; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid #f8fafc; flex-wrap: wrap;">
                                     <span>🟢 حضور: <strong style="color: #059669;">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong style="color: #dc2626;">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong style="color: #d97706;">${att.lates || 0}</strong></span>
@@ -1407,19 +1401,19 @@
                                 </div>
                                 ${attendanceHtml}
                             </div>
-                            <div style="background: white; padding: 12px; border-radius: 12px; border: 1px solid #f1f5f9;">
-                                <strong style="display: block; margin-bottom: 4px; font-size: 12px; color: #1e293b;">💡 التفاعل والمشاركات الإيجابية:</strong>
-                                <p style="margin: 3px 0; color: #64748b;">مشاركات اليوم: <strong style="color: #059669;">${sum.positiveCountToday}</strong></p>
-                                <p style="margin: 3px 0; color: #64748b;">إجمالي النقاط الإيجابية: <strong style="color: #059669;">+${sum.totalPositiveScore}</strong></p>
+                            <div style="background: white; padding: 14px; border-radius: 14px; border: 1px solid #fef3c7;">
+                                <strong style="display: block; margin-bottom: 6px; font-size: 13px;">💡 التفاعل والمشاركات الإيجابية:</strong>
+                                <p style="margin: 4px 0; color: #475569;">مشاركات اليوم: <strong style="color: #059669;">${sum.positiveCountToday}</strong></p>
+                                <p style="margin: 4px 0; color: #475569;">إجمالي النقاط الإيجابية: <strong style="color: #059669;">+${sum.totalPositiveScore}</strong></p>
                             </div>
-                            <div style="background: white; padding: 12px; border-radius: 12px; border: 1px solid #f1f5f9;">
-                                <strong style="display: block; margin-bottom: 4px; font-size: 12px; color: #1e293b;">⚠️ الملاحظات والسلوكيات السلبية:</strong>
+                            <div style="background: white; padding: 14px; border-radius: 14px; border: 1px solid #fef3c7;">
+                                <strong style="display: block; margin-bottom: 6px; font-size: 13px;">⚠️ الملاحظات والسلوكيات السلبية:</strong>
                                 ${negativeHtml}
                             </div>
-                            <div style="background: white; padding: 12px; border-radius: 12px; border: 1px solid #f1f5f9;">
-                                <strong style="display: block; margin-bottom: 4px; font-size: 12px; color: #1e293b;">📘 الواجبات والملفات المدرسية:</strong>
-                                <p style="margin: 3px 0; color: #64748b;">متابعة الواجبات: ${sum.homeworkList.length > 0 ? sum.homeworkList.map(h => `${h.title} (${h.timestamp})`).join('، ') : 'منتظم'}</p>
-                                <p style="margin: 3px 0; color: #64748b;">الملف المدرسي: ${sum.portfolioList.length > 0 ? sum.portfolioList.map(p => `${p.title} (${p.timestamp})`).join('، ') : 'مكتمل'}</p>
+                            <div style="background: white; padding: 14px; border-radius: 14px; border: 1px solid #fef3c7;">
+                                <strong style="display: block; margin-bottom: 6px; font-size: 13px;">📘 الواجبات والملفات المدرسية:</strong>
+                                <p style="margin: 4px 0; color: #475569;">متابعة الواجبات: ${sum.homeworkList.length > 0 ? sum.homeworkList.map(h => `${h.title} (${h.timestamp})`).join('، ') : 'منتظم'}</p>
+                                <p style="margin: 4px 0; color: #475569;">الملف المدرسي: ${sum.portfolioList.length > 0 ? sum.portfolioList.map(p => `${p.title} (${p.timestamp})`).join('، ') : 'مكتمل'}</p>
                             </div>
                         </div>
                     </div>
@@ -1435,18 +1429,18 @@
                     <title>التقرير الفردي الشامل لفصل: ${className}</title>
                     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"><\/script>
                     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
-                    <style>body { font-family: 'Tajawal', sans-serif; background-color: #faf9f6; } .class-title { font-family: 'Amiri', serif; }</style>
+                    <style>body { font-family: 'Tajawal', sans-serif; background-color: #fdfaf1; } .class-title { font-family: 'Amiri', serif; }</style>
                 </head>
                 <body class="p-4 md:p-8 flex justify-center items-center min-h-screen">
-                    <div class="max-w-4xl w-full bg-white border border-slate-200 p-6 md:p-8 rounded-3xl shadow-xl">
-                        <div class="text-center border-b border-slate-200 pb-4 mb-6">
-                            <span class="text-4xl mb-2 inline-block">🏫</span>
-                            <h1 class="class-title text-3xl font-bold text-slate-800">التقرير الفردي الشامل لفصل: ${className}</h1>
-                            <p class="text-sm font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                    <div class="max-w-4xl w-full bg-white border-2 border-amber-200 p-6 md:p-8 rounded-3xl shadow-2xl">
+                        <div class="text-center border-b border-amber-200 pb-4 mb-6">
+                            <span class="text-5xl mb-2 inline-block">🏫</span>
+                            <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الفردي الشامل لفصل: ${className}</h1>
+                            <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
                         <div>${students.length === 0 ? '<p style="text-align: center; padding: 30px; color: #94a3b8; font-weight: bold;">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
-                        <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-400 flex justify-between">
+                        <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
                             <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
@@ -1473,68 +1467,68 @@
                 return `
                     <tr class="border-b">
                         <td class="p-2 font-bold">${idx + 1}</td>
-                        <td class="p-2 font-bold text-slate-800">${st.name}</td>
+                        <td class="p-2 font-bold text-slate-900">${st.name}</td>
                         <td class="p-2 text-center text-emerald-600 font-bold">${sum.att.presents || 0}</td>
                         <td class="p-2 text-center text-rose-600 font-bold">${sum.att.absents || 0}</td>
                         <td class="p-2 text-center text-amber-600 font-bold">${sum.att.lates || 0}</td>
-                        <td class="p-2 text-center text-stone-700 font-bold bg-stone-50">${sum.att.unauthorizedExits || 0}</td>
+                        <td class="p-2 text-center text-stone-800 font-bold bg-stone-100/60">${sum.att.unauthorizedExits || 0}</td>
                         <td class="p-2 text-center font-black ${sum.totalScore >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</td>
                         <td class="p-2 text-xs text-emerald-700 font-semibold">+${sum.totalPositiveScore} (${sum.positiveCountTotal} مشاركة)</td>
-                        <td class="p-2 text-xs text-rose-600 font-semibold">${negativeText}</td>
-                        <td class="p-2 text-xs text-slate-600">${homeworkText} / ${portfolioText}</td>
+                        <td class="p-2 text-xs text-rose-700 font-semibold">${negativeText}</td>
+                        <td class="p-2 text-xs text-slate-700">${homeworkText} / ${portfolioText}</td>
                     </tr>
                 `;
             }).join('');
 
             const previewContainer = document.getElementById('preview-modal-content');
             previewContainer.innerHTML = `
-                <div class="bg-white border border-slate-200 p-5 rounded-3xl mb-4 text-right max-h-[80vh] overflow-y-auto">
-                    <div class="text-center border-b border-slate-200 pb-3 mb-4">
-                        <h3 class="student-name-font text-2xl text-slate-800">📊 جدول الفصل الشامل والمفصل: ${className}</h3>
-                        <p class="text-xs font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب | ${currentTeacherSubject}</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                <div class="bg-white border-2 border-amber-200 p-6 rounded-3xl mb-5 text-right max-h-[80vh] overflow-y-auto">
+                    <div class="text-center border-b border-amber-200 pb-3 mb-4">
+                        <h3 class="student-name-font text-2xl text-slate-900">📊 جدول الفصل الشامل والمفصل: ${className}</h3>
+                        <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | ${currentTeacherSubject}</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div class="grid grid-cols-4 gap-2 text-center mb-4 text-xs font-bold">
-                        <div class="bg-emerald-50/60 p-2 rounded-xl border border-emerald-100">
-                            <span class="text-emerald-800 block text-[11px]">إجمالي الحضور</span>
-                            <span class="text-base font-black text-emerald-600">${totalPresentsClass}</span>
+                        <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                            <span class="text-emerald-800 block">إجمالي الحضور</span>
+                            <span class="text-lg font-black text-emerald-600">${totalPresentsClass}</span>
                         </div>
-                        <div class="bg-rose-50/60 p-2 rounded-xl border border-rose-100">
-                            <span class="text-rose-800 block text-[11px]">إجمالي الغياب</span>
-                            <span class="text-base font-black text-rose-600">${totalAbsentsClass}</span>
+                        <div class="bg-rose-50 p-2.5 rounded-xl border border-rose-200">
+                            <span class="text-rose-800 block">إجمالي الغياب</span>
+                            <span class="text-lg font-black text-rose-600">${totalAbsentsClass}</span>
                         </div>
-                        <div class="bg-amber-50/60 p-2 rounded-xl border border-amber-100">
-                            <span class="text-amber-800 block text-[11px]">إجمالي التأخر</span>
-                            <span class="text-base font-black text-amber-600">${totalLatesClass}</span>
+                        <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                            <span class="text-amber-800 block">إجمالي التأخر</span>
+                            <span class="text-lg font-black text-amber-600">${totalLatesClass}</span>
                         </div>
-                        <div class="bg-stone-100/80 p-2 rounded-xl border border-stone-200">
-                            <span class="text-stone-700 block text-[11px]">إجمالي خروج بدون إذن</span>
-                            <span class="text-base font-black text-stone-800">${totalUnauthorizedExitsClass}</span>
+                        <div class="bg-stone-100 p-2.5 rounded-xl border border-stone-300">
+                            <span class="text-stone-800 block">إجمالي خروج بدون إذن</span>
+                            <span class="text-lg font-black text-stone-900">${totalUnauthorizedExitsClass}</span>
                         </div>
                     </div>
                     <div class="overflow-x-auto border rounded-xl">
                         <table class="w-full text-xs text-right whitespace-nowrap">
-                            <thead class="bg-slate-800 text-slate-100">
+                            <thead class="bg-amber-900 text-amber-50">
                                 <tr>
-                                    <th class="p-2">#</th>
-                                    <th class="p-2">اسم الطالب</th>
-                                    <th class="p-2 text-center">حضور</th>
-                                    <th class="p-2 text-center">غياب</th>
-                                    <th class="p-2 text-center">تاخر</th>
-                                    <th class="p-2 text-center bg-stone-700 text-stone-100">خروج بدون إذن</th>
-                                    <th class="p-2 text-center">النقاط</th>
-                                    <th class="p-2">المشاركات الإيجابية</th>
-                                    <th class="p-2">الملاحظات السلبية</th>
-                                    <th class="p-2">الواجبات والملفات</th>
+                                    <th class="p-2.5">#</th>
+                                    <th class="p-2.5">اسم الطالب</th>
+                                    <th class="p-2.5 text-center">حضور</th>
+                                    <th class="p-2.5 text-center">غياب</th>
+                                    <th class="p-2.5 text-center">تاخر</th>
+                                    <th class="p-2.5 text-center bg-stone-800 text-amber-100">خروج بدون إذن</th>
+                                    <th class="p-2.5 text-center">النقاط</th>
+                                    <th class="p-2.5">المشاركات الإيجابية</th>
+                                    <th class="p-2.5">الملاحظات السلبية</th>
+                                    <th class="p-2.5">الواجبات والملفات</th>
                                 </tr>
                             </thead>
                             <tbody>${students.length === 0 ? '<tr><td colspan="10" class="text-center p-4 text-slate-400">لا توجد طلاب مسجلين في هذا الفصل</td></tr>' : studentsRowsHtml}</tbody>
                         </table>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="shareClassReportLink('${className}', 'table', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow-2xs cursor-pointer text-center">🔗 نسخ رابط جدول الفصل</button>
-                    <button onclick="closePreviewSummaryModal()" class="bg-slate-100 text-slate-700 px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-200 cursor-pointer shadow-2xs">إغلاق</button>
+                <div class="flex gap-3">
+                    <button onclick="shareClassReportLink('${className}', 'table', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🔗 نسخ رابط جدول الفصل</button>
+                    <button onclick="closePreviewSummaryModal()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-2xl text-xs font-bold hover:bg-slate-300 cursor-pointer shadow-md">إغلاق</button>
                 </div>
             `;
             document.getElementById('preview-modal').classList.remove('hidden');
@@ -1556,17 +1550,17 @@
                 let negativeText = sum.negativeList.length > 0 ? sum.negativeList.map(n => n.title).join('، ') : 'لا يوجد';
 
                 return `
-                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                        <td style="padding: 8px; font-weight: bold;">${idx + 1}</td>
-                        <td style="padding: 8px; font-weight: bold; color: #1e293b;">${st.name}</td>
-                        <td style="padding: 8px; text-align: center; color: #059669; font-weight: bold;">${sum.att.presents || 0}</td>
-                        <td style="padding: 8px; text-align: center; color: #dc2626; font-weight: bold;">${sum.att.absents || 0}</td>
-                        <td style="padding: 8px; text-align: center; color: #d97706; font-weight: bold;">${sum.att.lates || 0}</td>
-                        <td style="padding: 8px; text-align: center; color: #334155; font-weight: bold; background-color: #f8fafc;">${sum.att.unauthorizedExits || 0}</td>
-                        <td style="padding: 8px; text-align: center; font-weight: 900; color: ${sum.totalScore >= 0 ? '#059669' : '#dc2626'};">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</td>
-                        <td style="padding: 8px; font-size: 11px; color: #047857; font-weight: bold;">+${sum.totalPositiveScore} (${sum.positiveCountTotal} مشاركة)</td>
-                        <td style="padding: 8px; font-size: 11px; color: #dc2626; font-weight: bold;">${negativeText}</td>
-                        <td style="padding: 8px; font-size: 11px; color: #475569;">${homeworkText} / ${portfolioText}</td>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold;">${idx + 1}</td>
+                        <td style="padding: 10px; font-weight: bold; color: #1e293b;">${st.name}</td>
+                        <td style="padding: 10px; text-align: center; color: #059669; font-weight: bold;">${sum.att.presents || 0}</td>
+                        <td style="padding: 10px; text-align: center; color: #dc2626; font-weight: bold;">${sum.att.absents || 0}</td>
+                        <td style="padding: 10px; text-align: center; color: #d97706; font-weight: bold;">${sum.att.lates || 0}</td>
+                        <td style="padding: 10px; text-align: center; color: #1e293b; font-weight: bold; background-color: #f1f5f9;">${sum.att.unauthorizedExits || 0}</td>
+                        <td style="padding: 10px; text-align: center; font-weight: 900; color: ${sum.totalScore >= 0 ? '#059669' : '#dc2626'};">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</td>
+                        <td style="padding: 10px; font-size: 11px; color: #047857; font-weight: bold;">+${sum.totalPositiveScore} (${sum.positiveCountTotal} مشاركة)</td>
+                        <td style="padding: 10px; font-size: 11px; color: #b91c1c; font-weight: bold;">${negativeText}</td>
+                        <td style="padding: 10px; font-size: 11px; color: #334155;">${homeworkText} / ${portfolioText}</td>
                     </tr>
                 `;
             }).join('');
@@ -1580,42 +1574,42 @@
                     <title>التقرير الشامل لفصل: ${className}</title>
                     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"><\/script>
                     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
-                    <style>body { font-family: 'Tajawal', sans-serif; background-color: #faf9f6; } .class-title { font-family: 'Amiri', serif; }</style>
+                    <style>body { font-family: 'Tajawal', sans-serif; background-color: #fdfaf1; } .class-title { font-family: 'Amiri', serif; }</style>
                 </head>
                 <body class="p-4 md:p-8 flex justify-center items-center min-h-screen">
-                    <div class="max-w-6xl w-full bg-white border border-slate-200 p-6 md:p-8 rounded-3xl shadow-xl">
-                        <div class="text-center border-b border-slate-200 pb-4 mb-6">
-                            <span class="text-4xl mb-2 inline-block">🏫</span>
-                            <h1 class="class-title text-3xl font-bold text-slate-800">التقرير الشامل والمفصل لفصل: ${className}</h1>
-                            <p class="text-sm font-bold text-slate-500 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                    <div class="max-w-6xl w-full bg-white border-2 border-amber-200 p-6 md:p-8 rounded-3xl shadow-2xl">
+                        <div class="text-center border-b border-amber-200 pb-4 mb-6">
+                            <span class="text-5xl mb-2 inline-block">🏫</span>
+                            <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الشامل والمفصل لفصل: ${className}</h1>
+                            <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
                         <div class="grid grid-cols-4 gap-3 text-center mb-6 text-xs font-bold">
-                            <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100 shadow-2xs"><span class="text-emerald-800 block text-xs">إجمالي الحضور</span><span class="text-lg font-black text-emerald-600">${totalPresentsClass}</span></div>
-                            <div class="bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 shadow-2xs"><span class="text-rose-800 block text-xs">إجمالي الغياب</span><span class="text-lg font-black text-rose-600">${totalAbsentsClass}</span></div>
-                            <div class="bg-amber-50/50 p-2.5 rounded-xl border border-amber-100 shadow-2xs"><span class="text-amber-800 block text-xs">إجمالي التأخر</span><span class="text-lg font-black text-amber-600">${totalLatesClass}</span></div>
-                            <div class="bg-stone-100/80 p-2.5 rounded-xl border border-stone-200 shadow-2xs"><span class="text-stone-700 block text-xs">إجمالي خروج بدون إذن</span><span class="text-lg font-black text-stone-800">${totalUnauthorizedExitsClass}</span></div>
+                            <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-emerald-800 block text-sm">إجمالي الحضور</span><span class="text-xl font-black text-emerald-600">${totalPresentsClass}</span></div>
+                            <div class="bg-rose-50 p-3 rounded-2xl border border-rose-200 shadow-xs"><span class="text-rose-800 block text-sm">إجمالي الغياب</span><span class="text-xl font-black text-rose-600">${totalAbsentsClass}</span></div>
+                            <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 shadow-xs"><span class="text-amber-800 block text-sm">إجمالي التأخر</span><span class="text-xl font-black text-amber-600">${totalLatesClass}</span></div>
+                            <div class="bg-stone-100 p-3 rounded-2xl border border-stone-300 shadow-xs"><span class="text-stone-800 block text-sm">إجمالي خروج بدون إذن</span><span class="text-xl font-black text-stone-900">${totalUnauthorizedExitsClass}</span></div>
                         </div>
-                        <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-2xs">
+                        <div class="overflow-x-auto border rounded-2xl shadow-xs">
                             <table class="w-full text-xs text-right border-collapse whitespace-nowrap">
-                                <thead style="background-color: #1e293b; color: #f8fafc;">
+                                <thead style="background-color: #800000; color: #d4af37;">
                                     <tr>
-                                        <th style="padding: 10px;">#</th>
-                                        <th style="padding: 10px;">اسم الطالب</th>
-                                        <th style="padding: 10px; text-align: center;">حضور</th>
-                                        <th style="padding: 10px; text-align: center;">غياب</th>
-                                        <th style="padding: 10px; text-align: center;">تاخر</th>
-                                        <th style="padding: 10px; text-align: center; background-color: #334155; color: #ffffff;">خروج بدون إذن</th>
-                                        <th style="padding: 10px; text-align: center;">النقاط</th>
-                                        <th style="padding: 10px;">المشاركات الإيجابية</th>
-                                        <th style="padding: 10px;">الملاحظات السلبية</th>
-                                        <th style="padding: 10px;">الواجبات والملفات</th>
+                                        <th style="padding: 12px;">#</th>
+                                        <th style="padding: 12px;">اسم الطالب</th>
+                                        <th style="padding: 12px; text-align: center;">حضور</th>
+                                        <th style="padding: 12px; text-align: center;">غياب</th>
+                                        <th style="padding: 12px; text-align: center;">تاخر</th>
+                                        <th style="padding: 12px; text-align: center; background-color: #334155; color: #ffffff;">خروج بدون إذن</th>
+                                        <th style="padding: 12px; text-align: center;">النقاط</th>
+                                        <th style="padding: 12px;">المشاركات الإيجابية</th>
+                                        <th style="padding: 12px;">الملاحظات السلبية</th>
+                                        <th style="padding: 12px;">الواجبات والملفات</th>
                                     </tr>
                                 </thead>
                                 <tbody>${students.length === 0 ? '<tr><td colspan="10" style="text-align: center; padding: 20px; color: #94a3b8;">لا توجد طلاب مسجلين في هذا الفصل</td></tr>' : studentsRowsHtml}</tbody>
                             </table>
                         </div>
-                        <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-400 flex justify-between">
+                        <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
                             <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
@@ -1635,7 +1629,7 @@
             const reportId = urlParams.get('view_report');
             
             if(reportId) {
-                document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 18px; color: #334155; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 36px; margin-bottom: 12px;">⏳</div>جاري تحميل التقرير...</div>`;
+                document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #800000; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">⏳</div>جاري تحميل التقرير...</div>`;
                 
                 rtdb.ref('shared_reports/' + reportId).once('value', snapshot => {
                     const data = snapshot.val();
@@ -1644,7 +1638,7 @@
                         document.write(data.html);
                         document.close();
                     } else {
-                        document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 18px; color: #dc2626; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 36px; margin-bottom: 12px;">❌</div>عذراً، هذا التقرير غير موجود أو تم حذفه</div>`;
+                        document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #dc2626; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">❌</div>عذراً، هذا التقرير غير موجود أو تم حذفه</div>`;
                     }
                 });
                 return;
@@ -1803,7 +1797,7 @@
                         <tr>
                             <td>${i++}</td>
                             <td><b>${t.name}</b></td>
-                            <td><span style="background:#f1f5f9; color:#334155; padding:3px 10px; border-radius:6px; font-weight:bold;">${t.subject}</span></td>
+                            <td><span style="background:#e0f2fe; color:#0369a1; padding:3px 10px; border-radius:6px; font-weight:bold;">${t.subject}</span></td>
                             <td style="direction:ltr;">${t.email}</td>
                             <td>
                                 <select class="action-select" style="min-width: 130px;" onchange="handleTeacherAction(this, '${k}', '${t.email}', '${safeName}', '${safeSubject}')">
@@ -1911,14 +1905,14 @@
                 const isAlreadyAdded = allStudents.some(s => s.email === email);
                 const actionHtml = isAlreadyAdded 
                     ? `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> مضاف بفصلك</span>`
-                    : `<button onclick="addStudentToMyClass('${email}', '${name.replace(/'/g, "\\'")}', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">➕ إضافة</button>`;
+                    : `<button onclick="addStudentToMyClass('${email}', '${name.replace(/'/g, "\\'")}', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition">➕ إضافة</button>`;
 
                 htmlChunk += `
                     <tr class="border-b hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800">${name}</td>
-                        <td class="p-3 text-slate-400 text-[11px]">${email}</td>
+                        <td class="p-3 font-bold text-slate-900">${name}</td>
+                        <td class="p-3 text-slate-500 text-[11px]">${email}</td>
                         <td class="p-3">
-                            <select class="class-selector border border-slate-200 p-1.5 rounded-lg text-xs bg-white focus:border-slate-400 outline-none w-full ${isAlreadyAdded ? 'hidden' : ''}">
+                            <select class="class-selector border border-slate-300 p-1.5 rounded-lg text-xs bg-white focus:border-indigo-500 outline-none w-full ${isAlreadyAdded ? 'hidden' : ''}">
                                 ${classOptions}
                             </select>
                         </td>
@@ -1976,23 +1970,23 @@
         };
     </script>
 </head>
-<body class="text-slate-800 h-full flex flex-col justify-between text-sm overflow-x-hidden">
+<body class="text-slate-900 h-full flex flex-col justify-between text-sm overflow-x-hidden">
 
-    <div id="teacher-login-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-4 z-50 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-xl text-center border border-slate-200">
-            <div class="w-16 h-16 bg-slate-100 text-slate-700 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-2xs border border-slate-200">👨‍🏫</div>
-            <h2 class="text-xl font-black text-slate-800 mb-1">تسجيل الدخول للمنصة</h2>
-            <p class="text-xs font-bold text-slate-400 mb-6">يرجى إدخال البريد الإلكتروني المعتمد للوصول</p>
+    <div id="teacher-login-modal" class="fixed inset-0 bg-slate-950/80 hidden items-center justify-center p-4 z-50 backdrop-blur-md">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-2xl text-center border-2 border-amber-300">
+            <div class="w-20 h-20 bg-amber-900 text-amber-100 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg border-2 border-amber-400">👨‍🏫</div>
+            <h2 class="text-2xl font-black text-slate-900 mb-1">تسجيل الدخول للمنصة</h2>
+            <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال البريد الإلكتروني المعتمد للوصول</p>
 
             <div class="space-y-4">
                 <div class="text-right">
-                    <label class="text-xs font-bold text-slate-600 block mb-1">البريد الإلكتروني المعتمد:</label>
-                    <input type="email" id="loginTeacherEmail" autocomplete="off" spellcheck="false" class="w-full border border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-slate-400 outline-none transition text-left" dir="ltr">
+                    <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني المعتمد:</label>
+                    <input type="email" id="loginTeacherEmail" autocomplete="off" spellcheck="false" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
                 </div>
 
-                <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-2.5 rounded-xl border border-rose-100 hidden"></div>
+                <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 hidden"></div>
                 
-                <button onclick="submitTeacherLogin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 rounded-2xl font-bold text-xs shadow-2xs transition cursor-pointer flex items-center justify-center gap-2">
+                <button onclick="submitTeacherLogin()" class="w-full bg-amber-900 hover:bg-amber-950 text-amber-50 py-3.5 rounded-2xl font-black text-sm shadow-md transition cursor-pointer flex items-center justify-center gap-2">
                     <span>دخول المنصة</span>
                     <i class="fas fa-arrow-left"></i>
                 </button>
@@ -2001,16 +1995,16 @@
         </div>
     </div>
 
-    <header id="main-header" class="p-4 shadow-xs border-b shrink-0 z-30 transition-all duration-500">
+    <header id="main-header" class="p-4 shadow-sm border-b shrink-0 z-30 transition-all duration-500">
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-center sm:text-right">
                 <h1 class="text-lg font-black tracking-wide" id="main-header-title">نظام المتابعة السحابي الشامل</h1>
-                <p class="text-xs opacity-80 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد</p>
+                <p class="text-xs opacity-90 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد</p>
             </div>
             <div class="flex gap-2 items-center">
-                <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">🏫 الفصول</button>
-                <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">⚙️ التقييمات</button>
-                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
+                <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🏫 الفصول</button>
+                <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">⚙️ التقييمات</button>
+                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
             </div>
         </div>
     </header>
@@ -2019,29 +2013,29 @@
 
         <div id="admin-supervisor-card" class="admin-card mb-6" style="display: none;">
             <div class="header">
-                <h2 class="text-lg font-black text-slate-800"><i class="fas fa-user-shield text-slate-600"></i> لوحة إدارة المعلمين العامة (خاص بالمشرف)</h2>
-                <p class="text-xs text-slate-400 mt-0.5">أضف المعلم من هنا:</p>
+                <h2 class="text-xl font-black text-slate-900"><i class="fas fa-user-shield text-amber-600"></i> لوحة إدارة المعلمين العامة (خاص بالمشرف)</h2>
+                <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا:</p>
+            </div>
+
+            <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-200 mb-5 text-right">
+                <h3 class="text-sm font-bold text-indigo-900 mb-2"><i class="fas fa-users"></i> قاعدة بيانات الطلاب المركزية (للمدرسة كاملة):</h3>
+                <p class="text-xs text-indigo-700 mb-2 font-semibold">انسخ والصق قائمة الطلاب (الاسم ثم الإيميل في سطرين متتاليين) لتكون متاحة لجميع المعلمين لسحبها.</p>
+                <textarea id="globalStudentsInput" placeholder="الطالب الأول&#10;student1@email.com&#10;الطالب الثاني&#10;student2@email.com" class="w-full h-24 p-3 rounded-xl border border-indigo-300 text-xs font-bold mb-3"></textarea>
+                <button onclick="uploadGlobalStudents()" class="w-full bg-indigo-700 hover:bg-indigo-900 text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer"><i class="fas fa-cloud-upload-alt"></i> رفع الطلاب لقاعدة المدرسة المركزية</button>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-5 text-right">
-                <h3 class="text-xs font-bold text-slate-800 mb-2"><i class="fas fa-users"></i> قاعدة بيانات الطلاب المركزية (للمدرسة كاملة):</h3>
-                <p class="text-xs text-slate-500 mb-2 font-semibold">انسخ والصق قائمة الطلاب (الاسم ثم الإيميل في سطرين متتاليين) لتكون متاحة لجميع المعلمين لسحبها.</p>
-                <textarea id="globalStudentsInput" placeholder="الطالب الأول&#10;student1@email.com&#10;الطالب الثاني&#10;student2@email.com" class="w-full h-24 p-3 rounded-xl border border-slate-200 text-xs font-bold mb-3"></textarea>
-                <button onclick="uploadGlobalStudents()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl font-bold text-xs shadow-2xs cursor-pointer"><i class="fas fa-cloud-upload-alt"></i> رفع الطلاب لقاعدة المدرسة المركزية</button>
-            </div>
-
-            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-5 text-right">
-                <h3 class="text-xs font-bold text-slate-800 mb-2"><i class="fas fa-user-plus"></i> إضافة معلم جديد:</h3>
+                <h3 class="text-xs font-bold text-sky-800 mb-2"><i class="fas fa-user-plus"></i> إضافة معلم جديد:</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
                     <input type="text" id="newTeacherName" placeholder="اسم المعلم" class="border p-2 rounded-xl text-xs font-bold bg-white">
                     <input type="email" id="newTeacherEmail" placeholder="البريد الإلكتروني" class="border p-2 rounded-xl text-xs font-bold bg-white text-left" dir="ltr">
                     <input type="text" id="newTeacherSubject" placeholder="المادة الدراسية" class="border p-2 rounded-xl text-xs font-bold bg-white">
                 </div>
-                <button onclick="addNewTeacher()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded-xl font-bold text-xs shadow-2xs cursor-pointer"><i class="fas fa-magic"></i> اعتماد وإضافة المعلم</button>
+                <button onclick="addNewTeacher()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer"><i class="fas fa-magic"></i> اعتماد وإضافة المعلم</button>
             </div>
 
             <h3 class="text-xs font-bold text-slate-800 mb-2 text-right"><i class="fas fa-list"></i> المعلمون المعتمدون في النظام:</h3>
-            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <div class="overflow-x-auto border rounded-xl">
                 <table>
                     <thead>
                         <tr>
@@ -2060,31 +2054,31 @@
         </div>
 
         <div id="main-dashboard" class="py-2 space-y-6">
-            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-                <h2 class="text-xl font-black text-slate-800 tracking-wide">🏫 القائمة الرئيسية</h2>
-                <span class="text-xs font-bold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">اختر الفصل للبدء</span>
+            <div class="flex items-center justify-between border-b pb-3">
+                <h2 class="text-2xl font-black text-slate-900 tracking-wider">🏫 القائمة الرئيسية</h2>
+                <span class="text-xs font-bold text-slate-500 bg-white px-3.5 py-1.5 rounded-full border shadow-2xs">اختر الفصل للبدء</span>
             </div>
             
-            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-5 w-full max-w-full overflow-hidden"></div>
+            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 sm:gap-6 w-full max-w-full overflow-hidden"></div>
 
-            <div class="bg-white/80 backdrop-blur-xs border border-slate-200 p-4 rounded-2xl shadow-2xs text-center my-4">
-                <p id="quote-text" class="student-name-font text-base text-slate-800 leading-relaxed">
+            <div class="bg-white/80 backdrop-blur-xs border-2 border-amber-200/80 p-5 rounded-3xl shadow-sm text-center my-4 transition hover:shadow-md">
+                <p id="quote-text" class="student-name-font text-lg text-amber-950 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
                 </p>
-                <span class="text-[11px] font-bold text-slate-400 block mt-0.5">ثانوية الأمير عبدالمجيد</span>
+                <span class="text-[11px] font-bold text-amber-800/60 block mt-1">ثانوية الأمير عبدالمجيد</span>
             </div>
         </div>
 
         <div id="admin-control-view" class="hidden py-2 space-y-4">
-            <div class="flex items-center justify-between mb-2 bg-white p-3 rounded-xl shadow-2xs border border-slate-200">
-                <button onclick="backToHome()" class="bg-slate-100 text-slate-700 px-3.5 py-1.5 rounded-lg font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
-                <h2 class="text-sm font-black text-slate-800">🔒 لوحة إضافة الطلاب للفصول</h2>
+            <div class="flex items-center justify-between mb-2 bg-white p-3.5 rounded-2xl shadow-sm border">
+                <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
+                <h2 class="text-base font-black text-slate-800">🔒 لوحة إضافة الطلاب للفصول</h2>
                 <div class="w-12"></div>
             </div>
             <div class="admin-card">
                 <div class="header">
-                    <h2 class="text-base font-black text-slate-800">🔒 أسماء الطلاب للإضافة</h2>
-                    <p class="text-xs text-slate-400">إدارة الطلاب والاعتماد السريع</p>
+                    <h2 class="text-lg font-black text-slate-900">🔒 أسماء الطلاب للإضافة</h2>
+                    <p class="text-xs text-slate-500">إدارة الطلاب والاعتماد السريع</p>
                 </div>
                 <div class="pending-section" id="pendingSection">
                     <h3>🔔 طلبات جديدة للمراجعة</h3>
@@ -2104,7 +2098,7 @@
                 </div>
                 <div class="stats-bar">
                     <span id="approvedCount">الطلاب: 0</span>
-                    <span id="pendingCountBadge" style="color: #d97706;">المعلقة: 0</span>
+                    <span id="pendingCountBadge" style="color: #d32f2f;">المعلقة: 0</span>
                 </div>
                 <div class="search-container">
                     <h3 class="text-xs font-bold">🎓 الطلاب المعتمدين</h3>
@@ -2120,35 +2114,35 @@
         </div>
 
         <div id="class-view" class="hidden py-1">
-            <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-2xl shadow-2xs border border-slate-200">
-                <button onclick="backToHome()" class="bg-slate-100 text-slate-700 px-3.5 py-1.5 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
-                <h2 class="text-sm font-black text-slate-800" id="class-title-header">الفصل</h2>
+            <div class="flex items-center justify-between mb-4 bg-white p-3.5 rounded-2xl shadow-sm border">
+                <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
+                <h2 class="text-base font-black text-slate-800" id="class-title-header">الفصل</h2>
                 <div class="w-12"></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="class-students-container"></div>
         </div>
 
         <div id="global-students-view" class="hidden py-2 space-y-4">
-            <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-2xl shadow-2xs border border-slate-200">
-                <button onclick="backToHome()" class="bg-slate-100 text-slate-700 px-3.5 py-1.5 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
-                <h2 class="text-sm font-black text-slate-800">🗂️ سحب الطلاب للفصول</h2>
+            <div class="flex items-center justify-between mb-4 bg-white p-3.5 rounded-2xl shadow-sm border">
+                <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
+                <h2 class="text-base font-black text-slate-800">🗂️ سحب الطلاب للفصول</h2>
                 <div class="w-12"></div>
             </div>
             
-            <div class="bg-white p-5 rounded-3xl shadow-2xs border border-slate-200 text-right">
+            <div class="bg-white p-5 rounded-3xl shadow-sm border-2 border-indigo-100 text-right">
                 <div class="flex justify-between items-center mb-4 gap-2 flex-col sm:flex-row text-right">
-                    <h3 class="font-bold text-slate-800 text-xs hidden sm:block">قائمة طلاب المدرسة</h3>
-                    <input type="text" id="searchGlobalInput" onkeyup="searchGlobalStudents()" placeholder="🔍 ابحث عن اسم طالب أو إيميل..." class="border border-slate-200 p-2.5 rounded-xl text-xs font-bold w-full sm:w-1/2 outline-none focus:border-slate-400 bg-slate-50 text-right">
+                    <h3 class="font-bold text-indigo-900 text-sm hidden sm:block">قائمة طلاب المدرسة</h3>
+                    <input type="text" id="searchGlobalInput" onkeyup="searchGlobalStudents()" placeholder="🔍 ابحث عن اسم طالب أو إيميل..." class="border p-2.5 rounded-xl text-xs font-bold w-full sm:w-1/2 outline-none focus:border-indigo-500 bg-slate-50 text-right">
                 </div>
                 
-                <div class="overflow-x-auto border border-slate-200 rounded-xl max-h-96">
-                    <table class="w-full text-xs text-right" id="globalStudentsTable">
-                        <thead class="bg-slate-100 text-slate-700">
+                <div class="overflow-x-auto border rounded-xl max-h-96">
+                    <table class="w-full text-sm text-right" id="globalStudentsTable">
+                        <thead class="bg-indigo-50 text-indigo-900">
                             <tr>
-                                <th class="p-2.5 text-xs">اسم الطالب</th>
-                                <th class="p-2.5 text-xs">الإيميل</th>
-                                <th class="p-2.5 text-xs">اختيار الفصل</th>
-                                <th class="p-2.5 text-xs text-center">إجراء</th>
+                                <th class="p-3 text-xs">اسم الطالب</th>
+                                <th class="p-3 text-xs">الإيميل</th>
+                                <th class="p-3 text-xs">اختيار الفصل</th>
+                                <th class="p-3 text-xs text-center">إجراء</th>
                             </tr>
                         </thead>
                         <tbody id="global-students-tbody">
@@ -2161,30 +2155,30 @@
     </main>
 
     <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
-        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right text-slate-500">
+        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right">
             <div>ثانوية الأمير عبدالمجيد</div>
             <div>الحقوق محفوظة 2026</div>
             <div>التعليم الذكي</div>
         </div>
     </footer>
 
-    <div id="settings-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-3 z-50">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-xl max-h-[90vh] overflow-y-auto border border-slate-200">
-            <button onclick="closeSettingsModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-600 w-7 h-7 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200 text-xs">✕</button>
-            <h3 class="text-base font-black text-center mb-3 text-slate-800">⚙️ لوحة الإعدادات</h3>
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeSettingsModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
+            <h3 class="text-lg font-black text-center mb-3 text-slate-900">⚙️ لوحة الإعدادات</h3>
             <div class="flex gap-2 mb-4 bg-slate-100 p-1 rounded-xl">
-                <button id="btn-tab-classes" onclick="switchSettingsTab('classes')" class="flex-1 py-2 rounded-xl font-bold text-xs bg-slate-800 text-white shadow-2xs">🏫 الفصول</button>
-                <button id="btn-tab-actions" onclick="switchSettingsTab('actions')" class="flex-1 py-2 rounded-xl font-bold text-xs bg-slate-100 text-slate-600">⭐ التقييمات</button>
+                <button id="btn-tab-classes" onclick="switchSettingsTab('classes')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-white shadow">🏫 الفصول</button>
+                <button id="btn-tab-actions" onclick="switchSettingsTab('actions')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">⭐ التقييمات</button>
             </div>
             <div id="classes-tab-content" class="space-y-3">
                 <div class="flex gap-2">
-                    <input type="text" id="new-class-name" placeholder="اسم الفصل..." class="flex-1 border border-slate-200 p-2.5 rounded-xl text-xs font-bold">
-                    <button id="save-class-btn" onclick="saveClassItem()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-900">إضافة ➕</button>
+                    <input type="text" id="new-class-name" placeholder="اسم الفصل..." class="flex-1 border p-2.5 rounded-xl text-xs font-bold">
+                    <button id="save-class-btn" onclick="saveClassItem()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-black">إضافة ➕</button>
                 </div>
                 <div id="settings-classes-list" class="space-y-1.5 max-h-44 overflow-y-auto"></div>
             </div>
             <div id="actions-tab-content" class="space-y-3 hidden">
-                <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border border-slate-200 p-2.5 rounded-xl text-xs font-bold"></select>
+                <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border p-2.5 rounded-xl text-xs font-bold"></select>
                 <div class="grid grid-cols-3 gap-2">
                     <select id="new-action-icon" class="border border-slate-200 p-2.5 rounded-xl text-base font-bold bg-white">
                         <option value="⭐">⭐ نجمة تفوق</option>
@@ -2196,54 +2190,54 @@
                 <div class="grid grid-cols-2 gap-2">
                     <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
                     <select id="new-action-color" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
-                        <option value="#10b981">🟢 أخضر</option>
-                        <option value="#ef4444">🔴 أحمر</option>
+                        <option value="#28a745">🟢 أخضر</option>
+                        <option value="#dc3545">🔴 أحمر</option>
                     </select>
                 </div>
-                <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-900">حفظ التقييم 🚀</button>
+                <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-black">حفظ التقييم 🚀</button>
             </div>
         </div>
     </div>
 
-    <div id="student-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-3 z-50">
-        <div class="bg-white rounded-3xl w-[95%] md:max-w-3xl p-6 md:p-8 relative shadow-xl max-h-[90vh] overflow-y-auto border border-slate-200">
-            <button onclick="closeModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200 text-xs">✕</button>
+    <div id="student-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
+        <div class="bg-white rounded-3xl w-[95%] md:max-w-3xl p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-9 h-9 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
             <div id="modal-content"></div>
         </div>
     </div>
 
-    <div id="preview-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-3 z-50">
-        <div class="bg-white rounded-3xl w-[95%] md:max-w-4xl p-6 relative shadow-xl max-h-[90vh] overflow-y-auto border border-slate-200">
-            <button onclick="closePreviewSummaryModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200 text-xs">✕</button>
+    <div id="preview-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
+        <div class="bg-white rounded-3xl w-[95%] md:max-w-4xl p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closePreviewSummaryModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
             <div id="preview-modal-content"></div>
         </div>
     </div>
 
-    <div id="action-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-3 z-50">
-        <div class="bg-white rounded-3xl w-[95%] md:max-w-xl p-6 relative shadow-xl max-h-[90vh] overflow-y-auto border border-slate-200">
-            <button onclick="closeActionModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200 text-xs">✕</button>
+    <div id="action-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
+        <div class="bg-white rounded-3xl w-[95%] md:max-w-xl p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeActionModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
             <div class="text-center mb-5">
-                <div class="w-16 h-16 bg-slate-100 text-slate-700 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-2 shadow-2xs border border-slate-200">📝</div>
-                <h3 class="text-xl font-black text-slate-800" id="action-student-name">رصد الطالب</h3>
-                <p class="text-xs font-bold text-slate-400 mt-0.5" id="action-student-subtitle"></p>
+                <div class="w-20 h-20 bg-slate-800 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-3 shadow-md">📝</div>
+                <h3 class="text-2xl font-black text-slate-900" id="action-student-name">رصد الطالب</h3>
+                <p class="text-sm font-bold text-slate-600 mt-1" id="action-student-subtitle"></p>
             </div>
             
             <div class="mb-5">
-                <h4 class="font-bold text-slate-800 text-xs mb-2.5">📌 الحضور والغياب والتأخر:</h4>
-                <div class="flex gap-2.5 overflow-x-auto pb-2 pt-1 px-1">
-                    <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🟢 حاضر</button>
-                    <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-2 bg-rose-50 text-rose-800 border border-rose-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🔴 غائب</button>
-                    <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-2 bg-amber-50 text-amber-800 border border-amber-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">⏰ متأخر</button>
-                    <button onclick="recordAction('خروج بدون إذن', 0, 'خروج بدون إذن')" class="flex items-center gap-2 bg-stone-100 text-stone-700 border border-stone-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🚶‍♂️ خروج بدون إذن</button>
-                    <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-2 bg-sky-50 text-sky-800 border border-sky-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🏃 مستاذن</button>
+                <h4 class="font-bold text-slate-900 text-sm mb-3">📌 الحضور والغياب والتأخر:</h4>
+                <div class="flex gap-3 overflow-x-auto pb-2 pt-1 px-1">
+                    <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
+                    <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
+                    <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
+                    <button onclick="recordAction('خروج بدون إذن', 0, 'خروج بدون إذن')" class="flex items-center gap-3 bg-stone-100 border border-stone-400 text-stone-800 px-4 py-3 rounded-2xl shrink-0 cursor-pointer font-bold">🚶‍♂️ خروج بدون إذن</button>
+                    <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-3 bg-sky-50 border border-sky-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🏃 مستاذن</button>
                 </div>
             </div>
 
             <div class="mb-4">
-                <h4 class="font-bold text-slate-800 text-xs mb-2.5">⭐ اختر التقييم السريع:</h4>
-                <div id="custom-actions-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1"></div>
+                <h4 class="font-bold text-slate-900 text-sm mb-3">⭐ اختر التقييم السريع:</h4>
+                <div id="custom-actions-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 overflow-y-auto pr-1"></div>
             </div>
-            <button onclick="closeActionModal()" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200">إغلاق</button>
+            <button onclick="closeActionModal()" class="w-full bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs cursor-pointer">إغلاق</button>
         </div>
     </div>
 
