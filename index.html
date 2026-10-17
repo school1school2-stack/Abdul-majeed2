@@ -336,7 +336,7 @@
                         let classOptionsHtml = `<option value="" disabled>📁 تعيين لفصل دراسي</option>`;
                         classList.forEach(cls => {
                             const prefix = (data.className === cls) ? '✔️ ' : '';
-                            classOptionsHtml += `<option value="class_${cls}">${prefix}${cls}</option>`;
+                            classOptionsHtml += `<option value="class_${cls}"> ${prefix}${cls}</option>`;
                         });
                         classOptionsHtml += `<option value="class_غير موزع">❌ إزالة من الفصل</option>`;
 
@@ -1217,7 +1217,7 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
                     <button onclick="openPreviewSummaryModal('${student.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">👁️ معاينة الملخص</button>
-                    <button onclick="shareStudentReportLink('${student.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🌐 فتح التقرير كموقع</button>
+                    <button onclick="shareStudentReportLink('${student.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🌐 فتح التقرير كموقع</button>
                     <button onclick="window.print()" class="${btnPrimaryClass} text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🖨️ طباعة</button>
                     <button onclick="closeModal()" class="bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs hover:bg-slate-300 cursor-pointer shadow-md text-center">إغلاق</button>
                 </div>
@@ -1769,36 +1769,8 @@
         };
 
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const teacherParam = urlParams.get('teacher');
-
-            if (teacherParam) {
-                currentTeacherEmail = teacherParam.trim().toLowerCase();
-                rtdb.ref('teachers_registry').once('value', snapshot => {
-                    const data = snapshot.val();
-                    let found = false;
-                    if (data) {
-                        Object.keys(data).forEach(k => {
-                            if (data[k].email.toLowerCase() === currentTeacherEmail) {
-                                currentTeacherName = data[k].name;
-                                currentTeacherSubject = data[k].subject;
-                                found = true;
-                            }
-                        });
-                    }
-                    if (!found) {
-                        currentTeacherName = "المعلم";
-                        currentTeacherSubject = "مادة دراسية";
-                    }
-                    
-                    document.getElementById('main-header-title').innerText = `نظام المتابعة الشاملة (${currentTeacherName})`;
-                    document.getElementById('main-header-subtitle').innerText = `المادة: ${currentTeacherSubject} | ثانوية الأمير عبدالمجيد`;
-                    
-                    initSystem();
-                });
-            } else {
-                showLoginModal();
-            }
+            // التعديل 1: إجبار الجميع (معلم أو مشرف) على المرور بنافذة تسجيل الدخول دائماً
+            showLoginModal();
         };
 
         function showLoginModal() {
@@ -1813,6 +1785,16 @@
 
             if (!emailInput || !emailInput.includes('@')) {
                 loginError.innerText = "الرجاء إدخال بريد إلكتروني صحيح.";
+                loginError.classList.remove('hidden');
+                return;
+            }
+
+            // التعديل 2: التأكد من أن الإيميل المدخل يطابق الرابط المرسل للمعلم (إلا إذا كان المشرف العام)
+            const urlParams = new URLSearchParams(window.location.search);
+            const teacherParam = urlParams.get('teacher');
+            
+            if (teacherParam && emailInput !== "school1school2@gmail.com" && emailInput !== teacherParam.trim().toLowerCase()) {
+                loginError.innerText = "عذراً، البريد المدخل لا يتطابق مع الرابط الخاص بك!";
                 loginError.classList.remove('hidden');
                 return;
             }
@@ -1951,7 +1933,8 @@
     <div id="teacher-login-modal" class="fixed inset-0 bg-slate-950/80 hidden items-center justify-center p-4 z-50 backdrop-blur-md">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-2xl text-center border-2 border-amber-300">
             <div class="w-20 h-20 bg-amber-900 text-amber-100 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg border-2 border-amber-400">👨‍🏫</div>
-            <h2 class="text-2xl font-black text-slate-900 mb-1">تسجيل دخول المشرف العام</h2>
+            <!-- التعديل 3: تغيير عنوان نافذة الدخول لتناسب الجميع -->
+            <h2 class="text-2xl font-black text-slate-900 mb-1">تسجيل الدخول للمنصة</h2>
             <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال البريد الإلكتروني المعتمد للوصول</p>
 
             <div class="space-y-4">
@@ -2200,3 +2183,4 @@
 
 </body>
 </html>
+```<FollowUp>
