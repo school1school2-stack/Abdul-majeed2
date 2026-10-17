@@ -29,7 +29,7 @@
             margin: 0; 
             padding: 0; 
             font-size: 1rem; 
-            transition: background 0.5s ease; 
+            transition: background 0.5s ease, color 0.5s ease; 
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -50,18 +50,16 @@
         .class-large-card {
             border: 1px solid rgba(226, 232, 240, 0.8);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            transition: all 0.25s ease;
-            background-color: #ffffff;
+            transition: all 0.3s ease;
             min-height: 140px;
         }
         .class-large-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
             border-color: #cbd5e1;
         }
 
         .student-square-card {
-            background: #ffffff;
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
             transition: all 0.25s ease;
@@ -210,15 +208,15 @@
             "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
         ];
 
-        // الثيمات وتصاميم الألوان
+        // الثيمات وتصاميم الألوان المتكاملة مع الأيقونات والأنواع
         const themes = [
-            { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-100/80 text-amber-950 border-amber-300", iconBg: "bg-amber-500/20 text-amber-900 border-amber-300", cardBg: "bg-amber-50/60 border-amber-200" },
-            { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-200/80 text-slate-900 border-slate-300", iconBg: "bg-slate-500/20 text-slate-800 border-slate-300", cardBg: "bg-slate-50 border-slate-200" },
-            { name: "الكتان الدافئ", bg: "linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%)", headerBg: "bg-stone-200/80 text-stone-900 border-stone-300", iconBg: "bg-stone-500/20 text-stone-900 border-stone-300", cardBg: "bg-stone-50 border-stone-200" },
-            { name: "الزمرد الفاتح", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-100/80 text-emerald-950 border-emerald-300", iconBg: "bg-emerald-500/20 text-emerald-900 border-emerald-300", cardBg: "bg-emerald-50/50 border-emerald-200" },
-            { name: "السموكي الناعم", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-100/80 text-sky-950 border-sky-300", iconBg: "bg-sky-500/20 text-sky-900 border-sky-300", cardBg: "bg-sky-50/50 border-sky-200" },
-            { name: "اللافندر الرقيق", bg: "linear-gradient(135deg, #fcfaff 0%, #f0ebf8 100%)", headerBg: "bg-purple-100/80 text-purple-950 border-purple-300", iconBg: "bg-purple-500/20 text-purple-900 border-purple-300", cardBg: "bg-purple-50/50 border-purple-200" },
-            { name: "المرجان المشرق", bg: "linear-gradient(135deg, #fffaf9 0%, #fcefeD 100%)", headerBg: "bg-rose-100/80 text-rose-950 border-rose-300", iconBg: "bg-rose-500/20 text-rose-900 border-rose-300", cardBg: "bg-rose-50/50 border-rose-200" }
+            { id: 0, name: "العاجي الفاخر", type: "فاخر", classIcon: "🏛️", studentIcon: "👑", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-100/90 text-amber-950 border-amber-300", iconBg: "bg-amber-500/20 text-amber-900 border-amber-300", cardBg: "bg-amber-50/70 border-amber-200" },
+            { id: 1, name: "اللؤلؤ النقي", type: "كلاسيك", classIcon: "🏫", studentIcon: "🎓", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-200/90 text-slate-900 border-slate-300", iconBg: "bg-slate-500/20 text-slate-800 border-slate-300", cardBg: "bg-white border-slate-200" },
+            { id: 2, name: "الكتان الدافئ", type: "دافئ", classIcon: "📚", studentIcon: "📖", bg: "linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%)", headerBg: "bg-stone-200/90 text-stone-900 border-stone-300", iconBg: "bg-stone-500/20 text-stone-900 border-stone-300", cardBg: "bg-stone-50/80 border-stone-200" },
+            { id: 3, name: "الزمرد الفاتح", type: "طبيعي", classIcon: "🌱", studentIcon: "⭐", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-100/90 text-emerald-950 border-emerald-300", iconBg: "bg-emerald-500/20 text-emerald-900 border-emerald-300", cardBg: "bg-emerald-50/60 border-emerald-200" },
+            { id: 4, name: "السموكي الناعم", type: "عصري", classIcon: "📐", studentIcon: "🚀", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-100/90 text-sky-950 border-sky-300", iconBg: "bg-sky-500/20 text-sky-900 border-sky-300", cardBg: "bg-sky-50/60 border-sky-200" },
+            { id: 5, name: "اللافندر الرقيق", type: "إبداعي", classIcon: "🎨", studentIcon: "💎", bg: "linear-gradient(135deg, #fcfaff 0%, #f0ebf8 100%)", headerBg: "bg-purple-100/90 text-purple-950 border-purple-300", iconBg: "bg-purple-500/20 text-purple-900 border-purple-300", cardBg: "bg-purple-50/60 border-purple-200" },
+            { id: 6, name: "المرجان المشرق", type: "حيوي", classIcon: "🔥", studentIcon: "🏆", bg: "linear-gradient(135deg, #fffaf9 0%, #fcefeD 100%)", headerBg: "bg-rose-100/90 text-rose-950 border-rose-300", iconBg: "bg-rose-500/20 text-rose-900 border-rose-300", cardBg: "bg-rose-50/60 border-rose-200" }
         ];
 
         // التقييمات التلقائية الافتراضية
@@ -236,10 +234,22 @@
             { icon: '🎁', name: 'هدية', score: 5.0, color: '#e17055' }
         ];
 
-        // تطبيق ثيم وعبارة تحفيزية بشكل عشوائي مع كل تحديث للصفحة
-        function applyRandomTheme() {
-            const randomIndex = Math.floor(Math.random() * themes.length);
-            const selectedTheme = themes[randomIndex];
+        // تطبيق ثيم محدد أو عشوائي
+        function applyTheme(themeIndex = null) {
+            let selectedTheme;
+            if (themeIndex !== null && themes[themeIndex]) {
+                selectedTheme = themes[themeIndex];
+                localStorage.setItem('selectedThemeIndex', themeIndex);
+            } else {
+                const savedThemeIndex = localStorage.getItem('selectedThemeIndex');
+                if (savedThemeIndex !== null && themes[savedThemeIndex]) {
+                    selectedTheme = themes[savedThemeIndex];
+                } else {
+                    const randomIndex = Math.floor(Math.random() * themes.length);
+                    selectedTheme = themes[randomIndex];
+                }
+            }
+
             window.currentTheme = selectedTheme;
 
             document.body.style.background = selectedTheme.bg;
@@ -250,16 +260,67 @@
             if(footer) footer.className = `py-3 px-6 border-t shrink-0 z-30 transition-all duration-500 backdrop-blur-md ${selectedTheme.headerBg}`;
 
             const quoteEl = document.getElementById('quote-text');
-            if (quoteEl) {
+            if (quoteEl && !quoteEl.dataset.initialized) {
                 const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
                 quoteEl.innerText = randomQuote;
+                quoteEl.dataset.initialized = "true";
             }
+            
             renderView();
             if(activeClass) renderClassStudents();
         }
 
+        function applyRandomTheme() {
+            const randomIndex = Math.floor(Math.random() * themes.length);
+            applyTheme(randomIndex);
+        }
+
+        function openThemeSelector() {
+            let modal = document.getElementById('theme-picker-modal');
+            if(!modal) {
+                modal = document.createElement('div');
+                modal.id = 'theme-picker-modal';
+                modal.className = 'fixed inset-0 bg-slate-900/40 flex items-center justify-center p-3 z-50 backdrop-blur-xs';
+                
+                let themeCards = themes.map((t, index) => `
+                    <div onclick="applyTheme(${index}); closeThemeSelector();" class="p-3.5 rounded-2xl border cursor-pointer transition hover:scale-105 flex items-center justify-between gap-3 ${t.cardBg}">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl p-2 rounded-xl ${t.iconBg}">${t.classIcon}</span>
+                            <div>
+                                <h4 class="font-black text-slate-800 text-sm">${t.name}</h4>
+                                <span class="text-[10px] bg-white/80 px-2 py-0.5 rounded-full font-bold text-slate-600 border border-slate-200">نوع: ${t.type}</span>
+                            </div>
+                        </div>
+                        <span class="text-xl">${t.studentIcon}</span>
+                    </div>
+                `).join('');
+
+                modal.innerHTML = `
+                    <div class="bg-white rounded-3xl max-w-md w-full p-6 relative shadow-xl max-h-[90vh] overflow-y-auto border border-slate-200 text-right">
+                        <button onclick="closeThemeSelector()" class="absolute top-4 left-4 bg-slate-100 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200 text-xs">✕</button>
+                        <h3 class="text-lg font-black text-slate-800 mb-1">🎨 اختر ثيم المنصة</h3>
+                        <p class="text-xs text-slate-400 font-bold mb-4">تتغير الأيقونات وتدرجات الألوان فوراً بحسب ثيمك المفصل</p>
+                        <div class="space-y-2.5 mb-4">${themeCards}</div>
+                        <button onclick="applyRandomTheme(); closeThemeSelector();" class="w-full bg-slate-800 text-white py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-900 transition shadow-2xs">🎲 تطبيق ثيم عشوائي</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } else {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeThemeSelector() {
+            const modal = document.getElementById('theme-picker-modal');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
         function initSystem() {
-            applyRandomTheme();
+            applyTheme();
             customActions = defaultActions;
             fetchClassesAndStudents();
             fetchGlobalStudentsBackground();
@@ -590,6 +651,7 @@
             const currentTheme = window.currentTheme || themes[0];
             const themeIconBg = currentTheme.iconBg;
             const themeCardBg = currentTheme.cardBg || 'bg-white';
+            const classIcon = currentTheme.classIcon || '🏫';
 
             classList.forEach((cls) => {
                 const count = allStudents.filter(s => s.className === cls).length;
@@ -597,10 +659,11 @@
                 classesContainer.innerHTML += `
                     <div class="class-large-card p-6 sm:p-7 rounded-3xl flex items-center justify-between gap-4 ${themeCardBg}">
                         <div class="flex items-center gap-4 sm:gap-5 cursor-pointer flex-1" onclick="openClass('${cls}')">
-                            <span class="text-4xl sm:text-5xl p-4 sm:p-5 rounded-2xl ${themeIconBg} border flex items-center justify-center shrink-0 shadow-2xs">🏫</span>
+                            <span class="text-4xl sm:text-5xl p-4 sm:p-5 rounded-2xl ${themeIconBg} border flex items-center justify-center shrink-0 shadow-2xs">${classIcon}</span>
                             <div>
                                 <h3 class="class-title-font text-lg sm:text-xl text-slate-800 tracking-wide">${cls}</h3>
                                 <p class="text-xs sm:text-sm text-slate-600 font-bold mt-1.5">${count} طالب مسجل بالحصة</p>
+                                <span class="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full font-bold bg-white/60 text-slate-500 border border-slate-200">ثيم: ${currentTheme.name} (${currentTheme.type})</span>
                             </div>
                         </div>
 
@@ -679,8 +742,12 @@
             container.innerHTML = '';
             const students = allStudents.filter(s => s.className === activeClass);
 
+            const currentTheme = window.currentTheme || themes[0];
+            const studentIcon = currentTheme.studentIcon || '👤';
+            const themeCardBg = currentTheme.cardBg || 'bg-white';
+
             if(students.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-2 text-center py-12 font-bold bg-white rounded-2xl shadow-xs text-sm">لا توجد طلاب في هذا الفصل حالياً. يمكنك تعيينهم من لوحة التحكم الرئيسية.</p>`;
+                container.innerHTML = `<p class="text-slate-500 col-span-2 text-center py-12 font-bold ${themeCardBg} rounded-2xl shadow-xs text-sm">لا توجد طلاب في هذا الفصل حالياً. يمكنك تعيينهم من لوحة التحكم الرئيسية.</p>`;
                 return;
             }
 
@@ -725,20 +792,20 @@
                 if(totalStudentScore === 0) scoreBadgeColor = "bg-slate-50 text-slate-600 border-slate-200";
 
                 container.innerHTML += `
-                    <div class="student-square-card p-5 rounded-3xl flex flex-col justify-between transition gap-4">
+                    <div class="student-square-card p-5 rounded-3xl flex flex-col justify-between transition gap-4 ${themeCardBg}">
                         <div class="flex items-center gap-3 cursor-pointer relative" onclick="openModal('${student.id}')" title="اضغط لعرض التقرير المفصل">
                             ${totalActionsCount > 0 ? `<div class="absolute -top-3 -right-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs border border-white">${totalActionsCount}+</div>` : ''}
-                            <div class="w-14 h-14 bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center text-3xl font-black shrink-0 border border-slate-200">👤</div>
+                            <div class="w-14 h-14 ${currentTheme.iconBg} rounded-2xl flex items-center justify-center text-3xl font-black shrink-0 border border-slate-200">${studentIcon}</div>
                             <div class="overflow-hidden flex-grow">
-                                <div class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs flex items-center justify-between gap-2">
+                                <div class="bg-white/80 border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs flex items-center justify-between gap-2">
                                     <h3 class="student-name-font text-slate-900 tracking-wide truncate hover:text-slate-700 transition">${student.name}</h3>
                                     <span class="text-xs font-black px-2 py-0.5 rounded-lg border ${scoreBadgeColor} shrink-0">${formattedScore}</span>
                                 </div>
-                                <p class="text-xs text-slate-400 font-bold truncate mt-1 px-1">${student.email || 'بدون إيميل'}</p>
+                                <p class="text-xs text-slate-500 font-bold truncate mt-1 px-1">${student.email || 'بدون إيميل'}</p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2 overflow-x-auto py-1.5 bg-slate-50 px-2 rounded-xl min-h-[48px] w-full border border-slate-100" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
+                        <div class="flex items-center gap-2 overflow-x-auto py-1.5 bg-white/60 px-2 rounded-xl min-h-[48px] w-full border border-slate-200/60" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
                             ${actionsListHtml}
                         </div>
 
@@ -1061,15 +1128,18 @@
             const student = allStudents.find(s => s.id === id);
             if(!student) return;
 
+            const currentTheme = window.currentTheme || themes[0];
+            const studentIcon = currentTheme.studentIcon || '👤';
+
             const summaryData = calculateStudentSummaryData(student);
             const { att, actions } = summaryData;
 
             const modalContent = document.getElementById('modal-content');
             modalContent.innerHTML = `
                 <div class="text-center mb-6 border-b pb-4">
-                    <div class="w-16 h-16 bg-slate-800 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-xs">👤</div>
+                    <div class="w-16 h-16 ${currentTheme.iconBg} rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-xs">${studentIcon}</div>
                     <h2 class="student-name-font text-2xl text-slate-900">${student.name}</h2>
-                    <p class="text-xs font-bold text-slate-500 mt-1">${student.className} | أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
+                    <p class="text-xs font-bold text-slate-500 mt-1">${student.className} | أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -1174,7 +1244,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-800">📋 تقرير متابعة طالب مفصل</h3>
                         <p class="text-xs font-bold text-slate-600 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</p>
                     </div>
                     <div class="space-y-3 text-xs font-bold text-slate-700">
                         <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
@@ -1277,7 +1347,7 @@
                             <span class="text-4xl mb-2 inline-block">🎓</span>
                             <h1 class="student-title text-3xl font-bold text-slate-800">${student.name}</h1>
                             <p class="text-sm font-bold text-slate-600 mt-1">الصف: ${student.className}</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫 | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫 | ${currentTeacherSubject}</p>
                         </div>
                         <div class="space-y-4 text-xs font-bold text-slate-700">
                             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-2xs">
@@ -1322,7 +1392,7 @@
                             </div>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-400 flex justify-between">
-                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1399,7 +1469,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-5 sticky top-0 bg-white z-10 py-2">
                         <h3 class="student-name-font text-2xl text-slate-800">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
                         <p class="text-xs font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</p>
                     </div>
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
@@ -1479,11 +1549,11 @@
                             <span class="text-4xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-800">التقرير الفردي الشامل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫 | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫 | ${currentTeacherSubject}</p>
                         </div>
                         <div>${students.length === 0 ? '<p style="text-align: center; padding: 30px; color: #94a3b8; font-weight: bold;">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-400 flex justify-between">
-                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1528,7 +1598,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-800">📊 جدول الفصل الشامل والمفصل: ${className}</h3>
                         <p class="text-xs font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب | ${currentTeacherSubject}</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</p>
                     </div>
                     <div class="grid grid-cols-4 gap-2 text-center mb-4 text-xs font-bold">
                         <div class="bg-emerald-50/60 p-2 rounded-xl border border-emerald-100">
@@ -1624,7 +1694,7 @@
                             <span class="text-4xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-800">التقرير الشامل والمفصل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-slate-500 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫 | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫 | ${currentTeacherSubject}</p>
                         </div>
                         <div class="grid grid-cols-4 gap-3 text-center mb-6 text-xs font-bold">
                             <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100 shadow-2xs"><span class="text-emerald-800 block text-xs">إجمالي الحضور</span><span class="text-lg font-black text-emerald-600">${totalPresentsClass}</span></div>
@@ -1652,7 +1722,7 @@
                             </table>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-400 flex justify-between">
-                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1667,7 +1737,7 @@
         };
 
         window.onload = function() {
-            applyRandomTheme();
+            applyTheme();
 
             const urlParams = new URLSearchParams(window.location.search);
             const reportId = urlParams.get('view_report');
@@ -2035,7 +2105,7 @@
                     <i class="fas fa-arrow-left"></i>
                 </button>
             </div>
-            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
+            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد 👨‍🏫</p>
         </div>
     </div>
 
@@ -2043,11 +2113,12 @@
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-center sm:text-right">
                 <h1 class="text-lg font-black tracking-wide" id="main-header-title">نظام المتابعة السحابي الشامل</h1>
-                <p class="text-xs opacity-80 mt-0.5 font-bold" id="main-header-subtitle">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫 | الكفايات اللغوية</p>
+                <p class="text-xs opacity-80 mt-0.5 font-bold" id="main-header-subtitle">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫 | الكفايات اللغوية</p>
             </div>
-            <div class="flex gap-2 items-center">
-                <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">🏫 الفصول</button>
-                <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">⚙️ التقييمات</button>
+            <div class="flex gap-2 items-center flex-wrap justify-center">
+                <button onclick="openThemeSelector()" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">🎨 الثيمات</button>
+                <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">🏫 الفصول</button>
+                <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">⚙️ التقييمات</button>
                 <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
             </div>
         </div>
@@ -2098,9 +2169,9 @@
         </div>
 
         <div id="main-dashboard" class="py-2 space-y-6">
-            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div class="flex items-center justify-between border-b border-slate-200/80 pb-3">
                 <h2 class="text-xl font-black text-slate-800 tracking-wide">🏫 القائمة الرئيسية</h2>
-                <span class="text-xs font-bold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">اختر الفصل للبدء</span>
+                <span class="text-xs font-bold text-slate-600 bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-2xs">اختر الفصل للبدء</span>
             </div>
             
             <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 w-full max-w-full overflow-hidden"></div>
@@ -2158,7 +2229,7 @@
         </div>
 
         <div id="class-view" class="hidden py-1">
-            <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-2xl shadow-2xs border border-slate-200">
+            <div class="flex items-center justify-between mb-4 bg-white/90 backdrop-blur-xs p-3 rounded-2xl shadow-2xs border border-slate-200">
                 <button onclick="backToHome()" class="bg-slate-100 text-slate-700 px-3.5 py-1.5 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
                 <h2 class="text-sm font-black text-slate-800" id="class-title-header">الفصل</h2>
                 <div class="w-12"></div>
@@ -2199,8 +2270,8 @@
     </main>
 
     <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
-        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right text-slate-500">
-            <div>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</div>
+        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right text-slate-600">
+            <div>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</div>
             <div>الحقوق محفوظة 2026</div>
             <div>ثانوية الأمير عبدالمجيد</div>
         </div>
