@@ -561,10 +561,10 @@
                             <span class="bg-white/95 backdrop-blur-xs w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg text-[#800000] shadow-sm border border-amber-200 shrink-0">➔</span>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-amber-200/50">
-                            <button onclick="openClassReportPreview('${cls}', 'detailed')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">👁️ تقرير فردي لكل طالب</button>
-                            <button onclick="shareClassReportLink('${cls}', 'detailed')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🌐 مشاركة تقرير الطلاب الفردي</button>
-                            <button onclick="openClassReportPreview('${cls}', 'table')" class="bg-stone-800 hover:bg-stone-900 text-amber-100 py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">👁️ جدول الفصل الشامل</button>
-                            <button onclick="shareClassReportLink('${cls}', 'table')" class="bg-amber-700 hover:bg-amber-800 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🌐 مشاركة جدول الفصل الشامل</button>
+                            <button onclick="shareClassReportLink('${cls}', 'detailed', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير الفردي</button>
+                            <button onclick="shareClassReportLink('${cls}', 'table', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔗 نسخ رابط جدول الفصل</button>
+                            <button onclick="openClassReportPreview('${cls}', 'detailed')" class="bg-stone-800 hover:bg-stone-900 text-amber-100 py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">👁️ عرض التقرير الفردي</button>
+                            <button onclick="openClassReportPreview('${cls}', 'table')" class="bg-amber-700 hover:bg-amber-800 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">👁️ عرض جدول الفصل</button>
                         </div>
                     </div>
                 `;
@@ -1097,7 +1097,7 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
                     <button onclick="openPreviewSummaryModal('${student.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">👁️ معاينة الملخص</button>
-                    <button onclick="shareStudentReportLink('${student.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🌐 فتح التقرير كموقع</button>
+                    <button onclick="shareStudentReportLink('${student.id}', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير</button>
                     <button onclick="window.print()" class="${btnPrimaryClass} text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🖨️ طباعة</button>
                     <button onclick="closeModal()" class="bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs hover:bg-slate-300 cursor-pointer shadow-md text-center">إغلاق</button>
                 </div>
@@ -1151,7 +1151,7 @@
                     </div>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="shareStudentReportLink('${student.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🌐 فتح التقرير كموقع</button>
+                    <button onclick="shareStudentReportLink('${student.id}', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🔗 نسخ رابط التقرير</button>
                     <button onclick="closePreviewSummaryModal()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-2xl text-xs font-bold hover:bg-slate-300 cursor-pointer shadow-md">إغلاق</button>
                 </div>
             `;
@@ -1164,7 +1164,45 @@
             document.getElementById('preview-modal').classList.remove('flex');
         };
 
-        window.shareStudentReportLink = function(id) {
+        // دالة سحابية مركزية لحفظ التقرير ونسخ الرابط الحقيقي - محدثة لتعمل برابطك المباشر
+        window.saveAndCopyReportLink = async function(htmlContent, btnElement) {
+            if(btnElement) {
+                btnElement.dataset.originalText = btnElement.innerHTML;
+                btnElement.innerHTML = "⏳ جاري النسخ...";
+                btnElement.disabled = true;
+            }
+            
+            const reportId = 'rep_' + Date.now() + Math.random().toString(36).substr(2, 5);
+            try {
+                // حفظ التقرير سحابياً في Realtime Database
+                await rtdb.ref('shared_reports/' + reportId).set({ 
+                    html: htmlContent,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP 
+                });
+                
+                // الاعتماد على الرابط الرسمي لكي يعمل في كل الأجهزة والواتساب
+                const baseUrl = "https://school1school2-stack.github.io/Abdul-majeed2/";
+                const shareableLink = `${baseUrl}?view_report=${reportId}`;
+                
+                // نسخ الرابط للحافظة
+                await navigator.clipboard.writeText(shareableLink);
+                alert("✅ تم نسخ الرابط بنجاح!\nيمكنك الآن لصق الرابط في الواتساب أو إرساله للطلاب أو أولياء الأمور.");
+                
+            } catch(e) {
+                console.error(e);
+                alert("❌ حدث خطأ أثناء إنشاء الرابط. تأكد من اتصالك بالإنترنت.");
+            } finally {
+                if(btnElement) {
+                    btnElement.innerHTML = "✅ تم النسخ!";
+                    setTimeout(() => {
+                        btnElement.innerHTML = btnElement.dataset.originalText;
+                        btnElement.disabled = false;
+                    }, 2500);
+                }
+            }
+        };
+
+        window.shareStudentReportLink = function(id, btnElement) {
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
             const summary = calculateStudentSummaryData(student);
@@ -1237,8 +1275,8 @@
                 </body>
                 </html>
             `;
-            const blob = new Blob([webPageHTML], { type: 'text/html' });
-            window.open(URL.createObjectURL(blob), '_blank');
+            // استخدام الميزة السحابية الجديدة
+            saveAndCopyReportLink(webPageHTML, btnElement);
         };
 
         window.openClassReportPreview = function(className, type) {
@@ -1246,9 +1284,9 @@
             else openTableClassReportPreview(className);
         };
 
-        window.shareClassReportLink = function(className, type) {
-            if (type === 'detailed') shareDetailedClassReportLink(className);
-            else shareTableClassReportLink(className);
+        window.shareClassReportLink = function(className, type, btnElement) {
+            if (type === 'detailed') shareDetailedClassReportLink(className, btnElement);
+            else shareTableClassReportLink(className, btnElement);
         };
 
         function openDetailedClassReportPreview(className) {
@@ -1313,7 +1351,7 @@
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="shareClassReportLink('${className}', 'detailed')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🌐 مشاركة تقرير الطلاب الفردي</button>
+                    <button onclick="shareClassReportLink('${className}', 'detailed', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🔗 نسخ رابط التقرير الفردي</button>
                     <button onclick="closePreviewSummaryModal()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-2xl text-xs font-bold hover:bg-slate-300 cursor-pointer shadow-md">إغلاق</button>
                 </div>
             `;
@@ -1321,7 +1359,7 @@
             document.getElementById('preview-modal').classList.add('flex');
         }
 
-        function shareDetailedClassReportLink(className) {
+        function shareDetailedClassReportLink(className, btnElement) {
             const students = allStudents.filter(s => s.className === className);
             let studentsCardsHtml = students.map((st, idx) => {
                 const sum = calculateStudentSummaryData(st);
@@ -1397,8 +1435,8 @@
                 </body>
                 </html>
             `;
-            const blob = new Blob([webPageHTML], { type: 'text/html' });
-            window.open(URL.createObjectURL(blob), '_blank');
+            // استخدام الميزة السحابية الجديدة
+            saveAndCopyReportLink(webPageHTML, btnElement);
         }
 
         function openTableClassReportPreview(className) {
@@ -1463,7 +1501,7 @@
                     </div>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="shareClassReportLink('${className}', 'table')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🌐 مشاركة جدول الفصل الشامل</button>
+                    <button onclick="shareClassReportLink('${className}', 'table', this)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-xs font-bold shadow-md cursor-pointer text-center">🔗 نسخ رابط جدول الفصل</button>
                     <button onclick="closePreviewSummaryModal()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-2xl text-xs font-bold hover:bg-slate-300 cursor-pointer shadow-md">إغلاق</button>
                 </div>
             `;
@@ -1471,7 +1509,7 @@
             document.getElementById('preview-modal').classList.add('flex');
         }
 
-        function shareTableClassReportLink(className) {
+        function shareTableClassReportLink(className, btnElement) {
             const students = allStudents.filter(s => s.className === className);
             let totalPresentsClass = 0, totalAbsentsClass = 0, totalLatesClass = 0;
 
@@ -1540,8 +1578,8 @@
                 </body>
                 </html>
             `;
-            const blob = new Blob([webPageHTML], { type: 'text/html' });
-            window.open(URL.createObjectURL(blob), '_blank');
+            // استخدام الميزة السحابية الجديدة
+            saveAndCopyReportLink(webPageHTML, btnElement);
         }
 
         window.closeModal = function() {
@@ -1550,6 +1588,28 @@
         };
 
         window.onload = function() {
+            // فحص إذا كان الزائر قد دخل عبر "رابط مشاركة تقرير"
+            const urlParams = new URLSearchParams(window.location.search);
+            const reportId = urlParams.get('view_report');
+            
+            if(reportId) {
+                // عرض شاشة تحميل للزائر
+                document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #800000; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">⏳</div>جاري تحميل التقرير...</div>`;
+                
+                // جلب كود التقرير من القاعدة السحابية وعرضه
+                rtdb.ref('shared_reports/' + reportId).once('value', snapshot => {
+                    const data = snapshot.val();
+                    if(data && data.html) {
+                        document.open();
+                        document.write(data.html);
+                        document.close();
+                    } else {
+                        document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #dc2626; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">❌</div>عذراً، هذا التقرير غير موجود أو تم حذفه</div>`;
+                    }
+                });
+                return; // إيقاف تشغيل المنصة للمعلم والاكتفاء بعرض التقرير
+            }
+
             showLoginModal();
         };
 
@@ -1723,10 +1783,15 @@
         }
 
         function copyTeacherShareLink(email) {
-            const baseUrl = window.location.href.split('?')[0];
+            // تثبيت الرابط الأساسي للمنصة ليعمل الرابط مع كل المعلمين على كل الأجهزة
+            const baseUrl = "https://school1school2-stack.github.io/Abdul-majeed2/";
             const shareableLink = `${baseUrl}?teacher=${encodeURIComponent(email)}`;
-            navigator.clipboard.writeText(shareableLink).then(() => { alert(`تم نسخ رابط المشاركة الخاص بالمعلم (${email}) بنجاح! 📋`); })
-            .catch(() => { alert("فشل نسخ الرابط تلقائياً."); });
+            
+            navigator.clipboard.writeText(shareableLink).then(() => { 
+                alert(`تم نسخ رابط المشاركة الخاص بالمعلم (${email}) بنجاح! 📋`); 
+            }).catch(() => { 
+                alert("فشل نسخ الرابط تلقائياً."); 
+            });
         }
 
         async function deleteTeacher(key) {
@@ -1735,8 +1800,6 @@
                 loadTeachersList();
             }
         }
-
-        // --- دوال سحب الطلاب للمعلمين والقاعدة المركزية --- //
 
         async function uploadGlobalStudents() {
             const input = document.getElementById("globalStudentsInput").value.trim();
