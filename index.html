@@ -169,7 +169,6 @@
         let editingClassIndex = null;
         let pendingCountGlobal = 0;
 
-        // مكتبة العبارات التحفيزية الشاملة (تتغير عشوائياً عند تحديث الصفحة)
         const motivationalQuotes = [
             "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
             "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
@@ -197,13 +196,12 @@
             "🛡️ \"الأخطاء ليست نهاية المطاف، بل هي الدروس المجانية التي تجعلنا أكثر ذكاءً وقوة.\"",
             "⚓ \"كن صبوراً، فالأشجار العميقة الجذور هي وحدها التي تقاوم أقوى العواصف.\"",
             "🌠 \"الأحلام الكبيرة تحتاج إلى جهود عظيمة، فلا تستصغر أي جهد قمت به اليوم.\"",
-            "🛠️ \"العلم in الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
+            "🛠️ \"العلم في الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
             "🧭 \"دع شغفك هو بوصلتك، وعملك الجاد هو وقودك، ولا تيأس مهما كانت المسافة طويلة.\"",
             "✍️ \"اكتب نجاحك اليوم بعرق جبينك وإصرارك، لتقرأه بفخر واعتزاز غداً.\"",
             "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
         ];
 
-        // قائمة الثيمات الفاخرة (تتغير عشوائياً عند التحديث)
         const themes = [
             { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50 text-amber-950 border-amber-200/80", btnPrimary: "bg-amber-900 hover:bg-amber-950 text-amber-50" },
             { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
@@ -330,7 +328,7 @@
                         id: doc.id,
                         name: name,
                         email: email,
-                        className: data.className || 'غير موزع',
+                        className: data.className || 'غير موزاد',
                         phone: data.phone || '966566688614',
                         actions: data.actions || [],
                         attendanceStats: data.attendanceStats || { presents: 0, absents: 0, lates: 0, unauthorizedExits: 0 }
@@ -377,6 +375,9 @@
                 renderView();
                 searchStudents();
                 if(activeClass) renderClassStudents();
+                if(document.getElementById('global-students-view') && !document.getElementById('global-students-view').classList.contains('hidden')) {
+                    renderGlobalStudentsTable();
+                }
             });
 
             db.collection(getPendingCollection()).orderBy("name").onSnapshot((snapshot) => {
@@ -592,7 +593,6 @@
                             </div>
                         </div>
                         
-                        <!-- القائمة المنسدلة المنظمة المحدثة لبطاقات الفصول -->
                         <div class="pt-2 border-t border-amber-200/50 flex items-center gap-2">
                             <select class="action-select w-full py-2.5 px-3 rounded-2xl border-2 border-amber-200/80 bg-white font-bold text-xs shadow-2xs outline-none cursor-pointer hover:border-[#800000] transition" onchange="handleClassDropdownAction(this, '${cls}')">
                                 <option value="" disabled selected>⚡ اختر الإجراء أو الخيار للفصل...</option>
@@ -731,6 +731,13 @@
                 if(totalStudentScore < 0) scoreBadgeColor = "bg-rose-50 text-rose-700 border-rose-200";
                 if(totalStudentScore === 0) scoreBadgeColor = "bg-slate-50 text-slate-600 border-slate-200";
 
+                let moveClassOptionsHtml = `<option value="" disabled selected>🔀 نقل الطالب إلى فصل آخر...</option>`;
+                classList.forEach(cls => {
+                    if (cls !== student.className) {
+                        moveClassOptionsHtml += `<option value="${cls}">نقل إلى: ${cls}</option>`;
+                    }
+                });
+
                 container.innerHTML += `
                     <div class="student-square-card p-6 rounded-3xl flex flex-col justify-between transition gap-4">
                         <div class="flex items-center gap-4 cursor-pointer relative" onclick="openModal('${student.id}')" title="اضغط لعرض التقرير المفصل">
@@ -749,15 +756,31 @@
                             ${actionsListHtml}
                         </div>
 
-                        <div class="grid grid-cols-3 gap-2.5 pt-1">
-                            <button onclick="openActionModal('${student.id}')" class="bg-stone-800 hover:bg-stone-900 text-amber-100 py-3 rounded-2xl text-sm font-bold shadow-md cursor-pointer transition text-center">📝 رصد</button>
-                            <button onclick="openModal('${student.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-sm font-bold shadow-md cursor-pointer transition text-center">📊 التقرير</button>
-                            <button onclick="removeStudentFromClass('${student.id}')" class="bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-2xl text-sm font-bold shadow-md cursor-pointer transition text-center">🗑️ حذف</button>
+                        <div class="space-y-2 pt-1">
+                            <select onchange="transferStudentDirectly('${student.id}', this.value)" class="w-full bg-slate-50 border-2 border-indigo-200 text-indigo-950 font-bold text-xs py-2 px-3 rounded-2xl outline-none cursor-pointer hover:border-indigo-500 transition">
+                                ${moveClassOptionsHtml}
+                            </select>
+
+                            <div class="grid grid-cols-3 gap-2.5">
+                                <button onclick="openActionModal('${student.id}')" class="bg-stone-800 hover:bg-stone-900 text-amber-100 py-2.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition text-center">📝 رصد</button>
+                                <button onclick="openModal('${student.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition text-center">📊 التقرير</button>
+                                <button onclick="removeStudentFromClass('${student.id}')" class="bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer transition text-center">🗑️ إزالة</button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
         }
+
+        window.transferStudentDirectly = async function(studentId, newClass) {
+            if(!newClass) return;
+            const student = allStudents.find(s => s.id === studentId);
+            if(!student) return;
+            if(confirm(`هل ترغب بنقل الطالب (${student.name}) بكامل سجله إلى (${newClass})؟`)) {
+                await assignStudentClass(studentId, newClass);
+                alert(`تم نقل الطالب (${student.name}) بنجاح إلى (${newClass}) متضمناً كافة التقييمات والحضور والغياب.`);
+            }
+        };
 
         window.openSettingsModal = function(tabName = 'classes') {
             document.getElementById('settings-modal').classList.remove('hidden');
@@ -957,6 +980,9 @@
                 renderClassStudents();
                 renderView();
                 await db.collection(getTeacherCollection()).doc(id).update({ className: 'غير موزع' });
+                if(document.getElementById('global-students-view') && !document.getElementById('global-students-view').classList.contains('hidden')) {
+                    renderGlobalStudentsTable();
+                }
             }
         };
 
@@ -1953,9 +1979,12 @@
                 const email = student.email;
                 const name = student.name;
                 
-                const isAlreadyAdded = allStudents.some(s => s.email === email);
-                const actionHtml = isAlreadyAdded 
-                    ? `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> مضاف بفصلك</span>`
+                // التحديث هنا: يعتبر مضافاً فقط إذا كان ينتمي بالفعل لفصل (ليس "غير موزع")
+                const assignedStudent = allStudents.find(s => s.email === email && s.className && s.className !== 'غير موزع');
+                const isAssigned = !!assignedStudent;
+
+                const actionHtml = isAssigned 
+                    ? `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> مضاف بـ (${assignedStudent.className})</span>`
                     : `<button onclick="addStudentToMyClass('${email}', '${name.replace(/'/g, "\\'")}', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition">➕ إضافة</button>`;
 
                 htmlChunk += `
@@ -1963,7 +1992,7 @@
                         <td class="p-3 font-bold text-slate-900">${name}</td>
                         <td class="p-3 text-slate-500 text-[11px]">${email}</td>
                         <td class="p-3">
-                            <select class="class-selector border border-slate-300 p-1.5 rounded-lg text-xs bg-white focus:border-indigo-500 outline-none w-full ${isAlreadyAdded ? 'hidden' : ''}">
+                            <select class="class-selector border border-slate-300 p-1.5 rounded-lg text-xs bg-white focus:border-indigo-500 outline-none w-full ${isAssigned ? 'hidden' : ''}">
                                 ${classOptions}
                             </select>
                         </td>
