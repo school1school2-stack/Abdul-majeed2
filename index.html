@@ -798,21 +798,34 @@
         window.switchSettingsTab = function(tab) {
             const classesTabContent = document.getElementById('classes-tab-content');
             const actionsTabContent = document.getElementById('actions-tab-content');
+            const shortenerTabContent = document.getElementById('shortener-tab-content');
             const btnClasses = document.getElementById('btn-tab-classes');
             const btnActions = document.getElementById('btn-tab-actions');
+            const btnShortener = document.getElementById('btn-tab-shortener');
             const activeColorClass = window.currentTheme ? window.currentTheme.btnPrimary.split(' ')[0] : 'bg-slate-700';
 
             if(tab === 'classes') {
                 classesTabContent.classList.remove('hidden');
                 actionsTabContent.classList.add('hidden');
+                if(shortenerTabContent) shortenerTabContent.classList.add('hidden');
                 btnClasses.className = `flex-1 py-2.5 rounded-xl font-bold text-xs ${activeColorClass} text-white shadow transition-all cursor-pointer`;
                 btnActions.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer";
-            } else {
+                if(btnShortener) btnShortener.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer";
+            } else if(tab === 'actions') {
                 classesTabContent.classList.add('hidden');
                 actionsTabContent.classList.remove('hidden');
+                if(shortenerTabContent) shortenerTabContent.classList.add('hidden');
                 btnActions.className = `flex-1 py-2.5 rounded-xl font-bold text-xs ${activeColorClass} text-white shadow transition-all cursor-pointer`;
                 btnClasses.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 transition-all cursor-pointer";
+                if(btnShortener) btnShortener.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer";
                 renderSettingsActionsDropdown();
+            } else if(tab === 'shortener') {
+                classesTabContent.classList.add('hidden');
+                actionsTabContent.classList.add('hidden');
+                if(shortenerTabContent) shortenerTabContent.classList.remove('hidden');
+                if(btnShortener) btnShortener.className = `flex-1 py-2.5 rounded-xl font-bold text-xs ${activeColorClass} text-white shadow transition-all cursor-pointer`;
+                btnClasses.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 transition-all cursor-pointer";
+                btnActions.className = "flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer";
             }
         };
 
@@ -2080,94 +2093,102 @@
             return result;
         }
 
-        // تفعيل أداة اختصار الروابط عند النقر داخل لوحة المشرف
+        // تفعيل أداة اختصار الروابط
         document.addEventListener("DOMContentLoaded", () => {
-            const genBtn = document.getElementById('genBtn');
-            if(genBtn) {
-                genBtn.addEventListener('click', () => {
-                    const longUrl = document.getElementById('longUrl').value.trim();
-                    if (!longUrl) {
-                        alert('الرجاء إدخال رابط أولاً');
-                        return;
-                    }
+            const setupShortener = (genBtnId, longUrlId, resultBoxId, shortenedLinkId, copyBtnId, qrcodeId, saveQrBtnId) => {
+                const genBtn = document.getElementById(genBtnId);
+                if(genBtn) {
+                    genBtn.addEventListener('click', () => {
+                        const longUrl = document.getElementById(longUrlId).value.trim();
+                        if (!longUrl) {
+                            alert('الرجاء إدخال رابط أولاً');
+                            return;
+                        }
 
-                    genBtn.disabled = true;
-                    genBtn.innerText = "جاري التوصيل بالسحابة...";
+                        genBtn.disabled = true;
+                        genBtn.innerText = "جاري التوصيل بالسحابة...";
 
-                    const shortId = generateRandomId();
+                        const shortId = generateRandomId();
 
-                    firebase.database().ref('short_urls/' + shortId).set({
-                        longUrl: longUrl,
-                        createdAt: Date.now()
-                    })
-                    .then(() => {
-                        const baseUrl = window.location.origin + window.location.pathname;
-                        const shortUrl = `${baseUrl}?id=${shortId}`;
+                        firebase.database().ref('short_urls/' + shortId).set({
+                            longUrl: longUrl,
+                            createdAt: Date.now()
+                        })
+                        .then(() => {
+                            const baseUrl = window.location.origin + window.location.pathname;
+                            const shortUrl = `${baseUrl}?id=${shortId}`;
 
-                        document.getElementById('shortenedLink').innerText = shortUrl;
-                        document.getElementById('resultBox').style.display = 'block';
+                            document.getElementById(shortenedLinkId).innerText = shortUrl;
+                            document.getElementById(resultBoxId).style.display = 'block';
 
-                        document.getElementById('qrcode').innerHTML = '';
-                        new QRCode(document.getElementById("qrcode"), {
-                            text: shortUrl,
-                            width: 256,
-                            height: 256
+                            document.getElementById(qrcodeId).innerHTML = '';
+                            new QRCode(document.getElementById(qrcodeId), {
+                                text: shortUrl,
+                                width: 256,
+                                height: 256
+                            });
+
+                            genBtn.disabled = false;
+                            genBtn.innerText = "توليد رابط قصير جداً والـ QR";
+                        })
+                        .catch((error) => {
+                            alert("فشل الحفظ في السحابة: " + error.message);
+                            genBtn.disabled = false;
+                            genBtn.innerText = "توليد رابط قصير جداً والـ QR";
                         });
-
-                        genBtn.disabled = false;
-                        genBtn.innerText = "توليد رابط قصير جداً والـ QR";
-                    })
-                    .catch((error) => {
-                        alert("فشل الحفظ في السحابة: " + error.message);
-                        genBtn.disabled = false;
-                        genBtn.innerText = "توليد رابط قصير جداً والـ QR";
                     });
-                });
-            }
+                }
 
-            const copyBtn = document.getElementById('copyBtn');
-            if(copyBtn) {
-                copyBtn.addEventListener('click', () => {
-                    const linkText = document.getElementById('shortenedLink').innerText;
-                    navigator.clipboard.writeText(linkText).then(() => {
-                        alert('تم نسخ الرابط بنجاح!');
+                const copyBtn = document.getElementById(copyBtnId);
+                if(copyBtn) {
+                    copyBtn.addEventListener('click', () => {
+                        const linkText = document.getElementById(shortenedLinkId).innerText;
+                        navigator.clipboard.writeText(linkText).then(() => {
+                            alert('تم نسخ الرابط بنجاح!');
+                        });
                     });
-                });
-            }
+                }
 
-            const saveQrBtn = document.getElementById('saveQrBtn');
-            if(saveQrBtn) {
-                saveQrBtn.addEventListener('click', () => {
-                    const qrContainer = document.getElementById('qrcode');
-                    const canvas = qrContainer.querySelector('canvas');
-                    const img = qrContainer.querySelector('img');
+                const saveQrBtn = document.getElementById(saveQrBtnId);
+                if(saveQrBtn) {
+                    saveQrBtn.addEventListener('click', () => {
+                        const qrContainer = document.getElementById(qrcodeId);
+                        const canvas = qrContainer.querySelector('canvas');
+                        const img = qrContainer.querySelector('img');
 
-                    if (!canvas && !img) {
-                        alert('الرجاء توليد رمز الاستجابة السريعة أولاً.');
-                        return;
-                    }
+                        if (!canvas && !img) {
+                            alert('الرجاء توليد رمز الاستجابة السريعة أولاً.');
+                            return;
+                        }
 
-                    const targetSize = 300;
-                    const tempCanvas = document.createElement('canvas');
-                    tempCanvas.width = targetSize;
-                    tempCanvas.height = targetSize;
-                    const ctx = tempCanvas.getContext('2d');
+                        const targetSize = 300;
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = targetSize;
+                        tempCanvas.height = targetSize;
+                        const ctx = tempCanvas.getContext('2d');
 
-                    ctx.fillStyle = "#FFFFFF";
-                    ctx.fillRect(0, 0, targetSize, targetSize);
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.fillRect(0, 0, targetSize, targetSize);
 
-                    const sourceElement = canvas || img;
-                    ctx.drawImage(sourceElement, 0, 0, targetSize, targetSize);
+                        const sourceElement = canvas || img;
+                        ctx.drawImage(sourceElement, 0, 0, targetSize, targetSize);
 
-                    const imageUrl = tempCanvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.href = imageUrl;
-                    link.download = 'qrcode.png';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                });
-            }
+                        const imageUrl = tempCanvas.toDataURL('image/png');
+                        const link = document.createElement('a');
+                        link.href = imageUrl;
+                        link.download = 'qrcode.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+                }
+            };
+
+            // تفعيل مختصر الروابط في لوحة المشرف الرئيسية
+            setupShortener('genBtn', 'longUrl', 'resultBox', 'shortenedLink', 'copyBtn', 'qrcode', 'saveQrBtn');
+            
+            // تفعيل مختصر الروابط داخل نافذة الإعدادات (للمعلم والمشرف)
+            setupShortener('modal-genBtn', 'modal-longUrl', 'modal-resultBox', 'modal-shortenedLink', 'modal-copyBtn', 'modal-qrcode', 'modal-saveQrBtn');
         });
     </script>
 </head>
@@ -2205,6 +2226,7 @@
             <div class="flex gap-2 items-center">
                 <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🏫 الفصول</button>
                 <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">⚙️ التقييمات</button>
+                <button onclick="openSettingsModal('shortener')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🔗 الروابط</button>
                 <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
             </div>
         </div>
@@ -2218,7 +2240,7 @@
                 <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا:</p>
             </div>
 
-            <!-- أداة اختصار الروابط المضافة حديثاً في لوحة المشرف -->
+            <!-- أداة اختصار الروابط في لوحة المشرف -->
             <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200 mb-5 text-right">
                 <h3 class="text-sm font-bold text-amber-950 mb-1"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي:</h3>
                 <p class="text-xs text-amber-800 mb-3 font-semibold">يتم حفظ الروابط الطويلة في السحابة للحصول على رابط قصير جداً وباركود (QR).</p>
@@ -2382,11 +2404,16 @@
     <div id="settings-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-xl max-h-[90vh] overflow-y-auto">
             <button onclick="closeSettingsModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
-            <h3 class="text-lg font-black text-center mb-3 text-slate-900">⚙️ لوحة الإعدادات</h3>
+            <h3 class="text-lg font-black text-center mb-3 text-slate-900">⚙️ لوحة الإعدادات والروابط</h3>
+            
+            <!-- أزرار التنقل (الفصول، التقييمات، اختصار الروابط) -->
             <div class="flex gap-2 mb-4 bg-slate-100 p-1 rounded-xl">
                 <button id="btn-tab-classes" onclick="switchSettingsTab('classes')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-white shadow">🏫 الفصول</button>
                 <button id="btn-tab-actions" onclick="switchSettingsTab('actions')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">⭐ التقييمات</button>
+                <button id="btn-tab-shortener" onclick="switchSettingsTab('shortener')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">🔗 الروابط</button>
             </div>
+
+            <!-- محتوى تبويب الفصول -->
             <div id="classes-tab-content" class="space-y-3">
                 <div class="flex gap-2">
                     <input type="text" id="new-class-name" placeholder="اسم الفصل..." class="flex-1 border p-2.5 rounded-xl text-xs font-bold">
@@ -2394,6 +2421,8 @@
                 </div>
                 <div id="settings-classes-list" class="space-y-1.5 max-h-44 overflow-y-auto"></div>
             </div>
+
+            <!-- محتوى تبويب التقييمات -->
             <div id="actions-tab-content" class="space-y-3 hidden">
                 <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border p-2.5 rounded-xl text-xs font-bold"></select>
                 <div class="grid grid-cols-3 gap-2">
@@ -2477,6 +2506,24 @@
                     </select>
                 </div>
                 <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-black">حفظ التقييم 🚀</button>
+            </div>
+
+            <!-- محتوى تبويب اختصار الروابط المتاح للمعلم والمشرف -->
+            <div id="shortener-tab-content" class="space-y-3 hidden text-right">
+                <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200">
+                    <h3 class="text-sm font-bold text-amber-950 mb-1"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي:</h3>
+                    <p class="text-xs text-amber-800 mb-3 font-semibold">حفظ الروابط الطويلة وتوليد رابط قصير وباركود (QR) للإرسال السريع.</p>
+                    <input type="url" id="modal-longUrl" placeholder="ضع الرابط الطويل هنا..." class="w-full border p-2.5 rounded-xl text-xs font-bold bg-white mb-2" required>
+                    <button id="modal-genBtn" class="w-full bg-[#2ea44f] hover:bg-[#2c974b] text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">توليد رابط قصير جداً والـ QR 🚀</button>
+
+                    <div class="result" id="modal-resultBox" style="display:none; margin-top:15px; padding:12px; background:#eef9f1; border-radius:10px; border:1px solid #c3e6cb;">
+                        <strong style="font-size:12px; color:#155724;">الرابط المختصر القصير:</strong>
+                        <div id="modal-shortenedLink" style="background:#fff; padding:8px; border:1px dashed #2ea44f; border-radius:6px; word-break:break-all; font-size:14px; margin:5px 0; color:#0366d6; font-weight:bold;"></div>
+                        <button id="modal-copyBtn" class="w-full bg-[#0366d6] hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mb-2">نسخ الرابط 📋</button>
+                        <div id="modal-qrcode" style="display:flex; justify-content:center; margin-top:10px;"></div>
+                        <button id="modal-saveQrBtn" class="w-full bg-[#6f42c1] hover:bg-purple-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mt-2">حفظ QR كصورة 💾</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
