@@ -1819,7 +1819,11 @@
                 document.getElementById('teacher-logout-btn').classList.remove('hidden');
                 loadTeachersList();
                 return;
-            } else showLoginModal();
+            } else {
+                // تفعيل ظهور أداة اختصار الروابط في لوحة المعلم أيضاً
+                document.getElementById('teacher-shortener-card').style.display = 'block';
+                initSystem();
+            }
         }
 
         function logoutTeacher() {
@@ -2087,7 +2091,7 @@
             return result;
         }
 
-        // تفعيل أداة اختصار الروابط عند النقر داخل لوحة المشرف
+        // تفعيل أداة اختصار الروابط عند المعلم والمشرف
         document.addEventListener("DOMContentLoaded", () => {
             const genBtn = document.getElementById('genBtn');
             if(genBtn) {
@@ -2225,22 +2229,6 @@
                 <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا:</p>
             </div>
 
-            <!-- أداة اختصار الروابط المضافة حديثاً في لوحة المشرف -->
-            <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200 mb-5 text-right">
-                <h3 class="text-sm font-bold text-amber-950 mb-1"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي:</h3>
-                <p class="text-xs text-amber-800 mb-3 font-semibold">يتم حفظ الروابط الطويلة في السحابة للحصول على رابط قصير جداً وباركود (QR).</p>
-                <input type="url" id="longUrl" placeholder="ضع الرابط الطويل هنا..." class="w-full border p-2.5 rounded-xl text-xs font-bold bg-white mb-2" required>
-                <button id="genBtn" class="w-full bg-[#2ea44f] hover:bg-[#2c974b] text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">توليد رابط قصير جداً والـ QR 🚀</button>
-
-                <div class="result" id="resultBox" style="display:none; margin-top:15px; padding:12px; background:#eef9f1; border-radius:10px; border:1px solid #c3e6cb;">
-                    <strong style="font-size:12px; color:#155724;">الرابط المختصر القصير:</strong>
-                    <div id="shortenedLink" style="background:#fff; padding:8px; border:1px dashed #2ea44f; border-radius:6px; word-break:break-all; font-size:14px; margin:5px 0; color:#0366d6; font-weight:bold;"></div>
-                    <button id="copyBtn" class="w-full bg-[#0366d6] hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mb-2">نسخ الرابط 📋</button>
-                    <div id="qrcode" style="display:flex; justify-content:center; margin-top:10px;"></div>
-                    <button id="saveQrBtn" class="w-full bg-[#6f42c1] hover:bg-purple-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mt-2">حفظ QR كصورة 💾</button>
-                </div>
-            </div>
-
             <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-200 mb-5 text-right">
                 <h3 class="text-sm font-bold text-indigo-900 mb-2"><i class="fas fa-users"></i> قاعدة بيانات الطلاب المركزية (للمدرسة كاملة):</h3>
                 <p class="text-xs text-indigo-700 mb-2 font-semibold">انسخ والصق قائمة الطلاب (الاسم ثم الإيميل في سطرين متتاليين) لتكون متاحة لجميع المعلمين لسحبها.</p>
@@ -2274,6 +2262,26 @@
                         <tr><td colspan="5" style="text-align:center;">جاري الجلب...</td></tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- أداة اختصار الروابط المضافة لتظهر في لوحة المعلم أيضاً -->
+        <div id="teacher-shortener-card" class="admin-card mb-6" style="display: none;">
+            <div class="header">
+                <h2 class="text-lg font-black text-slate-900"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي (أداة المعلم)</h2>
+                <p class="text-xs text-slate-500 mt-1">يتم حفظ الروابط الطويلة في السحابة للحصول على رابط قصير جداً وباركود (QR)</p>
+            </div>
+            <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200 text-right">
+                <input type="url" id="longUrl" placeholder="ضع الرابط الطويل هنا..." class="w-full border p-2.5 rounded-xl text-xs font-bold bg-white mb-2" required>
+                <button id="genBtn" class="w-full bg-[#2ea44f] hover:bg-[#2c974b] text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">توليد رابط قصير جداً والـ QR 🚀</button>
+
+                <div class="result" id="resultBox" style="display:none; margin-top:15px; padding:12px; background:#eef9f1; border-radius:10px; border:1px solid #c3e6cb;">
+                    <strong style="font-size:12px; color:#155724;">الرابط المختصر القصير:</strong>
+                    <div id="shortenedLink" style="background:#fff; padding:8px; border:1px dashed #2ea44f; border-radius:6px; word-break:break-all; font-size:14px; margin:5px 0; color:#0366d6; font-weight:bold;"></div>
+                    <button id="copyBtn" class="w-full bg-[#0366d6] hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mb-2">نسخ الرابط 📋</button>
+                    <div id="qrcode" style="display:flex; justify-content:center; margin-top:10px;"></div>
+                    <button id="saveQrBtn" class="w-full bg-[#6f42c1] hover:bg-purple-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mt-2">حفظ QR كصورة 💾</button>
+                </div>
             </div>
         </div>
 
