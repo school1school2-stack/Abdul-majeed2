@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة الطلاب الشامل - أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</title>
+    <title>نظام متابعة الطلاب الشامل - 👨‍🏫 ثانوية الأمير عبدالمجيد</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -26,10 +26,11 @@
             font-family: 'Tajawal', sans-serif; 
             height: 100%; 
             width: 100%;
+            background: var(--bg); 
             margin: 0; 
             padding: 0; 
             font-size: 1rem; 
-            transition: background 0.5s ease, color 0.5s ease; 
+            transition: background 0.5s ease; 
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -47,19 +48,20 @@
             font-weight: 700;
         }
 
-        .class-large-card {
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            transition: all 0.3s ease;
-            min-height: 140px;
+        .class-3d-card {
+            border: 1px solid rgba(203, 213, 225, 0.6);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s ease;
+            background-color: #ffffff;
         }
-        .class-large-card:hover {
+        .class-3d-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
             border-color: #cbd5e1;
         }
 
         .student-square-card {
+            background: #ffffff;
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
             transition: all 0.25s ease;
@@ -99,12 +101,12 @@
         .btn-reject { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
         
         .action-select {
-            padding: 8px 12px;
-            border-radius: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
             border: 1px solid #cbd5e1;
             background-color: #f8fafc;
             font-family: inherit;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             color: #334155;
             cursor: pointer;
@@ -139,7 +141,7 @@
 
         let currentTeacherEmail = "";
         let currentTeacherName = "المعلم";
-        let currentTeacherSubject = "الكفايات اللغوية";
+        let currentTeacherSubject = "المادة";
 
         let globalStudentsList = [];
         let globalStudentsLoaded = false;
@@ -174,7 +176,6 @@
         let editingClassIndex = null;
         let pendingCountGlobal = 0;
 
-        // العبارات التشجيعية (30 عبارة)
         const motivationalQuotes = [
             "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
             "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
@@ -182,76 +183,18 @@
             "📚 \"العلم نور والجهل ظلام.. والمواظبة هي طريق التميز والنجاح.\"",
             "🚀 \"طريق الألف ميل يبدأ بفرصة وحصة دراسية واحدة، اجعل يومك مثمراً.\"",
             "🏆 \"من فتح باب مدرسة، أغلق باب سجن.. تحية لكل طالب يطلب العلم بشغف.\"",
-            "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\"",
-            "🌱 \"كل خطوة صغيرة تقطعها اليوم نحو هدفك، تقربك مسافات طويلة نحو قمة النجاح.\"",
-            "🔥 \"لا تقارن نفسك بغيرك، بل قارن نفسك بما كنت عليه بالأمس، وحاول أن تكون أفضل دائماً.\"",
-            "🦅 \"العقبات والصعوبات ليست سوى حواجز اختبار لتعرف مدى إصرارك وقوتك الحقيقية.\"",
-            "⏳ \"الوقت الذي تستثمره في التعلم اليوم هو الأداة الأكثر قيمة التي تمتلكها لصناعة الغد.\"",
-            "💎 \"التعب الذي تشعر به أثناء الدراسة سيزول سريعاً، لكن فخر إنجازك سيبقى معك إلى الأبد.\"",
-            "🌟 \"استمر في السعي بثقة، فكل درس تتعلمه اليوم يضيف لبنة جديدة في جدار مستقبلك العظيم.\"",
-            "💪 \"النجاح يبدأ من الإيمان بقدرتك على تجاوز الصعاب مهما كانت معقدة.\"",
-            "🧠 \"عقلك هو أثمن ما تملك؛ استثمره بالقراءة والتعلم كل يوم لتصنع الفارق.\"",
-            "☀️ \"ابدأ صباحك بعزيمة متجددة، فاليوم هو فرصة جديدة لتحقيق ما لم تقم به بالأمس.\"",
-            "🔑 \"الانضباط هو الجسر الحقيقي الذي يربط بين أحلامك وبين إنجازاتها على أرض الواقع.\"",
-            "📖 \"كل صفحة تقرأها اليوم هي خطوة تفصلك عن الجهل وتقربك من التميز.\"",
-            "⚡ \"الشغف يمنحك البداية، لكن الاستمرارية والعزيمة هما ما يوصلانك إلى خط النهاية.\"",
-            "🌊 \"لا تخف من الأمواج العالية، فالسفن الماهرة تصنع أروع إنجازاتها في البحار الثائرة.\"",
-            "🎨 \"مستقبلك لوحة فنية، وأنت من تختار الألوان والجهد الذي تضعه لتخرج في أبهى صورة.\"",
-            "⛰️ \"الجبال العالية لا تتسلق بلمح البصر، بل بخطوات ثابتة وواثقة نحو القمة.\"",
-            "🔮 \"أفضل طريقة لتنبؤ مستقبلك هي أن تقوم بصناعته بنفسك اليوم، خطوة بخطوة.\"",
-            "🛡️ \"الأخطاء ليست نهاية المطاف، بل هي الدروس المجانية التي تجعلنا أكثر ذكاءً وقوة.\"",
-            "⚓ \"كن صبوراً، فالأشجار العميقة الجذور هي وحدها التي تقاوم أقوى العواصف.\"",
-            "🌠 \"الأحلام الكبيرة تحتاج إلى جهود عظيمة، فلا تستصغر أي جهد قمت به اليوم.\"",
-            "🛠️ \"العلم في الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
-            "🧭 \"دع شغفك هو بوصلتك، وعملك الجاد هو وقودك، ولا تيأس مهما كانت المسافة طويلة.\"",
-            "✍️ \"اكتب نجاحك اليوم بعرق جبينك وإصرارك، لتقرأه بفخر واعتزاز غداً.\"",
-            "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
+            "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\""
         ];
 
-        // الثيمات وتصاميم الألوان المتكاملة مع الأيقونات والأنواع
         const themes = [
-            { id: 0, name: "العاجي الفاخر", type: "فاخر", classIcon: "🏛️", studentIcon: "👑", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-100/90 text-amber-950 border-amber-300", iconBg: "bg-amber-500/20 text-amber-900 border-amber-300", cardBg: "bg-amber-50/70 border-amber-200" },
-            { id: 1, name: "اللؤلؤ النقي", type: "كلاسيك", classIcon: "🏫", studentIcon: "🎓", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-200/90 text-slate-900 border-slate-300", iconBg: "bg-slate-500/20 text-slate-800 border-slate-300", cardBg: "bg-white border-slate-200" },
-            { id: 2, name: "الكتان الدافئ", type: "دافئ", classIcon: "📚", studentIcon: "📖", bg: "linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%)", headerBg: "bg-stone-200/90 text-stone-900 border-stone-300", iconBg: "bg-stone-500/20 text-stone-900 border-stone-300", cardBg: "bg-stone-50/80 border-stone-200" },
-            { id: 3, name: "الزمرد الفاتح", type: "طبيعي", classIcon: "🌱", studentIcon: "⭐", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-100/90 text-emerald-950 border-emerald-300", iconBg: "bg-emerald-500/20 text-emerald-900 border-emerald-300", cardBg: "bg-emerald-50/60 border-emerald-200" },
-            { id: 4, name: "السموكي الناعم", type: "عصري", classIcon: "📐", studentIcon: "🚀", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-100/90 text-sky-950 border-sky-300", iconBg: "bg-sky-500/20 text-sky-900 border-sky-300", cardBg: "bg-sky-50/60 border-sky-200" },
-            { id: 5, name: "اللافندر الرقيق", type: "إبداعي", classIcon: "🎨", studentIcon: "💎", bg: "linear-gradient(135deg, #fcfaff 0%, #f0ebf8 100%)", headerBg: "bg-purple-100/90 text-purple-950 border-purple-300", iconBg: "bg-purple-500/20 text-purple-900 border-purple-300", cardBg: "bg-purple-50/60 border-purple-200" },
-            { id: 6, name: "المرجان المشرق", type: "حيوي", classIcon: "🔥", studentIcon: "🏆", bg: "linear-gradient(135deg, #fffaf9 0%, #fcefeD 100%)", headerBg: "bg-rose-100/90 text-rose-950 border-rose-300", iconBg: "bg-rose-500/20 text-rose-900 border-rose-300", cardBg: "bg-rose-50/60 border-rose-200" }
+            { name: "العاجي الفاخر", bg: "#fcfbf7", headerBg: "bg-stone-100/80 text-stone-900 border-stone-200/80", btnPrimary: "bg-stone-800 hover:bg-stone-900 text-stone-50" },
+            { name: "اللؤلؤ النقي", bg: "#f8fafc", headerBg: "bg-slate-100/80 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
+            { name: "السموكي الناعم", bg: "#f1f5f9", headerBg: "bg-sky-50/80 text-sky-950 border-sky-100", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" }
         ];
 
-        // التقييمات التلقائية الافتراضية
-        const defaultActions = [
-            { icon: '✅', name: 'إجابة صحيحة', score: 1.0, color: '#28a745' },
-            { icon: '❌', name: 'إجابة خاطئة', score: -1.0, color: '#dc3545' },
-            { icon: '💡', name: 'مشاركة', score: 1.0, color: '#17a2b8' },
-            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#20c997' },
-            { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#e83e8c' },
-            { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#dc3545' },
-            { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#ffc107' },
-            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#6610f2' },
-            { icon: '🗣️', name: 'التحدث أثناء الدرس', score: -1.0, color: '#6f42c1' },
-            { icon: '📱', name: 'استخدام الهاتف', score: -1.0, color: '#d9534f' },
-            { icon: '🎁', name: 'هدية', score: 5.0, color: '#e17055' }
-        ];
-
-        // تطبيق ثيم محدد أو عشوائي
-        function applyTheme(themeIndex = null) {
-            let selectedTheme;
-            if (themeIndex !== null && themes[themeIndex]) {
-                selectedTheme = themes[themeIndex];
-                localStorage.setItem('selectedThemeIndex', themeIndex);
-            } else {
-                const savedThemeIndex = localStorage.getItem('selectedThemeIndex');
-                if (savedThemeIndex !== null && themes[savedThemeIndex]) {
-                    selectedTheme = themes[savedThemeIndex];
-                } else {
-                    const randomIndex = Math.floor(Math.random() * themes.length);
-                    selectedTheme = themes[randomIndex];
-                }
-            }
-
-            window.currentTheme = selectedTheme;
-
+        function applyRandomTheme() {
+            const randomIndex = Math.floor(Math.random() * themes.length);
+            const selectedTheme = themes[randomIndex];
             document.body.style.background = selectedTheme.bg;
             
             const header = document.getElementById('main-header');
@@ -260,67 +203,28 @@
             if(footer) footer.className = `py-3 px-6 border-t shrink-0 z-30 transition-all duration-500 backdrop-blur-md ${selectedTheme.headerBg}`;
 
             const quoteEl = document.getElementById('quote-text');
-            if (quoteEl && !quoteEl.dataset.initialized) {
+            if (quoteEl) {
                 const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
                 quoteEl.innerText = randomQuote;
-                quoteEl.dataset.initialized = "true";
             }
-            
+            window.currentTheme = selectedTheme;
             renderView();
             if(activeClass) renderClassStudents();
         }
 
-        function applyRandomTheme() {
-            const randomIndex = Math.floor(Math.random() * themes.length);
-            applyTheme(randomIndex);
-        }
-
-        function openThemeSelector() {
-            let modal = document.getElementById('theme-picker-modal');
-            if(!modal) {
-                modal = document.createElement('div');
-                modal.id = 'theme-picker-modal';
-                modal.className = 'fixed inset-0 bg-slate-900/40 flex items-center justify-center p-3 z-50 backdrop-blur-xs';
-                
-                let themeCards = themes.map((t, index) => `
-                    <div onclick="applyTheme(${index}); closeThemeSelector();" class="p-3.5 rounded-2xl border cursor-pointer transition hover:scale-105 flex items-center justify-between gap-3 ${t.cardBg}">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 rounded-xl ${t.iconBg}">${t.classIcon}</span>
-                            <div>
-                                <h4 class="font-black text-slate-800 text-sm">${t.name}</h4>
-                                <span class="text-[10px] bg-white/80 px-2 py-0.5 rounded-full font-bold text-slate-600 border border-slate-200">نوع: ${t.type}</span>
-                            </div>
-                        </div>
-                        <span class="text-xl">${t.studentIcon}</span>
-                    </div>
-                `).join('');
-
-                modal.innerHTML = `
-                    <div class="bg-white rounded-3xl max-w-md w-full p-6 relative shadow-xl max-h-[90vh] overflow-y-auto border border-slate-200 text-right">
-                        <button onclick="closeThemeSelector()" class="absolute top-4 left-4 bg-slate-100 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200 text-xs">✕</button>
-                        <h3 class="text-lg font-black text-slate-800 mb-1">🎨 اختر ثيم المنصة</h3>
-                        <p class="text-xs text-slate-400 font-bold mb-4">تتغير الأيقونات وتدرجات الألوان فوراً بحسب ثيمك المفصل</p>
-                        <div class="space-y-2.5 mb-4">${themeCards}</div>
-                        <button onclick="applyRandomTheme(); closeThemeSelector();" class="w-full bg-slate-800 text-white py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-900 transition shadow-2xs">🎲 تطبيق ثيم عشوائي</button>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-            } else {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            }
-        }
-
-        function closeThemeSelector() {
-            const modal = document.getElementById('theme-picker-modal');
-            if(modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        }
+        const defaultActions = [
+            { icon: '✅', name: 'إجابة صحيحة', score: 1.0, color: '#10b981' },
+            { icon: '❌', name: 'إجابة خاطئة', score: -1.0, color: '#ef4444' },
+            { icon: '💡', name: 'مشاركة', score: 1.0, color: '#0284c7' },
+            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#0d9488' },
+            { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#f43f5e' },
+            { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#e11d48' },
+            { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#d97706' },
+            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#7c3aed' }
+        ];
 
         function initSystem() {
-            applyTheme();
+            applyRandomTheme();
             customActions = defaultActions;
             fetchClassesAndStudents();
             fetchGlobalStudentsBackground();
@@ -633,53 +537,46 @@
             renderView();
         };
 
-        window.handleClassDropdownAction = function(selectElement, className) {
-            const action = selectElement.value;
-            selectElement.value = "";
-            if (action === 'enter') openClass(className);
-            else if (action === 'share_detailed') shareClassReportLink(className, 'detailed', null);
-            else if (action === 'share_table') shareClassReportLink(className, 'table', null);
-            else if (action === 'view_detailed') openClassReportPreview(className, 'detailed');
-            else if (action === 'view_table') openClassReportPreview(className, 'table');
-        };
+        /* ألوان هادئة ومريحة للعين مخصصة للأيقونات الكبيرة */
+        const iconSoftStyles = [
+            { bg: "bg-amber-500/10 text-amber-800 border-amber-200/50" },
+            { bg: "bg-emerald-500/10 text-emerald-800 border-emerald-200/50" },
+            { bg: "bg-sky-500/10 text-sky-800 border-sky-200/50" },
+            { bg: "bg-purple-500/10 text-purple-800 border-purple-200/50" },
+            { bg: "bg-rose-500/10 text-rose-800 border-rose-200/50" },
+            { bg: "bg-teal-500/10 text-teal-800 border-teal-200/50" }
+        ];
 
         function renderView() {
             const classesContainer = document.getElementById('dynamic-classes-grid');
             if(!classesContainer) return;
             classesContainer.innerHTML = '';
 
-            const currentTheme = window.currentTheme || themes[0];
-            const themeIconBg = currentTheme.iconBg;
-            const themeCardBg = currentTheme.cardBg || 'bg-white';
-            const classIcon = currentTheme.classIcon || '🏫';
-
-            classList.forEach((cls) => {
+            classList.forEach((cls, idx) => {
                 const count = allStudents.filter(s => s.className === cls).length;
+                const softStyle = iconSoftStyles[idx % iconSoftStyles.length];
                 
                 classesContainer.innerHTML += `
-                    <div class="class-large-card p-6 sm:p-7 rounded-3xl flex items-center justify-between gap-4 ${themeCardBg}">
-                        <div class="flex items-center gap-4 sm:gap-5 cursor-pointer flex-1" onclick="openClass('${cls}')">
-                            <span class="text-4xl sm:text-5xl p-4 sm:p-5 rounded-2xl ${themeIconBg} border flex items-center justify-center shrink-0 shadow-2xs">${classIcon}</span>
-                            <div>
-                                <h3 class="class-title-font text-lg sm:text-xl text-slate-800 tracking-wide">${cls}</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 font-bold mt-1.5">${count} طالب مسجل بالحصة</p>
-                                <span class="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full font-bold bg-white/60 text-slate-500 border border-slate-200">ثيم: ${currentTheme.name} (${currentTheme.type})</span>
+                    <div class="class-3d-card p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border hover:border-slate-300 gap-4 bg-white">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3.5 sm:gap-4">
+                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl ${softStyle.bg} border flex items-center justify-center shrink-0 shadow-2xs">🏫</span>
+                                <div>
+                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">${cls}</h3>
+                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-slate-100 text-slate-600 border border-slate-200">${count} طلاب مخصصين</p>
+                                </div>
                             </div>
+                            <!-- زر دخول الفصل بصورة واضحة وبتصميم أنيق ومريح -->
+                            <button onclick="openClass('${cls}')" title="دخول الفصل" class="bg-slate-800 hover:bg-slate-900 text-slate-100 px-3.5 py-2 rounded-xl flex items-center gap-2 text-xs font-bold shadow-xs cursor-pointer transition shrink-0 border border-slate-700">
+                                <i class="fas fa-door-open text-amber-300"></i>
+                                <span>دخول الفصل</span>
+                            </button>
                         </div>
-
-                        <div class="shrink-0">
-                            <select class="action-select text-xs sm:text-sm py-2.5 px-3.5 border border-slate-200 rounded-2xl bg-white text-slate-700 font-bold outline-none cursor-pointer hover:bg-slate-100 transition shadow-2xs" onchange="handleClassDropdownAction(this, '${cls}')">
-                                <option value="" disabled selected>⚙️ خيارات الفصل</option>
-                                <option value="enter">🚪 دخول الفصل المباشر</option>
-                                <optgroup label="👁️ المعاينة والمشاهدة">
-                                    <option value="view_detailed">👁️ عرض التقرير الفردي</option>
-                                    <option value="view_table">👁️ عرض جدول الفصل</option>
-                                </optgroup>
-                                <optgroup label="🔗 روابط المشاركة">
-                                    <option value="share_detailed">🔗 نسخ رابط التقرير الفردي</option>
-                                    <option value="share_table">🔗 نسخ رابط جدول الفصل</option>
-                                </optgroup>
-                            </select>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3 border-t border-slate-100">
+                            <button onclick="shareClassReportLink('${cls}', 'detailed', this)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1.5 border border-slate-200">🔗 نسخ رابط التقرير الفردي</button>
+                            <button onclick="shareClassReportLink('${cls}', 'table', this)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1.5 border border-slate-200">🔗 نسخ رابط جدول الفصل</button>
+                            <button onclick="openClassReportPreview('${cls}', 'detailed')" class="bg-slate-50 hover:bg-slate-100 text-slate-600 py-2 px-3 rounded-xl font-bold text-xs cursor-pointer transition text-center flex items-center justify-center gap-1 border border-slate-200/80">👁️ عرض التقرير الفردي</button>
+                            <button onclick="openClassReportPreview('${cls}', 'table')" class="bg-slate-50 hover:bg-slate-100 text-slate-600 py-2 px-3 rounded-xl font-bold text-xs cursor-pointer transition text-center flex items-center justify-center gap-1 border border-slate-200/80">👁️ عرض جدول الفصل</button>
                         </div>
                     </div>
                 `;
@@ -688,31 +585,36 @@
             if (currentTeacherEmail === "school1school2@gmail.com") {
                 const approvedTotalCount = allStudents.length;
                 classesContainer.innerHTML += `
-                    <div class="class-large-card p-6 sm:p-7 rounded-3xl flex items-center justify-between gap-4 ${themeCardBg} relative">
+                    <div class="class-3d-card p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border gap-4 relative bg-white">
                         ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs animate-pulse">طلب جديد!</div>` : ''}
-                        <div onclick="openAdminControlPanel()" class="flex items-center gap-4 sm:gap-5 cursor-pointer flex-1">
-                            <span class="text-4xl sm:text-5xl p-4 sm:p-5 rounded-2xl ${themeIconBg} border flex items-center justify-center shrink-0">🔒</span>
-                            <div>
-                                <h3 class="class-title-font text-lg sm:text-xl text-slate-800 tracking-wide">لوحة التحكم المدمجة</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 font-bold mt-1.5">${approvedTotalCount} طالب معتمد بالمنصة</p>
+                        <div onclick="openAdminControlPanel()" class="flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center gap-3.5 sm:gap-4">
+                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center shrink-0">🔒</span>
+                                <div>
+                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">لوحة التحكم المدمجة</h3>
+                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-slate-100 text-slate-600 border border-slate-200">${approvedTotalCount} طالب معتمد</p>
+                                </div>
                             </div>
+                            <span class="bg-slate-50 w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-slate-600 border border-slate-200 shrink-0">⚙️</span>
                         </div>
-                        <button onclick="openAdminControlPanel()" class="bg-slate-800 hover:bg-slate-900 text-slate-100 px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm shadow-2xs cursor-pointer transition shrink-0">
-                            فتح اللوحة ⚙️
-                        </button>
+                        <div class="pt-2 border-t border-slate-100">
+                            <button onclick="openAdminControlPanel()" class="w-full bg-slate-800 hover:bg-slate-900 text-slate-100 py-2.5 px-3 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition text-center flex items-center justify-center gap-1">🔐 فتح لوحة التحكم وإدارة الاعتمادات</button>
+                        </div>
                     </div>
                 `;
             } else {
                 classesContainer.innerHTML += `
-                    <div class="class-large-card p-6 sm:p-7 rounded-3xl flex items-center justify-between gap-4 ${themeCardBg} border-dashed border-slate-300 cursor-pointer hover:border-slate-400" onclick="openGlobalStudentsDistribution()">
-                        <div class="flex items-center gap-4 sm:gap-5 flex-1">
-                            <span class="text-4xl sm:text-5xl p-4 sm:p-5 rounded-2xl ${themeIconBg} border flex items-center justify-center shrink-0">🗂️</span>
-                            <div>
-                                <h3 class="class-title-font text-lg sm:text-xl text-slate-800 tracking-wide">الطلاب وتوزيعهم</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 font-bold mt-1.5">سحب طلاب للمنصة</p>
+                    <div class="class-3d-card bg-white p-5 sm:p-6 rounded-3xl transition flex flex-col justify-center border border-dashed border-slate-300 cursor-pointer hover:border-slate-400" onclick="openGlobalStudentsDistribution()">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3.5 sm:gap-4">
+                                <span class="text-3xl sm:text-4xl p-3 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center shrink-0">🗂️</span>
+                                <div>
+                                    <h3 class="class-title-font text-base sm:text-lg tracking-wide text-slate-800">الطلاب وتوزيعهم</h3>
+                                    <p class="text-xs mt-1 font-bold px-2.5 py-0.5 rounded-lg inline-block bg-indigo-50 text-indigo-700 border border-indigo-100">سحب طلاب للمنصة</p>
+                                </div>
                             </div>
+                            <span class="bg-indigo-50 w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-indigo-700 border border-indigo-100 shrink-0">➕</span>
                         </div>
-                        <span class="bg-white text-slate-700 font-bold text-xs sm:text-sm px-4 py-2 rounded-2xl border border-slate-200 shadow-2xs">➕ إضافة طلاب</span>
                     </div>
                 `;
             }
@@ -729,8 +631,7 @@
             if (cleanName.includes('غائب')) return { title: 'غائب', icon: '🔴' }; 
             if (cleanName.includes('متأخر')) return { title: 'متأخر', icon: '⏰' }; 
             if (cleanName.includes('خروج بدون إذن') || cleanName.includes('خارج بدون إذن')) return { title: 'خروج بدون إذن', icon: '🚶‍♂️' }; 
-            if (cleanName.includes('مستأذن')) return { title: 'مستأذن', icon: '🔵' }; 
-            if (cleanName.includes('عن بعد')) return { title: 'عن بعد', icon: '💻' }; 
+            if (cleanName.includes('مستاذن')) return { title: 'مستاذن', icon: '🏃' }; 
             if (cleanName.includes('هارب')) return { title: 'هارب', icon: '🚶‍♂️' }; 
             return { title: cleanName, icon: displayIcon };
         }
@@ -742,12 +643,8 @@
             container.innerHTML = '';
             const students = allStudents.filter(s => s.className === activeClass);
 
-            const currentTheme = window.currentTheme || themes[0];
-            const studentIcon = currentTheme.studentIcon || '👤';
-            const themeCardBg = currentTheme.cardBg || 'bg-white';
-
             if(students.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-2 text-center py-12 font-bold ${themeCardBg} rounded-2xl shadow-xs text-sm">لا توجد طلاب في هذا الفصل حالياً. يمكنك تعيينهم من لوحة التحكم الرئيسية.</p>`;
+                container.innerHTML = `<p class="text-slate-500 col-span-2 text-center py-12 font-bold bg-white rounded-2xl shadow-xs text-sm">لا توجد طلاب في هذا الفصل حالياً. يمكنك تعيينهم من لوحة التحكم الرئيسية.</p>`;
                 return;
             }
 
@@ -792,20 +689,20 @@
                 if(totalStudentScore === 0) scoreBadgeColor = "bg-slate-50 text-slate-600 border-slate-200";
 
                 container.innerHTML += `
-                    <div class="student-square-card p-5 rounded-3xl flex flex-col justify-between transition gap-4 ${themeCardBg}">
+                    <div class="student-square-card p-5 rounded-3xl flex flex-col justify-between transition gap-4">
                         <div class="flex items-center gap-3 cursor-pointer relative" onclick="openModal('${student.id}')" title="اضغط لعرض التقرير المفصل">
                             ${totalActionsCount > 0 ? `<div class="absolute -top-3 -right-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs border border-white">${totalActionsCount}+</div>` : ''}
-                            <div class="w-14 h-14 ${currentTheme.iconBg} rounded-2xl flex items-center justify-center text-3xl font-black shrink-0 border border-slate-200">${studentIcon}</div>
+                            <div class="w-14 h-14 bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center text-3xl font-black shrink-0 border border-slate-200">👤</div>
                             <div class="overflow-hidden flex-grow">
-                                <div class="bg-white/80 border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs flex items-center justify-between gap-2">
+                                <div class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs flex items-center justify-between gap-2">
                                     <h3 class="student-name-font text-slate-900 tracking-wide truncate hover:text-slate-700 transition">${student.name}</h3>
                                     <span class="text-xs font-black px-2 py-0.5 rounded-lg border ${scoreBadgeColor} shrink-0">${formattedScore}</span>
                                 </div>
-                                <p class="text-xs text-slate-500 font-bold truncate mt-1 px-1">${student.email || 'بدون إيميل'}</p>
+                                <p class="text-xs text-slate-400 font-bold truncate mt-1 px-1">${student.email || 'بدون إيميل'}</p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2 overflow-x-auto py-1.5 bg-white/60 px-2 rounded-xl min-h-[48px] w-full border border-slate-200/60" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
+                        <div class="flex items-center gap-2 overflow-x-auto py-1.5 bg-slate-50 px-2 rounded-xl min-h-[48px] w-full border border-slate-100" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
                             ${actionsListHtml}
                         </div>
 
@@ -892,7 +789,7 @@
                 classList.splice(index, 1);
                 for(let stu of allStudents) {
                     if(stu.className === removedName) {
-                        stu.className = 'غير موزع';
+                        stu.className = 'غير موزاد';
                         await db.collection(getTeacherCollection()).doc(stu.id).update({ className: 'غير موزع' });
                     }
                 }
@@ -1114,7 +1011,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستأذن') || title.includes('غائب بعذر') || title.includes('خروج بدون إذن') || title.includes('خارج بدون إذن')) attendanceEventsList.push(act);
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر') || title.includes('خروج بدون إذن') || title.includes('خارج بدون إذن')) attendanceEventsList.push(act);
                 if (title.includes('واجب')) homeworkList.push(act);
                 else if (title.includes('ملف') || title.includes('إنجاز')) portfolioList.push(act);
                 else if (score < 0 || title.includes('نوم') || title.includes('تحدث') || title.includes('هاتف') || title.includes('خاطئة')) negativeList.push(act);
@@ -1128,18 +1025,15 @@
             const student = allStudents.find(s => s.id === id);
             if(!student) return;
 
-            const currentTheme = window.currentTheme || themes[0];
-            const studentIcon = currentTheme.studentIcon || '👤';
-
             const summaryData = calculateStudentSummaryData(student);
             const { att, actions } = summaryData;
 
             const modalContent = document.getElementById('modal-content');
             modalContent.innerHTML = `
                 <div class="text-center mb-6 border-b pb-4">
-                    <div class="w-16 h-16 ${currentTheme.iconBg} rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-xs">${studentIcon}</div>
+                    <div class="w-16 h-16 bg-slate-800 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-xs">👤</div>
                     <h2 class="student-name-font text-2xl text-slate-900">${student.name}</h2>
-                    <p class="text-xs font-bold text-slate-500 mt-1">${student.className} | أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                    <p class="text-xs font-bold text-slate-500 mt-1">${student.className} | منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -1164,7 +1058,7 @@
                                 </div>
                             </div>
                             <div class="bg-amber-50/60 p-2 rounded-xl border border-amber-100">
-                                <span class="block text-[10px] font-bold text-amber-800">تأخر (${att.lates || 0})</span>
+                                <span class="block text-[10px] font-bold text-amber-800">تاخر (${att.lates || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
                                     <button onclick="adjustAttendance('lates', 1)" class="bg-amber-600 text-white w-5 h-5 rounded font-black text-xs hover:bg-amber-700">+</button>
                                     <button onclick="adjustAttendance('lates', -1)" class="bg-amber-800 text-white w-5 h-5 rounded font-black text-xs hover:bg-amber-900">-</button>
@@ -1244,7 +1138,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-800">📋 تقرير متابعة طالب مفصل</h3>
                         <p class="text-xs font-bold text-slate-600 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div class="space-y-3 text-xs font-bold text-slate-700">
                         <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
@@ -1252,7 +1146,7 @@
                             <div class="flex gap-3 text-slate-600 mt-1 flex-wrap">
                                 <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                 <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
-                                <span>⏰ تأخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
                                 <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                             </div>
                         </div>
@@ -1347,7 +1241,7 @@
                             <span class="text-4xl mb-2 inline-block">🎓</span>
                             <h1 class="student-title text-3xl font-bold text-slate-800">${student.name}</h1>
                             <p class="text-sm font-bold text-slate-600 mt-1">الصف: ${student.className}</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫 | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
                         <div class="space-y-4 text-xs font-bold text-slate-700">
                             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-2xs">
@@ -1355,7 +1249,7 @@
                                 <div class="flex justify-between text-slate-600 my-2 px-2 border-b border-slate-200 pb-2 flex-wrap gap-2">
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
-                                    <span>⏰ تأخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                    <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
                                     <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${summary.attendanceEventsList.length === 0 ? '<p class="text-emerald-600 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : `<ul class="list-disc list-inside text-slate-600 space-y-1 mt-2">${summary.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-600">${item.title}</span> - <span class="text-[11px] text-slate-400">${item.timestamp}</span></li>`).join('')}</ul>`}
@@ -1392,7 +1286,7 @@
                             </div>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-400 flex justify-between">
-                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1437,7 +1331,7 @@
                                 <div class="flex gap-3 text-slate-600 my-1 pb-2 border-b border-slate-100 flex-wrap">
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
-                                    <span>⏰ تأخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                    <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
                                     <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${attendanceHtml}
@@ -1469,7 +1363,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-5 sticky top-0 bg-white z-10 py-2">
                         <h3 class="student-name-font text-2xl text-slate-800">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
                         <p class="text-xs font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
@@ -1508,7 +1402,7 @@
                                 <div style="display: flex; gap: 10px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #f8fafc; flex-wrap: wrap;">
                                     <span>🟢 حضور: <strong style="color: #059669;">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong style="color: #dc2626;">${att.absents || 0}</strong></span>
-                                    <span>⏰ تأخر: <strong style="color: #d97706;">${att.lates || 0}</strong></span>
+                                    <span>⏰ تاخر: <strong style="color: #d97706;">${att.lates || 0}</strong></span>
                                     <span>🚶‍♂️ خروج بدون إذن: <strong style="color: #292524;">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${attendanceHtml}
@@ -1549,11 +1443,11 @@
                             <span class="text-4xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-800">التقرير الفردي الشامل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫 | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
                         <div>${students.length === 0 ? '<p style="text-align: center; padding: 30px; color: #94a3b8; font-weight: bold;">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-400 flex justify-between">
-                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1598,7 +1492,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-800">📊 جدول الفصل الشامل والمفصل: ${className}</h3>
                         <p class="text-xs font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب | ${currentTeacherSubject}</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div class="grid grid-cols-4 gap-2 text-center mb-4 text-xs font-bold">
                         <div class="bg-emerald-50/60 p-2 rounded-xl border border-emerald-100">
@@ -1626,7 +1520,7 @@
                                     <th class="p-2">اسم الطالب</th>
                                     <th class="p-2 text-center">حضور</th>
                                     <th class="p-2 text-center">غياب</th>
-                                    <th class="p-2 text-center">تأخر</th>
+                                    <th class="p-2 text-center">تاخر</th>
                                     <th class="p-2 text-center bg-stone-700 text-stone-100">خروج بدون إذن</th>
                                     <th class="p-2 text-center">النقاط</th>
                                     <th class="p-2">المشاركات الإيجابية</th>
@@ -1694,7 +1588,7 @@
                             <span class="text-4xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-800">التقرير الشامل والمفصل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-slate-500 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫 | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
                         <div class="grid grid-cols-4 gap-3 text-center mb-6 text-xs font-bold">
                             <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100 shadow-2xs"><span class="text-emerald-800 block text-xs">إجمالي الحضور</span><span class="text-lg font-black text-emerald-600">${totalPresentsClass}</span></div>
@@ -1710,7 +1604,7 @@
                                         <th style="padding: 10px;">اسم الطالب</th>
                                         <th style="padding: 10px; text-align: center;">حضور</th>
                                         <th style="padding: 10px; text-align: center;">غياب</th>
-                                        <th style="padding: 10px; text-align: center;">تأخر</th>
+                                        <th style="padding: 10px; text-align: center;">تاخر</th>
                                         <th style="padding: 10px; text-align: center; background-color: #334155; color: #ffffff;">خروج بدون إذن</th>
                                         <th style="padding: 10px; text-align: center;">النقاط</th>
                                         <th style="padding: 10px;">المشاركات الإيجابية</th>
@@ -1722,7 +1616,7 @@
                             </table>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-400 flex justify-between">
-                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1737,8 +1631,6 @@
         };
 
         window.onload = function() {
-            applyTheme();
-
             const urlParams = new URLSearchParams(window.location.search);
             const reportId = urlParams.get('view_report');
             
@@ -2105,7 +1997,7 @@
                     <i class="fas fa-arrow-left"></i>
                 </button>
             </div>
-            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد 👨‍🏫</p>
+            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد</p>
         </div>
     </div>
 
@@ -2113,12 +2005,11 @@
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-center sm:text-right">
                 <h1 class="text-lg font-black tracking-wide" id="main-header-title">نظام المتابعة السحابي الشامل</h1>
-                <p class="text-xs opacity-80 mt-0.5 font-bold" id="main-header-subtitle">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫 | الكفايات اللغوية</p>
+                <p class="text-xs opacity-80 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد</p>
             </div>
-            <div class="flex gap-2 items-center flex-wrap justify-center">
-                <button onclick="openThemeSelector()" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">🎨 الثيمات</button>
-                <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">🏫 الفصول</button>
-                <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">⚙️ التقييمات</button>
+            <div class="flex gap-2 items-center">
+                <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">🏫 الفصول</button>
+                <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">⚙️ التقييمات</button>
                 <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
             </div>
         </div>
@@ -2169,18 +2060,18 @@
         </div>
 
         <div id="main-dashboard" class="py-2 space-y-6">
-            <div class="flex items-center justify-between border-b border-slate-200/80 pb-3">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
                 <h2 class="text-xl font-black text-slate-800 tracking-wide">🏫 القائمة الرئيسية</h2>
-                <span class="text-xs font-bold text-slate-600 bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-2xs">اختر الفصل للبدء</span>
+                <span class="text-xs font-bold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">اختر الفصل للبدء</span>
             </div>
             
-            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 w-full max-w-full overflow-hidden"></div>
+            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-5 w-full max-w-full overflow-hidden"></div>
 
-            <div class="bg-white/80 backdrop-blur-xs border border-slate-200 p-5 rounded-2xl shadow-2xs text-center my-6">
-                <p id="quote-text" class="student-name-font text-lg text-slate-800 leading-relaxed">
+            <div class="bg-white/80 backdrop-blur-xs border border-slate-200 p-4 rounded-2xl shadow-2xs text-center my-4">
+                <p id="quote-text" class="student-name-font text-base text-slate-800 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
                 </p>
-                <span class="text-xs font-bold text-slate-400 block mt-1">حكمة اليوم للمعلم والطالب 🌿</span>
+                <span class="text-[11px] font-bold text-slate-400 block mt-0.5">ثانوية الأمير عبدالمجيد</span>
             </div>
         </div>
 
@@ -2229,7 +2120,7 @@
         </div>
 
         <div id="class-view" class="hidden py-1">
-            <div class="flex items-center justify-between mb-4 bg-white/90 backdrop-blur-xs p-3 rounded-2xl shadow-2xs border border-slate-200">
+            <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-2xl shadow-2xs border border-slate-200">
                 <button onclick="backToHome()" class="bg-slate-100 text-slate-700 px-3.5 py-1.5 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
                 <h2 class="text-sm font-black text-slate-800" id="class-title-header">الفصل</h2>
                 <div class="w-12"></div>
@@ -2270,10 +2161,10 @@
     </main>
 
     <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
-        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right text-slate-600">
-            <div>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</div>
-            <div>الحقوق محفوظة 2026</div>
+        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right text-slate-500">
             <div>ثانوية الأمير عبدالمجيد</div>
+            <div>الحقوق محفوظة 2026</div>
+            <div>التعليم الذكي</div>
         </div>
     </footer>
 
@@ -2296,82 +2187,17 @@
                 <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border border-slate-200 p-2.5 rounded-xl text-xs font-bold"></select>
                 <div class="grid grid-cols-3 gap-2">
                     <select id="new-action-icon" class="border border-slate-200 p-2.5 rounded-xl text-base font-bold bg-white">
-                        <option value="👑">👑 ملك الإنجاز / التميز المطلق</option>
-                        <option value="🚀">🚀 انطلاقة صاروخية / تفوق</option>
-                        <option value="🧠">🧠 عبقري / تفكير عميق</option>
-                        <option value="🌟">🌟 نجم ساطع</option>
-                        <option value="💯">💯 درجة كاملة / مثالي</option>
-                        <option value="🥇">🥇 المركز الأول</option>
-                        <option value="🎓">🎓 إنجاز أكاديمي عالي</option>
-                        <option value="🔥">🔥 اشتعال الحماس والهمة</option>
-                        <option value="💎">💎 درة ومجوهرات الأداء</option>
-                        <option value="👑💯">👑💯 القمة المطلقة</option>
-                        <option value="🚀🌟">🚀🌟 تميز وانطلاق صاروخي</option>
                         <option value="⭐">⭐ نجمة تفوق</option>
-                        <option value="👍">👍 أحسنت / تأييد</option>
-                        <option value="✨">✨ تألق وإبداع</option>
-                        <option value="📈">📈 صعود ومؤشر تصاعدي</option>
-                        <option value="👏">👏 تشجيع وثناء</option>
-                        <option value="🎯">🎯 إصابة الهدف بدقة</option>
-                        <option value="📝">📝 تدريب وتحضير</option>
-                        <option value="👌">👌 إتقان وأداء ممتاز</option>
-                        <option value="⚡">⚡ نشاط وسرعة استجابة</option>
-                        <option value="📚">📚 استذكار ومذاكرة</option>
-                        <option value="⏳">⏳ انتظار وصبر</option>
-                        <option value="🔋">🔋 طاقة جيدة</option>
-                        <option value="🌤️">🌤️ تحسن ملحوظ</option>
-                        <option value="🚲">🚲 محاولة مستمرة</option>
-                        <option value="📉">📉 انخفاض بالمستوى</option>
-                        <option value="⚠️">⚠️ تنبيه هام</option>
-                        <option value="🛑">🛑 إيقاف / منع</option>
-                        <option value="🔍">🔍 تحتاج تدقيق ومراجعة</option>
-                        <option value="🔄">🔄 إعادة المحاولة</option>
-                        <option value="❌">❌ خطأ / تقصير</option>
-                        <option value="🎨">🎨 ترتيب وإبداع فني</option>
-                        <option value="🧼">🧼 نظافة ومرتب</option>
-                        <option value="🌸">🌸 حسن مظهر</option>
-                        <option value="📐">📐 تنظيم وهندسة الدفتر</option>
-                        <option value="📖">📖 العناية بالكتاب المدرسي</option>
-                        <option value="✏️">✏️ كتابة ممتازة ودقيقة</option>
-                        <option value="📜">📜 خط جميل ومنسق</option>
-                        <option value="🙋‍♂️">🙋‍♂️ مبادر بالمشاركة (طالب)</option>
-                        <option value="🙋‍♀️">🙋‍♀️ مبادرة بالمشاركة (طالبة)</option>
-                        <option value="🗣️">🗣️ تفاعل لفظي نشط</option>
-                        <option value="🤝">🤝 تعاون ومساعدة الزملاء</option>
-                        <option value="⏱️">⏱️ التزام بالوقت</option>
-                        <option value="🏅">🏅 وسام الالتزام السلوكي</option>
-                        <option value="😍">😍 فخور بك جداً</option>
-                        <option value="🥰">🥰 أحببت عملك وأدائك</option>
-                        <option value="😎">😎 إجابة واثقة ومتقنة</option>
-                        <option value="🤔">🤔 فكر مجدداً بعمق</option>
-                        <option value="🧐">🧐 ركز أكثر من فضلك</option>
-                        <option value="😢">😢 حزين على مستواك وتقصيرك</option>
-                        <option value="✅">✅ إجابة صحيحة / صح</option>
-                        <option value="💡">💡 مشاركة وفكرة</option>
-                        <option value="📘">📘 حل الواجب</option>
-                        <option value="📕">📕 لم يحل الواجب</option>
-                        <option value="📁">📁 نسيان ملف</option>
-                        <option value="📂">📂 إنجاز ملف</option>
-                        <option value="💤">💤 النوم في الحصة</option>
-                        <option value="📱">📱 استخدام الهاتف</option>
-                        <option value="🎁">🎁 هدية تشجيعية</option>
+                        <option value="✅">✅ إجابة صحيحة</option>
+                        <option value="❌">❌ خطأ</option>
                     </select>
-                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white focus:outline-none">
+                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة (1 أو -1)" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
+                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
                     <select id="new-action-color" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
-                        <option value="#28a745">🟢 أخضر عشبي</option>
-                        <option value="#20c997">🔹 أخضر فيروزي</option>
-                        <option value="#007bff">🔵 أزرق غامق</option>
-                        <option value="#17a2b8">🟦 سماوي فاتح</option>
-                        <option value="#6610f2">🟣 بنفسجي ملكي</option>
-                        <option value="#6f42c1">🔮 أرجواني</option>
-                        <option value="#e83e8c">🩷 وردي زاهي</option>
-                        <option value="#dc3545">🔴 أحمر قاني</option>
-                        <option value="#fd7e14">🟠 برتقالي ساطع</option>
-                        <option value="#ffc107">🟡 أصفر ذهبي</option>
-                        <option value="#6c757d">⚪ رمادي رسمي</option>
+                        <option value="#10b981">🟢 أخضر</option>
+                        <option value="#ef4444">🔴 أحمر</option>
                     </select>
                 </div>
                 <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-900">حفظ التقييم 🚀</button>
@@ -2409,7 +2235,7 @@
                     <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-2 bg-rose-50 text-rose-800 border border-rose-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🔴 غائب</button>
                     <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-2 bg-amber-50 text-amber-800 border border-amber-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">⏰ متأخر</button>
                     <button onclick="recordAction('خروج بدون إذن', 0, 'خروج بدون إذن')" class="flex items-center gap-2 bg-stone-100 text-stone-700 border border-stone-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🚶‍♂️ خروج بدون إذن</button>
-                    <button onclick="recordAction('مستأذن', 0, 'مستأذن')" class="flex items-center gap-2 bg-sky-50 text-sky-800 border border-sky-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🏃 مستأذن</button>
+                    <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-2 bg-sky-50 text-sky-800 border border-sky-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🏃 مستاذن</button>
                 </div>
             </div>
 
