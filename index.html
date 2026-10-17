@@ -115,6 +115,7 @@
     </style>
 
     <script>
+        // إعدادات سحابة aaaa-a2380 
         const firebaseConfig = {
             apiKey: "AIzaSyDhd5CSkNMoppGby6uKxHsQCBPmi6xxO58",
             authDomain: "aaaa-a2380.firebaseapp.com",
@@ -168,6 +169,7 @@
         let editingClassIndex = null;
         let pendingCountGlobal = 0;
 
+        // مكتبة العبارات التحفيزية الشاملة (تتغير عشوائياً عند تحديث الصفحة)
         const motivationalQuotes = [
             "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
             "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
@@ -201,6 +203,7 @@
             "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
         ];
 
+        // قائمة الثيمات الفاخرة (تتغير عشوائياً عند التحديث)
         const themes = [
             { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50 text-amber-950 border-amber-200/80", btnPrimary: "bg-amber-900 hover:bg-amber-950 text-amber-50" },
             { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
@@ -256,7 +259,7 @@
         }
 
         function fetchGlobalStudentsBackground() {
-            if (currentTeacherEmail) {
+            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
                 db.collection("all_global_students").orderBy("name").onSnapshot((snapshot) => {
                     globalStudentsList = [];
                     snapshot.forEach(doc => {
@@ -374,9 +377,6 @@
                 renderView();
                 searchStudents();
                 if(activeClass) renderClassStudents();
-                if(document.getElementById('global-students-view') && !document.getElementById('global-students-view').classList.contains('hidden')) {
-                    renderGlobalStudentsTable();
-                }
             });
 
             db.collection(getPendingCollection()).orderBy("name").onSnapshot((snapshot) => {
@@ -592,6 +592,7 @@
                             </div>
                         </div>
                         
+                        <!-- القائمة المنسدلة المنظمة المحدثة لبطاقات الفصول -->
                         <div class="pt-2 border-t border-amber-200/50 flex items-center gap-2">
                             <select class="action-select w-full py-2.5 px-3 rounded-2xl border-2 border-amber-200/80 bg-white font-bold text-xs shadow-2xs outline-none cursor-pointer hover:border-[#800000] transition" onchange="handleClassDropdownAction(this, '${cls}')">
                                 <option value="" disabled selected>⚡ اختر الإجراء أو الخيار للفصل...</option>
@@ -956,9 +957,6 @@
                 renderClassStudents();
                 renderView();
                 await db.collection(getTeacherCollection()).doc(id).update({ className: 'غير موزع' });
-                if(document.getElementById('global-students-view') && !document.getElementById('global-students-view').classList.contains('hidden')) {
-                    renderGlobalStudentsTable();
-                }
             }
         };
 
@@ -1955,26 +1953,21 @@
                 const email = student.email;
                 const name = student.name;
                 
-                const existingStudent = allStudents.find(s => s.email === email);
-                const isAssignedToClass = existingStudent && existingStudent.className && existingStudent.className !== 'غير موزع';
-                
-                let actionHtml = '';
-                if (isAssignedToClass) {
-                    actionHtml = `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> مضاف بفصلك (${existingStudent.className})</span>`;
-                } else {
-                    actionHtml = `
-                        <select class="class-selector border border-slate-300 p-1.5 rounded-lg text-xs bg-white focus:border-indigo-500 outline-none w-full mb-1">
-                            ${classOptions}
-                        </select>
-                        <button onclick="addStudentToMyClass('${email}', '${name.replace(/'/g, "\\'")}', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition w-full">➕ إضافة لفصل</button>
-                    `;
-                }
+                const isAlreadyAdded = allStudents.some(s => s.email === email);
+                const actionHtml = isAlreadyAdded 
+                    ? `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> مضاف بفصلك</span>`
+                    : `<button onclick="addStudentToMyClass('${email}', '${name.replace(/'/g, "\\'")}', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition">➕ إضافة</button>`;
 
                 htmlChunk += `
                     <tr class="border-b hover:bg-slate-50">
                         <td class="p-3 font-bold text-slate-900">${name}</td>
                         <td class="p-3 text-slate-500 text-[11px]">${email}</td>
-                        <td class="p-3 text-center" colspan="2">${actionHtml}</td>
+                        <td class="p-3">
+                            <select class="class-selector border border-slate-300 p-1.5 rounded-lg text-xs bg-white focus:border-indigo-500 outline-none w-full ${isAlreadyAdded ? 'hidden' : ''}">
+                                ${classOptions}
+                            </select>
+                        </td>
+                        <td class="p-3 text-center">${actionHtml}</td>
                     </tr>
                 `;
             });
@@ -1984,7 +1977,7 @@
         window.addStudentToMyClass = async function(email, name, btnElement) {
             const tr = btnElement.closest('tr');
             const selectEl = tr.querySelector('.class-selector');
-            const selectedClass = selectEl ? selectEl.value : '';
+            const selectedClass = selectEl.value;
 
             if(!selectedClass) return alert("يرجى تحديد الفصل من القائمة المنسدلة أولاً!");
 
@@ -1996,12 +1989,13 @@
                     name: name,
                     className: selectedClass,
                     added_at: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
+                });
 
-                fetchStudents();
+                selectEl.classList.add('hidden');
+                btnElement.parentElement.innerHTML = `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> تمت الإضافة</span>`;
             } catch(e) {
                 alert("حدث خطأ أثناء الإضافة.");
-                btnElement.innerText = "➕ إضافة لفصل";
+                btnElement.innerText = "➕ إضافة";
                 btnElement.disabled = false;
             }
         };
@@ -2198,7 +2192,8 @@
                             <tr>
                                 <th class="p-3 text-xs">اسم الطالب</th>
                                 <th class="p-3 text-xs">الإيميل</th>
-                                <th class="p-3 text-xs text-center" colspan="2">إجراء وإضافة الفصل</th>
+                                <th class="p-3 text-xs">اختيار الفصل</th>
+                                <th class="p-3 text-xs text-center">إجراء</th>
                             </tr>
                         </thead>
                         <tbody id="global-students-tbody">
