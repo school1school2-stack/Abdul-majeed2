@@ -298,7 +298,7 @@
                         id: doc.id,
                         name: name,
                         email: email,
-                        className: data.className || 'غير موزاد',
+                        className: data.className || 'غير موزع',
                         phone: data.phone || '966566688614',
                         actions: data.actions || [],
                         attendanceStats: data.attendanceStats || { presents: 0, absents: 0, lates: 0, unauthorizedExits: 0 }
@@ -550,7 +550,7 @@
                 
                 classesContainer.innerHTML += `
                     <div class="class-3d-card ${theme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4">
-                        <div onclick="openClass('${cls}')" class="flex items-center justify-between cursor-pointer">
+                        <div class="flex items-center justify-between">
                             <div class="flex items-center gap-4 sm:gap-5">
                                 <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-amber-200/60 flex items-center justify-center shrink-0">🏫</span>
                                 <div>
@@ -558,7 +558,10 @@
                                     <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${count} طلاب مخصصين</p>
                                 </div>
                             </div>
-                            <span class="bg-white/95 backdrop-blur-xs w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg text-[#800000] shadow-sm border border-amber-200 shrink-0">➔</span>
+                            <button onclick="openClass('${cls}')" title="دخول الفصل مباشرة" class="bg-[#800000] hover:bg-[#660000] text-amber-100 px-3 py-2 rounded-2xl flex items-center gap-1.5 text-xs font-bold shadow-md cursor-pointer transition shrink-0 border border-amber-300">
+                                <i class="fas fa-door-open text-amber-300"></i>
+                                <span>دخول الفصل</span>
+                            </button>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-amber-200/50">
                             <button onclick="shareClassReportLink('${cls}', 'detailed', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير الفردي</button>
@@ -619,7 +622,7 @@
             if (cleanName.includes('غائب بعذر')) return { title: 'غائب بعذر', icon: '👤' }; 
             if (cleanName.includes('غائب')) return { title: 'غائب', icon: '🔴' }; 
             if (cleanName.includes('متأخر')) return { title: 'متأخر', icon: '⏰' }; 
-            if (cleanName.includes('خارج بدون إذن')) return { title: 'خارج بدون إذن', icon: '🚶‍♂️' }; 
+            if (cleanName.includes('خروج بدون إذن') || cleanName.includes('خارج بدون إذن')) return { title: 'خروج بدون إذن', icon: '🚶‍♂️' }; 
             if (cleanName.includes('مستاذن')) return { title: 'مستاذن', icon: '🏃' }; 
             if (cleanName.includes('هارب')) return { title: 'هارب', icon: '🚶‍♂️' }; 
             return { title: cleanName, icon: displayIcon };
@@ -925,7 +928,7 @@
                     if (attendanceType === 'حاضر') attendanceStats.presents = (attendanceStats.presents || 0) + 1;
                     else if (attendanceType === 'غائب') attendanceStats.absents = (attendanceStats.absents || 0) + 1;
                     else if (attendanceType === 'متأخر') attendanceStats.lates = (attendanceStats.lates || 0) + 1;
-                    else if (attendanceType === 'خارج بدون إذن') attendanceStats.unauthorizedExits = (attendanceStats.unauthorizedExits || 0) + 1;
+                    else if (attendanceType === 'خروج بدون إذن' || attendanceType === 'خارج بدون إذن') attendanceStats.unauthorizedExits = (attendanceStats.unauthorizedExits || 0) + 1;
                 }
                 
                 const newRecord = { title: actionName, score: scoreChange, timestamp: formattedTime };
@@ -1001,7 +1004,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر') || title.includes('خارج بدون إذن')) attendanceEventsList.push(act);
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر') || title.includes('خروج بدون إذن') || title.includes('خارج بدون إذن')) attendanceEventsList.push(act);
                 if (title.includes('واجب')) homeworkList.push(act);
                 else if (title.includes('ملف') || title.includes('إنجاز')) portfolioList.push(act);
                 else if (score < 0 || title.includes('نوم') || title.includes('تحدث') || title.includes('هاتف') || title.includes('خاطئة')) negativeList.push(act);
@@ -1056,7 +1059,7 @@
                                 </div>
                             </div>
                             <div class="bg-stone-100 p-2 rounded-xl border border-stone-300">
-                                <span class="block text-[10px] font-bold text-stone-800">خارج بدون إذن (${att.unauthorizedExits || 0})</span>
+                                <span class="block text-[10px] font-bold text-stone-800">خروج بدون إذن (${att.unauthorizedExits || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
                                     <button onclick="adjustAttendance('unauthorizedExits', 1)" class="bg-stone-700 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-stone-800">+</button>
                                     <button onclick="adjustAttendance('unauthorizedExits', -1)" class="bg-stone-900 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-black">-</button>
@@ -1138,7 +1141,7 @@
                                 <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                 <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                 <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
-                                <span>🚶‍♂️ خارج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
+                                <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                             </div>
                         </div>
                         <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
@@ -1241,7 +1244,7 @@
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
-                                    <span>🚶‍♂️ خارج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
+                                    <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${summary.attendanceEventsList.length === 0 ? '<p class="text-emerald-700 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : `<ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">${summary.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-800">${item.title}</span> - <span class="text-[11px] text-slate-500">${item.timestamp}</span></li>`).join('')}</ul>`}
                             </div>
@@ -1323,7 +1326,7 @@
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
-                                    <span>🚶‍♂️ خارج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
+                                    <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${attendanceHtml}
                             </div>
@@ -1394,7 +1397,7 @@
                                     <span>🟢 حضور: <strong style="color: #059669;">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong style="color: #dc2626;">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong style="color: #d97706;">${att.lates || 0}</strong></span>
-                                    <span>🚶‍♂️ خارج بدون إذن: <strong style="color: #292524;">${att.unauthorizedExits || 0}</strong></span>
+                                    <span>🚶‍♂️ خروج بدون إذن: <strong style="color: #292524;">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${attendanceHtml}
                             </div>
@@ -1499,7 +1502,7 @@
                             <span class="text-lg font-black text-amber-600">${totalLatesClass}</span>
                         </div>
                         <div class="bg-stone-100 p-2.5 rounded-xl border border-stone-300">
-                            <span class="text-stone-800 block">إجمالي خارج بدون إذن</span>
+                            <span class="text-stone-800 block">إجمالي خروج بدون إذن</span>
                             <span class="text-lg font-black text-stone-900">${totalUnauthorizedExitsClass}</span>
                         </div>
                     </div>
@@ -1512,7 +1515,7 @@
                                     <th class="p-2.5 text-center">حضور</th>
                                     <th class="p-2.5 text-center">غياب</th>
                                     <th class="p-2.5 text-center">تاخر</th>
-                                    <th class="p-2.5 text-center bg-stone-800 text-amber-100">خارج بدون إذن</th>
+                                    <th class="p-2.5 text-center bg-stone-800 text-amber-100">خروج بدون إذن</th>
                                     <th class="p-2.5 text-center">النقاط</th>
                                     <th class="p-2.5">المشاركات الإيجابية</th>
                                     <th class="p-2.5">الملاحظات السلبية</th>
@@ -1585,7 +1588,7 @@
                             <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-emerald-800 block text-sm">إجمالي الحضور</span><span class="text-xl font-black text-emerald-600">${totalPresentsClass}</span></div>
                             <div class="bg-rose-50 p-3 rounded-2xl border border-rose-200 shadow-xs"><span class="text-rose-800 block text-sm">إجمالي الغياب</span><span class="text-xl font-black text-rose-600">${totalAbsentsClass}</span></div>
                             <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 shadow-xs"><span class="text-amber-800 block text-sm">إجمالي التأخر</span><span class="text-xl font-black text-amber-600">${totalLatesClass}</span></div>
-                            <div class="bg-stone-100 p-3 rounded-2xl border border-stone-300 shadow-xs"><span class="text-stone-800 block text-sm">إجمالي خارج بدون إذن</span><span class="text-xl font-black text-stone-900">${totalUnauthorizedExitsClass}</span></div>
+                            <div class="bg-stone-100 p-3 rounded-2xl border border-stone-300 shadow-xs"><span class="text-stone-800 block text-sm">إجمالي خروج بدون إذن</span><span class="text-xl font-black text-stone-900">${totalUnauthorizedExitsClass}</span></div>
                         </div>
                         <div class="overflow-x-auto border rounded-2xl shadow-xs">
                             <table class="w-full text-xs text-right border-collapse whitespace-nowrap">
@@ -1596,7 +1599,7 @@
                                         <th style="padding: 12px; text-align: center;">حضور</th>
                                         <th style="padding: 12px; text-align: center;">غياب</th>
                                         <th style="padding: 12px; text-align: center;">تاخر</th>
-                                        <th style="padding: 12px; text-align: center; background-color: #334155; color: #ffffff;">خارج بدون إذن</th>
+                                        <th style="padding: 12px; text-align: center; background-color: #334155; color: #ffffff;">خروج بدون إذن</th>
                                         <th style="padding: 12px; text-align: center;">النقاط</th>
                                         <th style="padding: 12px;">المشاركات الإيجابية</th>
                                         <th style="padding: 12px;">الملاحظات السلبية</th>
@@ -2225,7 +2228,7 @@
                     <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
                     <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
                     <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
-                    <button onclick="recordAction('خارج بدون إذن', 0, 'خارج بدون إذن')" class="flex items-center gap-3 bg-stone-100 border border-stone-400 text-stone-800 px-4 py-3 rounded-2xl shrink-0 cursor-pointer font-bold">🚶‍♂️ خارج بدون إذن</button>
+                    <button onclick="recordAction('خروج بدون إذن', 0, 'خروج بدون إذن')" class="flex items-center gap-3 bg-stone-100 border border-stone-400 text-stone-800 px-4 py-3 rounded-2xl shrink-0 cursor-pointer font-bold">🚶‍♂️ خروج بدون إذن</button>
                     <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-3 bg-sky-50 border border-sky-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🏃 مستاذن</button>
                 </div>
             </div>
