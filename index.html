@@ -48,7 +48,6 @@
             font-weight: 700;
         }
 
-        /* كروت كبيرة وبارزة تملأ الشاشة */
         .class-large-card {
             border: 1px solid rgba(226, 232, 240, 0.8);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -178,7 +177,7 @@
         let editingClassIndex = null;
         let pendingCountGlobal = 0;
 
-        /* قائمة العبارات التشجيعية كاملة من الكود المرفق */
+        // العبارات التشجيعية (30 عبارة)
         const motivationalQuotes = [
             "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
             "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
@@ -212,17 +211,33 @@
             "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
         ];
 
-        /* مجموعة الثيمات الكاملة المدمجة */
+        // الثيمات وتصاميم الألوان
         const themes = [
-            { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50/90 text-amber-950 border-amber-200/80", iconBg: "bg-amber-500/10 text-amber-800 border-amber-200/60" },
-            { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100/90 text-slate-900 border-slate-200", iconBg: "bg-slate-500/10 text-slate-800 border-slate-200" },
-            { name: "الكتان الدافئ", bg: "linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%)", headerBg: "bg-stone-100/90 text-stone-900 border-stone-200", iconBg: "bg-stone-500/10 text-stone-800 border-stone-200" },
-            { name: "الزمرد الفاتح", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-50/90 text-emerald-950 border-emerald-200", iconBg: "bg-emerald-500/10 text-emerald-900 border-emerald-200/60" },
-            { name: "السموكي الناعم", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-50/90 text-sky-950 border-sky-200", iconBg: "bg-sky-500/10 text-sky-900 border-sky-200/60" },
-            { name: "اللافندر الرقيق", bg: "linear-gradient(135deg, #fcfaff 0%, #f0ebf8 100%)", headerBg: "bg-purple-50/90 text-purple-950 border-purple-200", iconBg: "bg-purple-500/10 text-purple-900 border-purple-200/60" },
-            { name: "المرجان المشرق", bg: "linear-gradient(135deg, #fffaf9 0%, #fcefeD 100%)", headerBg: "bg-rose-50/90 text-rose-950 border-rose-200", iconBg: "bg-rose-500/10 text-rose-900 border-rose-200/60" }
+            { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50/90 text-amber-950 border-amber-200/80", iconBg: "bg-amber-500/10 text-amber-800 border-amber-200/60", btnPrimary: "bg-amber-900 hover:bg-amber-950 text-amber-50" },
+            { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100/90 text-slate-900 border-slate-200", iconBg: "bg-slate-500/10 text-slate-800 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
+            { name: "الكتان الدافئ", bg: "linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%)", headerBg: "bg-stone-100/90 text-stone-900 border-stone-200", iconBg: "bg-stone-500/10 text-stone-800 border-stone-200", btnPrimary: "bg-stone-800 hover:bg-stone-900 text-amber-50" },
+            { name: "الزمرد الفاتح", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-50/90 text-emerald-950 border-emerald-200", iconBg: "bg-emerald-500/10 text-emerald-900 border-emerald-200/60", btnPrimary: "bg-emerald-800 hover:bg-emerald-900 text-white" },
+            { name: "السموكي الناعم", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-50/90 text-sky-950 border-sky-200", iconBg: "bg-sky-500/10 text-sky-900 border-sky-200/60", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" },
+            { name: "اللافندر الرقيق", bg: "linear-gradient(135deg, #fcfaff 0%, #f0ebf8 100%)", headerBg: "bg-purple-50/90 text-purple-950 border-purple-200", iconBg: "bg-purple-500/10 text-purple-900 border-purple-200/60", btnPrimary: "bg-purple-900 hover:bg-purple-950 text-white" },
+            { name: "المرجان المشرق", bg: "linear-gradient(135deg, #fffaf9 0%, #fcefeD 100%)", headerBg: "bg-rose-50/90 text-rose-950 border-rose-200", iconBg: "bg-rose-500/10 text-rose-900 border-rose-200/60", btnPrimary: "bg-rose-800 hover:bg-rose-900 text-white" }
         ];
 
+        // التقييمات التلقائية الافتراضية
+        const defaultActions = [
+            { icon: '✅', name: 'إجابة صحيحة', score: 1.0, color: '#28a745' },
+            { icon: '❌', name: 'إجابة خاطئة', score: -1.0, color: '#dc3545' },
+            { icon: '💡', name: 'مشاركة', score: 1.0, color: '#17a2b8' },
+            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#20c997' },
+            { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#e83e8c' },
+            { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#dc3545' },
+            { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#ffc107' },
+            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#6610f2' },
+            { icon: '🗣️', name: 'التحدث أثناء الدرس', score: -1.0, color: '#6f42c1' },
+            { icon: '📱', name: 'استخدام الهاتف', score: -1.0, color: '#d9534f' },
+            { icon: '🎁', name: 'هدية', score: 5.0, color: '#e17055' }
+        ];
+
+        // تطبيق ثيم وعبارة تحفيزية بشكل عشوائي مع كل تحديث للصفحة
         function applyRandomTheme() {
             const randomIndex = Math.floor(Math.random() * themes.length);
             const selectedTheme = themes[randomIndex];
@@ -242,20 +257,6 @@
             renderView();
             if(activeClass) renderClassStudents();
         }
-
-        const defaultActions = [
-            { icon: '✅', name: 'إجابة صحيحة', score: 1.0, color: '#10b981' },
-            { icon: '❌', name: 'إجابة خاطئة', score: -1.0, color: '#ef4444' },
-            { icon: '💡', name: 'مشاركة', score: 1.0, color: '#0284c7' },
-            { icon: '📘', name: 'حل الواجب', score: 3.0, color: '#0d9488' },
-            { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#f43f5e' },
-            { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#e11d48' },
-            { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#d97706' },
-            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#7c3aed' },
-            { icon: '🗣️', name: 'التحدث أثناء الدرس', score: -1.0, color: '#6f42c1' },
-            { icon: '📱', name: 'استخدام الهاتف', score: -1.0, color: '#d9534f' },
-            { icon: '🎁', name: 'هدية تشجيعية', score: 5.0, color: '#e17055' }
-        ];
 
         function initSystem() {
             applyRandomTheme();
@@ -601,7 +602,6 @@
                             </div>
                         </div>
 
-                        <!-- القائمة المنسدلة للخيارات -->
                         <div class="shrink-0">
                             <select class="action-select text-xs sm:text-sm py-2.5 px-3.5 border border-slate-200 rounded-2xl bg-slate-50 text-slate-700 font-bold outline-none cursor-pointer hover:bg-slate-100 transition shadow-2xs" onchange="handleClassDropdownAction(this, '${cls}')">
                                 <option value="" disabled selected>⚙️ خيارات الفصل</option>
@@ -823,7 +823,7 @@
                 classList.splice(index, 1);
                 for(let stu of allStudents) {
                     if(stu.className === removedName) {
-                        stu.className = 'غير موزع';
+                        stu.className = 'غير موزام';
                         await db.collection(getTeacherCollection()).doc(stu.id).update({ className: 'غير موزع' });
                     }
                 }
@@ -1665,6 +1665,9 @@
         };
 
         window.onload = function() {
+            // اختيار ثيم وعبارة عشوائياً عند التحديث
+            applyRandomTheme();
+
             const urlParams = new URLSearchParams(window.location.search);
             const reportId = urlParams.get('view_report');
             
@@ -2031,7 +2034,7 @@
                     <i class="fas fa-arrow-left"></i>
                 </button>
             </div>
-            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد</p>
+            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
         </div>
     </div>
 
@@ -2198,7 +2201,7 @@
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right text-slate-500">
             <div>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</div>
             <div>الحقوق محفوظة 2026</div>
-            <div>التعليم الذكي</div>
+            <div>ثانوية الأمير عبدالمجيد</div>
         </div>
     </footer>
 
@@ -2230,13 +2233,47 @@
                         <option value="🎓">🎓 إنجاز أكاديمي عالي</option>
                         <option value="🔥">🔥 اشتعال الحماس والهمة</option>
                         <option value="💎">💎 درة ومجوهرات الأداء</option>
+                        <option value="👑💯">👑💯 القمة المطلقة</option>
+                        <option value="🚀🌟">🚀🌟 تميز وانطلاق صاروخي</option>
                         <option value="⭐">⭐ نجمة تفوق</option>
                         <option value="👍">👍 أحسنت / تأييد</option>
                         <option value="✨">✨ تألق وإبداع</option>
+                        <option value="📈">📈 صعود ومؤشر تصاعدي</option>
+                        <option value="👏">👏 تشجيع وثناء</option>
                         <option value="🎯">🎯 إصابة الهدف بدقة</option>
                         <option value="📝">📝 تدريب وتحضير</option>
+                        <option value="👌">👌 إتقان وأداء ممتاز</option>
                         <option value="⚡">⚡ نشاط وسرعة استجابة</option>
                         <option value="📚">📚 استذكار ومذاكرة</option>
+                        <option value="⏳">⏳ انتظار وصبر</option>
+                        <option value="🔋">🔋 طاقة جيدة</option>
+                        <option value="🌤️">🌤️ تحسن ملحوظ</option>
+                        <option value="🚲">🚲 محاولة مستمرة</option>
+                        <option value="📉">📉 انخفاض بالمستوى</option>
+                        <option value="⚠️">⚠️ تنبيه هام</option>
+                        <option value="🛑">🛑 إيقاف / منع</option>
+                        <option value="🔍">🔍 تحتاج تدقيق ومراجعة</option>
+                        <option value="🔄">🔄 إعادة المحاولة</option>
+                        <option value="❌">❌ خطأ / تقصير</option>
+                        <option value="🎨">🎨 ترتيب وإبداع فني</option>
+                        <option value="🧼">🧼 نظافة ومرتب</option>
+                        <option value="🌸">🌸 حسن مظهر</option>
+                        <option value="📐">📐 تنظيم وهندسة الدفتر</option>
+                        <option value="📖">📖 العناية بالكتاب المدرسي</option>
+                        <option value="✏️">✏️ كتابة ممتازة ودقيقة</option>
+                        <option value="📜">📜 خط جميل ومنسق</option>
+                        <option value="🙋‍♂️">🙋‍♂️ مبادر بالمشاركة (طالب)</option>
+                        <option value="🙋‍♀️">🙋‍♀️ مبادرة بالمشاركة (طالبة)</option>
+                        <option value="🗣️">🗣️ تفاعل لفظي نشط</option>
+                        <option value="🤝">🤝 تعاون ومساعدة الزملاء</option>
+                        <option value="⏱️">⏱️ التزام بالوقت</option>
+                        <option value="🏅">🏅 وسام الالتزام السلوكي</option>
+                        <option value="😍">😍 فخور بك جداً</option>
+                        <option value="🥰">🥰 أحببت عملك وأدائك</option>
+                        <option value="😎">😎 إجابة واثقة ومتقنة</option>
+                        <option value="🤔">🤔 فكر مجدداً بعمق</option>
+                        <option value="🧐">🧐 ركز أكثر من فضلك</option>
+                        <option value="😢">😢 حزين على مستواك وتقصيرك</option>
                         <option value="✅">✅ إجابة صحيحة / صح</option>
                         <option value="💡">💡 مشاركة وفكرة</option>
                         <option value="📘">📘 حل الواجب</option>
@@ -2247,16 +2284,22 @@
                         <option value="📱">📱 استخدام الهاتف</option>
                         <option value="🎁">🎁 هدية تشجيعية</option>
                     </select>
-                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white">
+                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white focus:outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
+                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة (1 أو -1)" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
                     <select id="new-action-color" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
-                        <option value="#10b981">🟢 أخضر</option>
-                        <option value="#ef4444">🔴 أحمر</option>
-                        <option value="#0284c7">🔵 أزرق</option>
-                        <option value="#d97706">🟡 أصفر ذهبي</option>
-                        <option value="#7c3aed">🟣 بنفسجي</option>
+                        <option value="#28a745">🟢 أخضر عشبي</option>
+                        <option value="#20c997">🔹 أخضر فيروزي</option>
+                        <option value="#007bff">🔵 أزرق غامق</option>
+                        <option value="#17a2b8">🟦 سماوي فاتح</option>
+                        <option value="#6610f2">🟣 بنفسجي ملكي</option>
+                        <option value="#6f42c1">🔮 أرجواني</option>
+                        <option value="#e83e8c">🩷 وردي زاهي</option>
+                        <option value="#dc3545">🔴 أحمر قاني</option>
+                        <option value="#fd7e14">🟠 برتقالي ساطع</option>
+                        <option value="#ffc107">🟡 أصفر ذهبي</option>
+                        <option value="#6c757d">⚪ رمادي رسمي</option>
                     </select>
                 </div>
                 <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-900">حفظ التقييم 🚀</button>
