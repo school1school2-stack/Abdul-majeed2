@@ -558,16 +558,18 @@
                                     <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${count} طلاب مخصصين</p>
                                 </div>
                             </div>
-                            <button onclick="openClass('${cls}')" title="دخول الفصل مباشرة" class="bg-[#800000] hover:bg-[#660000] text-amber-100 px-3 py-2 rounded-2xl flex items-center gap-1.5 text-xs font-bold shadow-md cursor-pointer transition shrink-0 border border-amber-300">
-                                <i class="fas fa-door-open text-amber-300"></i>
-                                <span>دخول الفصل</span>
-                            </button>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-amber-200/50">
-                            <button onclick="shareClassReportLink('${cls}', 'detailed', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير الفردي</button>
-                            <button onclick="shareClassReportLink('${cls}', 'table', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔗 نسخ رابط جدول الفصل</button>
-                            <button onclick="openClassReportPreview('${cls}', 'detailed')" class="bg-stone-800 hover:bg-stone-900 text-amber-100 py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">👁️ عرض التقرير الفردي</button>
-                            <button onclick="openClassReportPreview('${cls}', 'table')" class="bg-amber-700 hover:bg-amber-800 text-white py-2 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">👁️ عرض جدول الفصل</button>
+                        
+                        <!-- قائمة منسدلة منسقة تشمل دخول الفصل وإجراءات التقارير بسهولة -->
+                        <div class="pt-2 border-t border-amber-200/50 flex items-center gap-2">
+                            <select class="action-select w-full py-2.5 px-3 rounded-2xl border-2 border-amber-200/80 bg-white font-bold text-xs shadow-2xs outline-none cursor-pointer hover:border-[#800000] transition" onchange="handleClassDropdownAction(this, '${cls}')">
+                                <option value="" disabled selected>⚡ اختر الإجراء أو الخيار للفصل...</option>
+                                <option value="enter_class">🚪 دخول الفصل المباشر</option>
+                                <option value="preview_detailed">👁️ عرض التقرير الفردي</option>
+                                <option value="preview_table">👁️ عرض جدول الفصل</option>
+                                <option value="share_detailed">🔗 نسخ رابط التقرير الفردي</option>
+                                <option value="share_table">🔗 نسخ رابط جدول الفصل</option>
+                            </select>
                         </div>
                     </div>
                 `;
@@ -611,6 +613,23 @@
                 `;
             }
         }
+
+        window.handleClassDropdownAction = function(selectElement, className) {
+            const action = selectElement.value;
+            selectElement.value = ""; // إعادة تعيين التحديد في القائمة
+            
+            if (action === 'enter_class') {
+                openClass(className);
+            } else if (action === 'preview_detailed') {
+                openClassReportPreview(className, 'detailed');
+            } else if (action === 'preview_table') {
+                openClassReportPreview(className, 'table');
+            } else if (action === 'share_detailed') {
+                shareClassReportLink(className, 'detailed', selectElement);
+            } else if (action === 'share_table') {
+                shareClassReportLink(className, 'table', selectElement);
+            }
+        };
 
         function getCleanActionDetails(rawTitle) {
             let cleanName = rawTitle.trim();
@@ -1769,7 +1788,7 @@
             const newKey = newEmail.replace(/\./g, '_');
             try {
                 const snapshot = await rtdb.ref('teachers_registry/' + newKey).once('value');
-                if (snapshot.exists()) return alert("هذا البريد الإلكتروني موجود مسبقاً لمعلم آخر!");
+                if (snapshot.exists()) return alert("هذا البريد الإلكتروني موجود مسبقاً للمعلم آخر!");
                 await rtdb.ref('teachers_registry/' + newKey).set({ name: currentName, email: newEmail, subject: currentSubject });
                 await rtdb.ref('teachers_registry/' + oldKey).remove();
                 loadTeachersList(); alert("تم تعديل الإيميل بنجاح! 🌟");
