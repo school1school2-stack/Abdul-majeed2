@@ -48,14 +48,17 @@
             font-weight: 700;
         }
 
-        .class-minimal-card {
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
+        /* كروت كبيرة تملأ الصفحة بهدوء */
+        .class-large-card {
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s ease;
             background-color: #ffffff;
+            min-height: 140px;
         }
-        .class-minimal-card:hover {
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        .class-large-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
             border-color: #cbd5e1;
         }
 
@@ -82,7 +85,7 @@
         }
         .header { text-align: center; border-bottom: 2px solid #f1f5f9; margin-bottom: 15px; padding-bottom: 8px; }
         .bulk-section { background: #fefefe; padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1.5px dashed #cbd5e1; }
-        textarea { width: 100%; height: 90px; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.85rem; resize: vertical; box-sizing: border-box; }
+        textarea { width: 100%; height: 90px; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.85rem; resize: vertical; box sizing: border-box; }
         .controls { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
         .btn { padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: 0.3s; }
         .btn-upload { background: var(--maroon); color: #ffffff; }
@@ -100,12 +103,12 @@
         .btn-reject { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
         
         .action-select {
-            padding: 6px 10px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 12px;
             border: 1px solid #cbd5e1;
             background-color: #f8fafc;
             font-family: inherit;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: bold;
             color: #334155;
             cursor: pointer;
@@ -185,10 +188,13 @@
             "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\""
         ];
 
+        /* إعادة الثيمات المتنوعة والأنيقة للمنصة */
         const themes = [
-            { name: "العاجي الفاخر", bg: "#fcfbf7", headerBg: "bg-stone-100/80 text-stone-900 border-stone-200/80", btnPrimary: "bg-stone-800 hover:bg-stone-900 text-stone-50" },
-            { name: "اللؤلؤ النقي", bg: "#f8fafc", headerBg: "bg-slate-100/80 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
-            { name: "السموكي الناعم", bg: "#f1f5f9", headerBg: "bg-sky-50/80 text-sky-950 border-sky-100", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" }
+            { name: "العاجي الفاخر", bg: "#fcfbf7", headerBg: "bg-stone-100/80 text-stone-900 border-stone-200/80", iconBg: "bg-amber-500/10 text-amber-800 border-amber-200/60" },
+            { name: "اللؤلؤ النقي", bg: "#f8fafc", headerBg: "bg-slate-100/80 text-slate-900 border-slate-200", iconBg: "bg-slate-500/10 text-slate-800 border-slate-200" },
+            { name: "السموكي الناعم", bg: "#f1f5f9", headerBg: "bg-sky-50/80 text-sky-950 border-sky-100", iconBg: "bg-sky-500/10 text-sky-900 border-sky-200/60" },
+            { name: "الزمردي الدافئ", bg: "#f0fdf4", headerBg: "bg-emerald-50/80 text-emerald-950 border-emerald-100", iconBg: "bg-emerald-500/10 text-emerald-900 border-emerald-200/60" },
+            { name: "اللافندر المريح", bg: "#faf5ff", headerBg: "bg-purple-50/80 text-purple-950 border-purple-100", iconBg: "bg-purple-500/10 text-purple-900 border-purple-200/60" }
         ];
 
         function applyRandomTheme() {
@@ -536,7 +542,6 @@
             renderView();
         };
 
-        /* معالجة القائمة المنسدلة للفصل */
         window.handleClassDropdownAction = function(selectElement, className) {
             const action = selectElement.value;
             selectElement.value = "";
@@ -552,24 +557,27 @@
             if(!classesContainer) return;
             classesContainer.innerHTML = '';
 
+            const themeIconBg = (window.currentTheme && window.currentTheme.iconBg) ? window.currentTheme.iconBg : 'bg-amber-500/10 text-amber-800 border-amber-200/60';
+
             classList.forEach((cls) => {
                 const count = allStudents.filter(s => s.className === cls).length;
                 
+                /* كروت أضخم بأيقونة بارزة تملأ الشاشة مع القائمة المنسدلة */
                 classesContainer.innerHTML += `
-                    <div class="class-minimal-card p-4 rounded-2xl flex items-center justify-between gap-3 bg-white">
-                        <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="openClass('${cls}')">
-                            <span class="text-2xl p-2.5 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">🏫</span>
+                    <div class="class-large-card p-6 sm:p-7 rounded-3xl flex items-center justify-between gap-4 bg-white">
+                        <div class="flex items-center gap-4 sm:gap-5 cursor-pointer flex-1" onclick="openClass('${cls}')">
+                            <span class="text-4xl sm:text-5xl p-4 sm:p-5 rounded-2xl ${themeIconBg} border flex items-center justify-center shrink-0 shadow-2xs">🏫</span>
                             <div>
-                                <h3 class="class-title-font text-base text-slate-800 leading-tight">${cls}</h3>
-                                <p class="text-xs text-slate-500 font-semibold mt-0.5">${count} طالب مسجل</p>
+                                <h3 class="class-title-font text-lg sm:text-xl text-slate-800 tracking-wide">${cls}</h3>
+                                <p class="text-xs sm:text-sm text-slate-500 font-bold mt-1.5">${count} طالب مسجل بالحصة</p>
                             </div>
                         </div>
 
-                        <!-- قائمة منسدلة واحدة هادئة وبسيطة لخيارات الفصل -->
+                        <!-- القائمة المنسدلة الخفيفة لكل الخيارات -->
                         <div class="shrink-0">
-                            <select class="action-select text-xs py-2 px-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 font-bold outline-none cursor-pointer hover:bg-slate-100 transition" onchange="handleClassDropdownAction(this, '${cls}')">
-                                <option value="" disabled selected>⚙️ الخيارات</option>
-                                <option value="enter">🚪 دخول الفصل</option>
+                            <select class="action-select text-xs sm:text-sm py-2.5 px-3.5 border border-slate-200 rounded-2xl bg-slate-50 text-slate-700 font-bold outline-none cursor-pointer hover:bg-slate-100 transition shadow-2xs" onchange="handleClassDropdownAction(this, '${cls}')">
+                                <option value="" disabled selected>⚙️ خيارات الفصل</option>
+                                <option value="enter">🚪 دخول الفصل المباشر</option>
                                 <optgroup label="👁️ المعاينة والمشاهدة">
                                     <option value="view_detailed">👁️ عرض التقرير الفردي</option>
                                     <option value="view_table">👁️ عرض جدول الفصل</option>
@@ -587,31 +595,31 @@
             if (currentTeacherEmail === "school1school2@gmail.com") {
                 const approvedTotalCount = allStudents.length;
                 classesContainer.innerHTML += `
-                    <div class="class-minimal-card p-4 rounded-2xl flex items-center justify-between gap-3 bg-white relative">
-                        ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs animate-pulse">طلب جديد!</div>` : ''}
-                        <div onclick="openAdminControlPanel()" class="flex items-center gap-3 cursor-pointer flex-1">
-                            <span class="text-2xl p-2.5 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">🔒</span>
+                    <div class="class-large-card p-6 sm:p-7 rounded-3xl flex items-center justify-between gap-4 bg-white relative">
+                        ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs animate-pulse">طلب جديد!</div>` : ''}
+                        <div onclick="openAdminControlPanel()" class="flex items-center gap-4 sm:gap-5 cursor-pointer flex-1">
+                            <span class="text-4xl sm:text-5xl p-4 sm:p-5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center shrink-0">🔒</span>
                             <div>
-                                <h3 class="class-title-font text-base text-slate-800 leading-tight">لوحة التحكم المدمجة</h3>
-                                <p class="text-xs text-slate-500 font-semibold mt-0.5">${approvedTotalCount} طالب معتمد</p>
+                                <h3 class="class-title-font text-lg sm:text-xl text-slate-800 tracking-wide">لوحة التحكم المدمجة</h3>
+                                <p class="text-xs sm:text-sm text-slate-500 font-bold mt-1.5">${approvedTotalCount} طالب معتمد بالمنصة</p>
                             </div>
                         </div>
-                        <button onclick="openAdminControlPanel()" class="bg-slate-800 hover:bg-slate-900 text-slate-100 px-3.5 py-2 rounded-xl font-bold text-xs shadow-2xs cursor-pointer transition shrink-0">
+                        <button onclick="openAdminControlPanel()" class="bg-slate-800 hover:bg-slate-900 text-slate-100 px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm shadow-2xs cursor-pointer transition shrink-0">
                             فتح اللوحة ⚙️
                         </button>
                     </div>
                 `;
             } else {
                 classesContainer.innerHTML += `
-                    <div class="class-minimal-card p-4 rounded-2xl flex items-center justify-between gap-3 bg-white border-dashed border-slate-300 cursor-pointer hover:border-slate-400" onclick="openGlobalStudentsDistribution()">
-                        <div class="flex items-center gap-3 flex-1">
-                            <span class="text-2xl p-2.5 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0 border border-indigo-100">🗂️</span>
+                    <div class="class-large-card p-6 sm:p-7 rounded-3xl flex items-center justify-between gap-4 bg-white border-dashed border-slate-300 cursor-pointer hover:border-slate-400" onclick="openGlobalStudentsDistribution()">
+                        <div class="flex items-center gap-4 sm:gap-5 flex-1">
+                            <span class="text-4xl sm:text-5xl p-4 sm:p-5 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center shrink-0">🗂️</span>
                             <div>
-                                <h3 class="class-title-font text-base text-slate-800 leading-tight">الطلاب وتوزيعهم</h3>
-                                <p class="text-xs text-indigo-600 font-semibold mt-0.5">سحب طلاب للمنصة</p>
+                                <h3 class="class-title-font text-lg sm:text-xl text-slate-800 tracking-wide">الطلاب وتوزيعهم</h3>
+                                <p class="text-xs sm:text-sm text-indigo-600 font-bold mt-1.5">سحب طلاب للمنصة</p>
                             </div>
                         </div>
-                        <span class="bg-indigo-50 text-indigo-700 font-bold text-xs px-3 py-1.5 rounded-xl border border-indigo-100">➕ إضافة</span>
+                        <span class="bg-indigo-50 text-indigo-700 font-bold text-xs sm:text-sm px-4 py-2 rounded-2xl border border-indigo-100">➕ إضافة طلاب</span>
                     </div>
                 `;
             }
@@ -2062,13 +2070,13 @@
                 <span class="text-xs font-bold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">اختر الفصل للبدء</span>
             </div>
             
-            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3.5 w-full max-w-full overflow-hidden"></div>
+            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 w-full max-w-full overflow-hidden"></div>
 
-            <div class="bg-white/80 backdrop-blur-xs border border-slate-200 p-4 rounded-2xl shadow-2xs text-center my-4">
-                <p id="quote-text" class="student-name-font text-base text-slate-800 leading-relaxed">
+            <div class="bg-white/80 backdrop-blur-xs border border-slate-200 p-5 rounded-2xl shadow-2xs text-center my-6">
+                <p id="quote-text" class="student-name-font text-lg text-slate-800 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
                 </p>
-                <span class="text-[11px] font-bold text-slate-400 block mt-0.5">ثانوية الأمير عبدالمجيد</span>
+                <span class="text-xs font-bold text-slate-400 block mt-1">ثانوية الأمير عبدالمجيد</span>
             </div>
         </div>
 
