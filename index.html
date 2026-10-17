@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة الطلاب الشامل - 👨‍🏫 ثانوية الأمير عبدالمجيد</title>
+    <title>نظام متابعة الطلاب الشامل - أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد 👨‍🏫</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -48,7 +48,7 @@
             font-weight: 700;
         }
 
-        /* كروت كبيرة تملأ الصفحة بهدوء */
+        /* كروت كبيرة وبارزة تملأ الشاشة */
         .class-large-card {
             border: 1px solid rgba(226, 232, 240, 0.8);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -85,7 +85,7 @@
         }
         .header { text-align: center; border-bottom: 2px solid #f1f5f9; margin-bottom: 15px; padding-bottom: 8px; }
         .bulk-section { background: #fefefe; padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1.5px dashed #cbd5e1; }
-        textarea { width: 100%; height: 90px; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.85rem; resize: vertical; box sizing: border-box; }
+        textarea { width: 100%; height: 90px; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.85rem; resize: vertical; box-sizing: border-box; }
         .controls { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
         .btn { padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: 0.3s; }
         .btn-upload { background: var(--maroon); color: #ffffff; }
@@ -143,7 +143,7 @@
 
         let currentTeacherEmail = "";
         let currentTeacherName = "المعلم";
-        let currentTeacherSubject = "المادة";
+        let currentTeacherSubject = "الكفايات اللغوية";
 
         let globalStudentsList = [];
         let globalStudentsLoaded = false;
@@ -178,6 +178,7 @@
         let editingClassIndex = null;
         let pendingCountGlobal = 0;
 
+        /* قائمة العبارات التشجيعية كاملة من الكود المرفق */
         const motivationalQuotes = [
             "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
             "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
@@ -185,16 +186,41 @@
             "📚 \"العلم نور والجهل ظلام.. والمواظبة هي طريق التميز والنجاح.\"",
             "🚀 \"طريق الألف ميل يبدأ بفرصة وحصة دراسية واحدة، اجعل يومك مثمراً.\"",
             "🏆 \"من فتح باب مدرسة، أغلق باب سجن.. تحية لكل طالب يطلب العلم بشغف.\"",
-            "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\""
+            "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\"",
+            "🌱 \"كل خطوة صغيرة تقطعها اليوم نحو هدفك، تقربك مسافات طويلة نحو قمة النجاح.\"",
+            "🔥 \"لا تقارن نفسك بغيرك، بل قارن نفسك بما كنت عليه بالأمس، وحاول أن تكون أفضل دائماً.\"",
+            "🦅 \"العقبات والصعوبات ليست سوى حواجز اختبار لتعرف مدى إصرارك وقوتك الحقيقية.\"",
+            "⏳ \"الوقت الذي تستثمره في التعلم اليوم هو الأداة الأكثر قيمة التي تمتلكها لصناعة الغد.\"",
+            "💎 \"التعب الذي تشعر به أثناء الدراسة سيزول سريعاً، لكن فخر إنجازك سيبقى معك إلى الأبد.\"",
+            "🌟 \"استمر في السعي بثقة، فكل درس تتعلمه اليوم يضيف لبنة جديدة في جدار مستقبلك العظيم.\"",
+            "💪 \"النجاح يبدأ من الإيمان بقدرتك على تجاوز الصعاب مهما كانت معقدة.\"",
+            "🧠 \"عقلك هو أثمن ما تملك؛ استثمره بالقراءة والتعلم كل يوم لتصنع الفارق.\"",
+            "☀️ \"ابدأ صباحك بعزيمة متجددة، فاليوم هو فرصة جديدة لتحقيق ما لم تقم به بالأمس.\"",
+            "🔑 \"الانضباط هو الجسر الحقيقي الذي يربط بين أحلامك وبين إنجازاتها على أرض الواقع.\"",
+            "📖 \"كل صفحة تقرأها اليوم هي خطوة تفصلك عن الجهل وتقربك من التميز.\"",
+            "⚡ \"الشغف يمنحك البداية، لكن الاستمرارية والعزيمة هما ما يوصلانك إلى خط النهاية.\"",
+            "🌊 \"لا تخف من الأمواج العالية، فالسفن الماهرة تصنع أروع إنجازاتها في البحار الثائرة.\"",
+            "🎨 \"مستقبلك لوحة فنية، وأنت من تختار الألوان والجهد الذي تضعه لتخرج في أبهى صورة.\"",
+            "⛰️ \"الجبال العالية لا تتسلق بلمح البصر، بل بخطوات ثابتة وواثقة نحو القمة.\"",
+            "🔮 \"أفضل طريقة لتنبؤ مستقبلك هي أن تقوم بصناعته بنفسك اليوم، خطوة بخطوة.\"",
+            "🛡️ \"الأخطاء ليست نهاية المطاف، بل هي الدروس المجانية التي تجعلنا أكثر ذكاءً وقوة.\"",
+            "⚓ \"كن صبوراً، فالأشجار العميقة الجذور هي وحدها التي تقاوم أقوى العواصف.\"",
+            "🌠 \"الأحلام الكبيرة تحتاج إلى جهود عظيمة، فلا تستصغر أي جهد قمت به اليوم.\"",
+            "🛠️ \"العلم في الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
+            "🧭 \"دع شغفك هو بوصلتك، وعملك الجاد هو وقودك، ولا تيأس مهما كانت المسافة طويلة.\"",
+            "✍️ \"اكتب نجاحك اليوم بعرق جبينك وإصرارك، لتقرأه بفخر واعتزاز غداً.\"",
+            "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
         ];
 
-        /* إعادة الثيمات المتنوعة والأنيقة للمنصة */
+        /* مجموعة الثيمات الكاملة المدمجة */
         const themes = [
-            { name: "العاجي الفاخر", bg: "#fcfbf7", headerBg: "bg-stone-100/80 text-stone-900 border-stone-200/80", iconBg: "bg-amber-500/10 text-amber-800 border-amber-200/60" },
-            { name: "اللؤلؤ النقي", bg: "#f8fafc", headerBg: "bg-slate-100/80 text-slate-900 border-slate-200", iconBg: "bg-slate-500/10 text-slate-800 border-slate-200" },
-            { name: "السموكي الناعم", bg: "#f1f5f9", headerBg: "bg-sky-50/80 text-sky-950 border-sky-100", iconBg: "bg-sky-500/10 text-sky-900 border-sky-200/60" },
-            { name: "الزمردي الدافئ", bg: "#f0fdf4", headerBg: "bg-emerald-50/80 text-emerald-950 border-emerald-100", iconBg: "bg-emerald-500/10 text-emerald-900 border-emerald-200/60" },
-            { name: "اللافندر المريح", bg: "#faf5ff", headerBg: "bg-purple-50/80 text-purple-950 border-purple-100", iconBg: "bg-purple-500/10 text-purple-900 border-purple-200/60" }
+            { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50/90 text-amber-950 border-amber-200/80", iconBg: "bg-amber-500/10 text-amber-800 border-amber-200/60" },
+            { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100/90 text-slate-900 border-slate-200", iconBg: "bg-slate-500/10 text-slate-800 border-slate-200" },
+            { name: "الكتان الدافئ", bg: "linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%)", headerBg: "bg-stone-100/90 text-stone-900 border-stone-200", iconBg: "bg-stone-500/10 text-stone-800 border-stone-200" },
+            { name: "الزمرد الفاتح", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-50/90 text-emerald-950 border-emerald-200", iconBg: "bg-emerald-500/10 text-emerald-900 border-emerald-200/60" },
+            { name: "السموكي الناعم", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-50/90 text-sky-950 border-sky-200", iconBg: "bg-sky-500/10 text-sky-900 border-sky-200/60" },
+            { name: "اللافندر الرقيق", bg: "linear-gradient(135deg, #fcfaff 0%, #f0ebf8 100%)", headerBg: "bg-purple-50/90 text-purple-950 border-purple-200", iconBg: "bg-purple-500/10 text-purple-900 border-purple-200/60" },
+            { name: "المرجان المشرق", bg: "linear-gradient(135deg, #fffaf9 0%, #fcefeD 100%)", headerBg: "bg-rose-50/90 text-rose-950 border-rose-200", iconBg: "bg-rose-500/10 text-rose-900 border-rose-200/60" }
         ];
 
         function applyRandomTheme() {
@@ -225,7 +251,10 @@
             { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#f43f5e' },
             { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#e11d48' },
             { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#d97706' },
-            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#7c3aed' }
+            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#7c3aed' },
+            { icon: '🗣️', name: 'التحدث أثناء الدرس', score: -1.0, color: '#6f42c1' },
+            { icon: '📱', name: 'استخدام الهاتف', score: -1.0, color: '#d9534f' },
+            { icon: '🎁', name: 'هدية تشجيعية', score: 5.0, color: '#e17055' }
         ];
 
         function initSystem() {
@@ -562,7 +591,6 @@
             classList.forEach((cls) => {
                 const count = allStudents.filter(s => s.className === cls).length;
                 
-                /* كروت أضخم بأيقونة بارزة تملأ الشاشة مع القائمة المنسدلة */
                 classesContainer.innerHTML += `
                     <div class="class-large-card p-6 sm:p-7 rounded-3xl flex items-center justify-between gap-4 bg-white">
                         <div class="flex items-center gap-4 sm:gap-5 cursor-pointer flex-1" onclick="openClass('${cls}')">
@@ -573,7 +601,7 @@
                             </div>
                         </div>
 
-                        <!-- القائمة المنسدلة الخفيفة لكل الخيارات -->
+                        <!-- القائمة المنسدلة للخيارات -->
                         <div class="shrink-0">
                             <select class="action-select text-xs sm:text-sm py-2.5 px-3.5 border border-slate-200 rounded-2xl bg-slate-50 text-slate-700 font-bold outline-none cursor-pointer hover:bg-slate-100 transition shadow-2xs" onchange="handleClassDropdownAction(this, '${cls}')">
                                 <option value="" disabled selected>⚙️ خيارات الفصل</option>
@@ -636,7 +664,8 @@
             if (cleanName.includes('غائب')) return { title: 'غائب', icon: '🔴' }; 
             if (cleanName.includes('متأخر')) return { title: 'متأخر', icon: '⏰' }; 
             if (cleanName.includes('خروج بدون إذن') || cleanName.includes('خارج بدون إذن')) return { title: 'خروج بدون إذن', icon: '🚶‍♂️' }; 
-            if (cleanName.includes('مستاذن')) return { title: 'مستاذن', icon: '🏃' }; 
+            if (cleanName.includes('مستأذن')) return { title: 'مستأذن', icon: '🔵' }; 
+            if (cleanName.includes('عن بعد')) return { title: 'عن بعد', icon: '💻' }; 
             if (cleanName.includes('هارب')) return { title: 'هارب', icon: '🚶‍♂️' }; 
             return { title: cleanName, icon: displayIcon };
         }
@@ -1016,7 +1045,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر') || title.includes('خروج بدون إذن') || title.includes('خارج بدون إذن')) attendanceEventsList.push(act);
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستأذن') || title.includes('غائب بعذر') || title.includes('خروج بدون إذن') || title.includes('خارج بدون إذن')) attendanceEventsList.push(act);
                 if (title.includes('واجب')) homeworkList.push(act);
                 else if (title.includes('ملف') || title.includes('إنجاز')) portfolioList.push(act);
                 else if (score < 0 || title.includes('نوم') || title.includes('تحدث') || title.includes('هاتف') || title.includes('خاطئة')) negativeList.push(act);
@@ -1038,7 +1067,7 @@
                 <div class="text-center mb-6 border-b pb-4">
                     <div class="w-16 h-16 bg-slate-800 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-xs">👤</div>
                     <h2 class="student-name-font text-2xl text-slate-900">${student.name}</h2>
-                    <p class="text-xs font-bold text-slate-500 mt-1">${student.className} | منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                    <p class="text-xs font-bold text-slate-500 mt-1">${student.className} | أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -1063,7 +1092,7 @@
                                 </div>
                             </div>
                             <div class="bg-amber-50/60 p-2 rounded-xl border border-amber-100">
-                                <span class="block text-[10px] font-bold text-amber-800">تاخر (${att.lates || 0})</span>
+                                <span class="block text-[10px] font-bold text-amber-800">تأخر (${att.lates || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
                                     <button onclick="adjustAttendance('lates', 1)" class="bg-amber-600 text-white w-5 h-5 rounded font-black text-xs hover:bg-amber-700">+</button>
                                     <button onclick="adjustAttendance('lates', -1)" class="bg-amber-800 text-white w-5 h-5 rounded font-black text-xs hover:bg-amber-900">-</button>
@@ -1143,7 +1172,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-800">📋 تقرير متابعة طالب مفصل</h3>
                         <p class="text-xs font-bold text-slate-600 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                     </div>
                     <div class="space-y-3 text-xs font-bold text-slate-700">
                         <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
@@ -1151,7 +1180,7 @@
                             <div class="flex gap-3 text-slate-600 mt-1 flex-wrap">
                                 <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                 <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
-                                <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                <span>⏰ تأخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
                                 <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                             </div>
                         </div>
@@ -1246,7 +1275,7 @@
                             <span class="text-4xl mb-2 inline-block">🎓</span>
                             <h1 class="student-title text-3xl font-bold text-slate-800">${student.name}</h1>
                             <p class="text-sm font-bold text-slate-600 mt-1">الصف: ${student.className}</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫 | ${currentTeacherSubject}</p>
                         </div>
                         <div class="space-y-4 text-xs font-bold text-slate-700">
                             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-2xs">
@@ -1254,7 +1283,7 @@
                                 <div class="flex justify-between text-slate-600 my-2 px-2 border-b border-slate-200 pb-2 flex-wrap gap-2">
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
-                                    <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                    <span>⏰ تأخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
                                     <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${summary.attendanceEventsList.length === 0 ? '<p class="text-emerald-600 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : `<ul class="list-disc list-inside text-slate-600 space-y-1 mt-2">${summary.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-600">${item.title}</span> - <span class="text-[11px] text-slate-400">${item.timestamp}</span></li>`).join('')}</ul>`}
@@ -1291,7 +1320,7 @@
                             </div>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-400 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1336,7 +1365,7 @@
                                 <div class="flex gap-3 text-slate-600 my-1 pb-2 border-b border-slate-100 flex-wrap">
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
-                                    <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                    <span>⏰ تأخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
                                     <span>🚶‍♂️ خروج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${attendanceHtml}
@@ -1368,7 +1397,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-5 sticky top-0 bg-white z-10 py-2">
                         <h3 class="student-name-font text-2xl text-slate-800">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
                         <p class="text-xs font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                     </div>
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
@@ -1407,7 +1436,7 @@
                                 <div style="display: flex; gap: 10px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #f8fafc; flex-wrap: wrap;">
                                     <span>🟢 حضور: <strong style="color: #059669;">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong style="color: #dc2626;">${att.absents || 0}</strong></span>
-                                    <span>⏰ تاخر: <strong style="color: #d97706;">${att.lates || 0}</strong></span>
+                                    <span>⏰ تأخر: <strong style="color: #d97706;">${att.lates || 0}</strong></span>
                                     <span>🚶‍♂️ خروج بدون إذن: <strong style="color: #292524;">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${attendanceHtml}
@@ -1448,11 +1477,11 @@
                             <span class="text-4xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-800">التقرير الفردي الشامل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫 | ${currentTeacherSubject}</p>
                         </div>
                         <div>${students.length === 0 ? '<p style="text-align: center; padding: 30px; color: #94a3b8; font-weight: bold;">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-400 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1497,7 +1526,7 @@
                     <div class="text-center border-b border-slate-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-800">📊 جدول الفصل الشامل والمفصل: ${className}</h3>
                         <p class="text-xs font-bold text-slate-500 mt-1">إجمالي الطلاب: ${students.length} طالب | ${currentTeacherSubject}</p>
-                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-[11px] text-slate-400 font-semibold mt-0.5">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</p>
                     </div>
                     <div class="grid grid-cols-4 gap-2 text-center mb-4 text-xs font-bold">
                         <div class="bg-emerald-50/60 p-2 rounded-xl border border-emerald-100">
@@ -1525,7 +1554,7 @@
                                     <th class="p-2">اسم الطالب</th>
                                     <th class="p-2 text-center">حضور</th>
                                     <th class="p-2 text-center">غياب</th>
-                                    <th class="p-2 text-center">تاخر</th>
+                                    <th class="p-2 text-center">تأخر</th>
                                     <th class="p-2 text-center bg-stone-700 text-stone-100">خروج بدون إذن</th>
                                     <th class="p-2 text-center">النقاط</th>
                                     <th class="p-2">المشاركات الإيجابية</th>
@@ -1593,7 +1622,7 @@
                             <span class="text-4xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-800">التقرير الشامل والمفصل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-slate-500 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
-                            <p class="text-xs text-slate-400 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫 | ${currentTeacherSubject}</p>
                         </div>
                         <div class="grid grid-cols-4 gap-3 text-center mb-6 text-xs font-bold">
                             <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100 shadow-2xs"><span class="text-emerald-800 block text-xs">إجمالي الحضور</span><span class="text-lg font-black text-emerald-600">${totalPresentsClass}</span></div>
@@ -1609,7 +1638,7 @@
                                         <th style="padding: 10px;">اسم الطالب</th>
                                         <th style="padding: 10px; text-align: center;">حضور</th>
                                         <th style="padding: 10px; text-align: center;">غياب</th>
-                                        <th style="padding: 10px; text-align: center;">تاخر</th>
+                                        <th style="padding: 10px; text-align: center;">تأخر</th>
                                         <th style="padding: 10px; text-align: center; background-color: #334155; color: #ffffff;">خروج بدون إذن</th>
                                         <th style="padding: 10px; text-align: center;">النقاط</th>
                                         <th style="padding: 10px;">المشاركات الإيجابية</th>
@@ -1621,7 +1650,7 @@
                             </table>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-400 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -2010,7 +2039,7 @@
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-center sm:text-right">
                 <h1 class="text-lg font-black tracking-wide" id="main-header-title">نظام المتابعة السحابي الشامل</h1>
-                <p class="text-xs opacity-80 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد</p>
+                <p class="text-xs opacity-80 mt-0.5 font-bold" id="main-header-subtitle">أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫 | الكفايات اللغوية</p>
             </div>
             <div class="flex gap-2 items-center">
                 <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer border border-black/5 transition">🏫 الفصول</button>
@@ -2076,7 +2105,7 @@
                 <p id="quote-text" class="student-name-font text-lg text-slate-800 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
                 </p>
-                <span class="text-xs font-bold text-slate-400 block mt-1">ثانوية الأمير عبدالمجيد</span>
+                <span class="text-xs font-bold text-slate-400 block mt-1">حكمة اليوم للمعلم والطالب 🌿</span>
             </div>
         </div>
 
@@ -2167,7 +2196,7 @@
 
     <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right text-slate-500">
-            <div>ثانوية الأمير عبدالمجيد</div>
+            <div>أ/ عبدالعزيز الفيفي ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</div>
             <div>الحقوق محفوظة 2026</div>
             <div>التعليم الذكي</div>
         </div>
@@ -2192,9 +2221,31 @@
                 <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border border-slate-200 p-2.5 rounded-xl text-xs font-bold"></select>
                 <div class="grid grid-cols-3 gap-2">
                     <select id="new-action-icon" class="border border-slate-200 p-2.5 rounded-xl text-base font-bold bg-white">
+                        <option value="👑">👑 ملك الإنجاز / التميز المطلق</option>
+                        <option value="🚀">🚀 انطلاقة صاروخية / تفوق</option>
+                        <option value="🧠">🧠 عبقري / تفكير عميق</option>
+                        <option value="🌟">🌟 نجم ساطع</option>
+                        <option value="💯">💯 درجة كاملة / مثالي</option>
+                        <option value="🥇">🥇 المركز الأول</option>
+                        <option value="🎓">🎓 إنجاز أكاديمي عالي</option>
+                        <option value="🔥">🔥 اشتعال الحماس والهمة</option>
+                        <option value="💎">💎 درة ومجوهرات الأداء</option>
                         <option value="⭐">⭐ نجمة تفوق</option>
-                        <option value="✅">✅ إجابة صحيحة</option>
-                        <option value="❌">❌ خطأ</option>
+                        <option value="👍">👍 أحسنت / تأييد</option>
+                        <option value="✨">✨ تألق وإبداع</option>
+                        <option value="🎯">🎯 إصابة الهدف بدقة</option>
+                        <option value="📝">📝 تدريب وتحضير</option>
+                        <option value="⚡">⚡ نشاط وسرعة استجابة</option>
+                        <option value="📚">📚 استذكار ومذاكرة</option>
+                        <option value="✅">✅ إجابة صحيحة / صح</option>
+                        <option value="💡">💡 مشاركة وفكرة</option>
+                        <option value="📘">📘 حل الواجب</option>
+                        <option value="📕">📕 لم يحل الواجب</option>
+                        <option value="📁">📁 نسيان ملف</option>
+                        <option value="📂">📂 إنجاز ملف</option>
+                        <option value="💤">💤 النوم في الحصة</option>
+                        <option value="📱">📱 استخدام الهاتف</option>
+                        <option value="🎁">🎁 هدية تشجيعية</option>
                     </select>
                     <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white">
                 </div>
@@ -2203,6 +2254,9 @@
                     <select id="new-action-color" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
                         <option value="#10b981">🟢 أخضر</option>
                         <option value="#ef4444">🔴 أحمر</option>
+                        <option value="#0284c7">🔵 أزرق</option>
+                        <option value="#d97706">🟡 أصفر ذهبي</option>
+                        <option value="#7c3aed">🟣 بنفسجي</option>
                     </select>
                 </div>
                 <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-slate-900">حفظ التقييم 🚀</button>
@@ -2240,7 +2294,7 @@
                     <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-2 bg-rose-50 text-rose-800 border border-rose-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🔴 غائب</button>
                     <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-2 bg-amber-50 text-amber-800 border border-amber-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">⏰ متأخر</button>
                     <button onclick="recordAction('خروج بدون إذن', 0, 'خروج بدون إذن')" class="flex items-center gap-2 bg-stone-100 text-stone-700 border border-stone-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🚶‍♂️ خروج بدون إذن</button>
-                    <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-2 bg-sky-50 text-sky-800 border border-sky-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🏃 مستاذن</button>
+                    <button onclick="recordAction('مستأذن', 0, 'مستأذن')" class="flex items-center gap-2 bg-sky-50 text-sky-800 border border-sky-200 px-3.5 py-2.5 rounded-xl shrink-0 cursor-pointer font-bold text-xs">🏃 مستأذن</button>
                 </div>
             </div>
 
