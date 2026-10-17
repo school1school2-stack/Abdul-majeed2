@@ -220,7 +220,7 @@
             applyRandomTheme();
             customActions = defaultActions;
             fetchClassesAndStudents();
-            fetchGlobalStudentsBackground(); // جلب الطلاب في الخلفية فور الدخول
+            fetchGlobalStudentsBackground();
             renderCustomActionsUI();
             renderSettingsActionsDropdown();
             initPullToRefresh();
@@ -298,10 +298,10 @@
                         id: doc.id,
                         name: name,
                         email: email,
-                        className: data.className || 'غير موزع',
+                        className: data.className || 'غير موزاد',
                         phone: data.phone || '966566688614',
                         actions: data.actions || [],
-                        attendanceStats: data.attendanceStats || { presents: 0, absents: 0, lates: 0 }
+                        attendanceStats: data.attendanceStats || { presents: 0, absents: 0, lates: 0, unauthorizedExits: 0 }
                     });
                     
                     if(approvedTbody) {
@@ -619,6 +619,7 @@
             if (cleanName.includes('غائب بعذر')) return { title: 'غائب بعذر', icon: '👤' }; 
             if (cleanName.includes('غائب')) return { title: 'غائب', icon: '🔴' }; 
             if (cleanName.includes('متأخر')) return { title: 'متأخر', icon: '⏰' }; 
+            if (cleanName.includes('خارج بدون إذن')) return { title: 'خارج بدون إذن', icon: '🚶‍♂️' }; 
             if (cleanName.includes('مستاذن')) return { title: 'مستاذن', icon: '🏃' }; 
             if (cleanName.includes('هارب')) return { title: 'هارب', icon: '🚶‍♂️' }; 
             return { title: cleanName, icon: displayIcon };
@@ -917,13 +918,14 @@
                 const timeFormatted = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
                 const formattedTime = `${dayName} | ${dateFormatted} - ${timeFormatted}`;
 
-                let attendanceStats = student.attendanceStats || { presents: 0, absents: 0, lates: 0 };
+                let attendanceStats = student.attendanceStats || { presents: 0, absents: 0, lates: 0, unauthorizedExits: 0 };
                 let actionsList = student.actions || [];
                 
                 if(attendanceType) {
-                    if (attendanceType === 'حاضر') attendanceStats.presents++;
-                    else if (attendanceType === 'غائب') attendanceStats.absents++;
-                    else if (attendanceType === 'متأخر') attendanceStats.lates++;
+                    if (attendanceType === 'حاضر') attendanceStats.presents = (attendanceStats.presents || 0) + 1;
+                    else if (attendanceType === 'غائب') attendanceStats.absents = (attendanceStats.absents || 0) + 1;
+                    else if (attendanceType === 'متأخر') attendanceStats.lates = (attendanceStats.lates || 0) + 1;
+                    else if (attendanceType === 'خارج بدون إذن') attendanceStats.unauthorizedExits = (attendanceStats.unauthorizedExits || 0) + 1;
                 }
                 
                 const newRecord = { title: actionName, score: scoreChange, timestamp: formattedTime };
@@ -952,10 +954,11 @@
             if(!currentStudentId) return;
             const student = allStudents.find(s => s.id === currentStudentId);
             if(student) {
-                let att = student.attendanceStats || { presents: 0, absents: 0, lates: 0 };
+                let att = student.attendanceStats || { presents: 0, absents: 0, lates: 0, unauthorizedExits: 0 };
                 if(type === 'presents') att.presents = Math.max(0, (att.presents || 0) + delta);
                 if(type === 'absents') att.absents = Math.max(0, (att.absents || 0) + delta);
                 if(type === 'lates') att.lates = Math.max(0, (att.lates || 0) + delta);
+                if(type === 'unauthorizedExits') att.unauthorizedExits = Math.max(0, (att.unauthorizedExits || 0) + delta);
 
                 openModal(currentStudentId);
                 await db.collection(getTeacherCollection()).doc(currentStudentId).update({ attendanceStats: att });
@@ -979,7 +982,7 @@
         };
 
         function calculateStudentSummaryData(student) {
-            const att = student.attendanceStats || { presents: 0, absents: 0, lates: 0 };
+            const att = student.attendanceStats || { presents: 0, absents: 0, lates: 0, unauthorizedExits: 0 };
             const actions = student.actions || [];
             const todayStr = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
@@ -998,7 +1001,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر')) attendanceEventsList.push(act);
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر') || title.includes('خارج بدون إذن')) attendanceEventsList.push(act);
                 if (title.includes('واجب')) homeworkList.push(act);
                 else if (title.includes('ملف') || title.includes('إنجاز')) portfolioList.push(act);
                 else if (score < 0 || title.includes('نوم') || title.includes('تحدث') || title.includes('هاتف') || title.includes('خاطئة')) negativeList.push(act);
@@ -1030,26 +1033,33 @@
                             <span>📌 الحضور والغياب والتأخر</span>
                             <span class="text-xs text-slate-500">(تعديل سري)</span>
                         </h4>
-                        <div class="grid grid-cols-3 gap-2 text-center">
-                            <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
-                                <span class="block text-xs font-bold text-emerald-700">حضور (${att.presents || 0})</span>
+                        <div class="grid grid-cols-4 gap-1.5 text-center">
+                            <div class="bg-emerald-50 p-2 rounded-xl border border-emerald-100">
+                                <span class="block text-[11px] font-bold text-emerald-700">حضور (${att.presents || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
-                                    <button onclick="adjustAttendance('presents', 1)" class="bg-emerald-600 text-white w-7 h-7 rounded-lg font-black text-sm hover:bg-emerald-700">+</button>
-                                    <button onclick="adjustAttendance('presents', -1)" class="bg-emerald-800 text-white w-7 h-7 rounded-lg font-black text-sm hover:bg-emerald-900">-</button>
+                                    <button onclick="adjustAttendance('presents', 1)" class="bg-emerald-600 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-emerald-700">+</button>
+                                    <button onclick="adjustAttendance('presents', -1)" class="bg-emerald-800 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-emerald-900">-</button>
                                 </div>
                             </div>
-                            <div class="bg-rose-50 p-2.5 rounded-xl border border-rose-100">
-                                <span class="block text-xs font-bold text-rose-700">غياب (${att.absents || 0})</span>
+                            <div class="bg-rose-50 p-2 rounded-xl border border-rose-100">
+                                <span class="block text-[11px] font-bold text-rose-700">غياب (${att.absents || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
-                                    <button onclick="adjustAttendance('absents', 1)" class="bg-rose-600 text-white w-7 h-7 rounded-lg font-black text-sm hover:bg-rose-700">+</button>
-                                    <button onclick="adjustAttendance('absents', -1)" class="bg-rose-800 text-white w-7 h-7 rounded-lg font-black text-sm hover:bg-rose-900">-</button>
+                                    <button onclick="adjustAttendance('absents', 1)" class="bg-rose-600 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-rose-700">+</button>
+                                    <button onclick="adjustAttendance('absents', -1)" class="bg-rose-800 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-rose-900">-</button>
                                 </div>
                             </div>
-                            <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-100">
-                                <span class="block text-xs font-bold text-amber-700">تاخر (${att.lates || 0})</span>
+                            <div class="bg-amber-50 p-2 rounded-xl border border-amber-100">
+                                <span class="block text-[11px] font-bold text-amber-700">تاخر (${att.lates || 0})</span>
                                 <div class="flex justify-center gap-1 mt-1.5">
-                                    <button onclick="adjustAttendance('lates', 1)" class="bg-amber-600 text-white w-7 h-7 rounded-lg font-black text-sm hover:bg-amber-700">+</button>
-                                    <button onclick="adjustAttendance('lates', -1)" class="bg-amber-800 text-white w-7 h-7 rounded-lg font-black text-sm hover:bg-amber-900">-</button>
+                                    <button onclick="adjustAttendance('lates', 1)" class="bg-amber-600 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-amber-700">+</button>
+                                    <button onclick="adjustAttendance('lates', -1)" class="bg-amber-800 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-amber-900">-</button>
+                                </div>
+                            </div>
+                            <div class="bg-stone-100 p-2 rounded-xl border border-stone-300">
+                                <span class="block text-[10px] font-bold text-stone-800">خارج بدون إذن (${att.unauthorizedExits || 0})</span>
+                                <div class="flex justify-center gap-1 mt-1.5">
+                                    <button onclick="adjustAttendance('unauthorizedExits', 1)" class="bg-stone-700 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-stone-800">+</button>
+                                    <button onclick="adjustAttendance('unauthorizedExits', -1)" class="bg-stone-900 text-white w-6 h-6 rounded-lg font-black text-xs hover:bg-black">-</button>
                                 </div>
                             </div>
                         </div>
@@ -1124,10 +1134,11 @@
                     <div class="space-y-4 text-xs font-bold text-slate-800">
                         <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
                             <span class="text-slate-900 font-black text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
-                            <div class="flex gap-4 text-slate-700 mt-1">
+                            <div class="flex gap-3 text-slate-700 mt-1 flex-wrap">
                                 <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                 <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                 <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                <span>🚶‍♂️ خارج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                             </div>
                         </div>
                         <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
@@ -1164,7 +1175,6 @@
             document.getElementById('preview-modal').classList.remove('flex');
         };
 
-        // دالة سحابية مركزية لحفظ التقرير ونسخ الرابط الحقيقي - محدثة لتعمل برابطك المباشر
         window.saveAndCopyReportLink = async function(htmlContent, btnElement) {
             if(btnElement) {
                 btnElement.dataset.originalText = btnElement.innerHTML;
@@ -1174,17 +1184,14 @@
             
             const reportId = 'rep_' + Date.now() + Math.random().toString(36).substr(2, 5);
             try {
-                // حفظ التقرير سحابياً في Realtime Database
                 await rtdb.ref('shared_reports/' + reportId).set({ 
                     html: htmlContent,
                     timestamp: firebase.database.ServerValue.TIMESTAMP 
                 });
                 
-                // الاعتماد على الرابط الرسمي لكي يعمل في كل الأجهزة والواتساب
                 const baseUrl = "https://school1school2-stack.github.io/Abdul-majeed2/";
                 const shareableLink = `${baseUrl}?view_report=${reportId}`;
                 
-                // نسخ الرابط للحافظة
                 await navigator.clipboard.writeText(shareableLink);
                 alert("✅ تم نسخ الرابط بنجاح!\nيمكنك الآن لصق الرابط في الواتساب أو إرساله للطلاب أو أولياء الأمور.");
                 
@@ -1230,10 +1237,11 @@
                         <div class="space-y-4 text-xs font-bold text-slate-800">
                             <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 shadow-xs">
                                 <span class="text-amber-950 font-black text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
-                                <div class="flex justify-between text-slate-700 my-2 px-2 border-b border-amber-200 pb-2">
+                                <div class="flex justify-between text-slate-700 my-2 px-2 border-b border-amber-200 pb-2 flex-wrap gap-2">
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                    <span>🚶‍♂️ خارج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${summary.attendanceEventsList.length === 0 ? '<p class="text-emerald-700 font-semibold mt-1">منتظم بالحضور والدوام ✨</p>' : `<ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">${summary.attendanceEventsList.map(item => `<li><span class="font-bold text-rose-800">${item.title}</span> - <span class="text-[11px] text-slate-500">${item.timestamp}</span></li>`).join('')}</ul>`}
                             </div>
@@ -1275,7 +1283,6 @@
                 </body>
                 </html>
             `;
-            // استخدام الميزة السحابية الجديدة
             saveAndCopyReportLink(webPageHTML, btnElement);
         };
 
@@ -1312,10 +1319,11 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-bold text-slate-800">
                             <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
                                 <span class="text-slate-900 font-black text-sm block mb-1">📌 سجل الحضور والغياب والتأخر:</span>
-                                <div class="flex gap-4 text-slate-700 my-1 pb-2 border-b border-slate-100">
+                                <div class="flex gap-3 text-slate-700 my-1 pb-2 border-b border-slate-100 flex-wrap">
                                     <span>🟢 حضور: <strong class="text-emerald-600">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong class="text-rose-600">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong class="text-amber-600">${att.lates || 0}</strong></span>
+                                    <span>🚶‍♂️ خارج بدون إذن: <strong class="text-stone-800">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${attendanceHtml}
                             </div>
@@ -1382,10 +1390,11 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px; color: #1e293b;">
                             <div style="background: white; padding: 14px; border-radius: 14px; border: 1px solid #fef3c7;">
                                 <strong style="display: block; margin-bottom: 6px; font-size: 13px;">📌 سجل الحضور والغياب والتأخر:</strong>
-                                <div style="display: flex; gap: 15px; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid #f8fafc;">
+                                <div style="display: flex; gap: 10px; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid #f8fafc; flex-wrap: wrap;">
                                     <span>🟢 حضور: <strong style="color: #059669;">${att.presents || 0}</strong></span>
                                     <span>🔴 غياب: <strong style="color: #dc2626;">${att.absents || 0}</strong></span>
                                     <span>⏰ تاخر: <strong style="color: #d97706;">${att.lates || 0}</strong></span>
+                                    <span>🚶‍♂️ خارج بدون إذن: <strong style="color: #292524;">${att.unauthorizedExits || 0}</strong></span>
                                 </div>
                                 ${attendanceHtml}
                             </div>
@@ -1435,19 +1444,19 @@
                 </body>
                 </html>
             `;
-            // استخدام الميزة السحابية الجديدة
             saveAndCopyReportLink(webPageHTML, btnElement);
         }
 
         function openTableClassReportPreview(className) {
             const students = allStudents.filter(s => s.className === className);
-            let totalPresentsClass = 0, totalAbsentsClass = 0, totalLatesClass = 0;
+            let totalPresentsClass = 0, totalAbsentsClass = 0, totalLatesClass = 0, totalUnauthorizedExitsClass = 0;
 
             let studentsRowsHtml = students.map((st, idx) => {
                 const sum = calculateStudentSummaryData(st);
                 totalPresentsClass += sum.att.presents || 0;
                 totalAbsentsClass += sum.att.absents || 0;
                 totalLatesClass += sum.att.lates || 0;
+                totalUnauthorizedExitsClass += sum.att.unauthorizedExits || 0;
                 let homeworkText = sum.homeworkList.length > 0 ? sum.homeworkList.map(h => h.title).join('، ') : 'منتظم';
                 let portfolioText = sum.portfolioList.length > 0 ? sum.portfolioList.map(p => p.title).join('، ') : 'مكتمل';
                 let negativeText = sum.negativeList.length > 0 ? sum.negativeList.map(n => n.title).join('، ') : 'لا يوجد';
@@ -1459,6 +1468,7 @@
                         <td class="p-2 text-center text-emerald-600 font-bold">${sum.att.presents || 0}</td>
                         <td class="p-2 text-center text-rose-600 font-bold">${sum.att.absents || 0}</td>
                         <td class="p-2 text-center text-amber-600 font-bold">${sum.att.lates || 0}</td>
+                        <td class="p-2 text-center text-stone-800 font-bold bg-stone-100/60">${sum.att.unauthorizedExits || 0}</td>
                         <td class="p-2 text-center font-black ${sum.totalScore >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</td>
                         <td class="p-2 text-xs text-emerald-700 font-semibold">+${sum.totalPositiveScore} (${sum.positiveCountTotal} مشاركة)</td>
                         <td class="p-2 text-xs text-rose-700 font-semibold">${negativeText}</td>
@@ -1475,12 +1485,12 @@
                         <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | ${currentTeacherSubject}</p>
                         <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 text-center mb-4 text-xs font-bold">
+                    <div class="grid grid-cols-4 gap-2 text-center mb-4 text-xs font-bold">
                         <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
                             <span class="text-emerald-800 block">إجمالي الحضور</span>
                             <span class="text-lg font-black text-emerald-600">${totalPresentsClass}</span>
                         </div>
-                        <div class="bg-rose-50 p-2.5 rounded-xl border border-emerald-200">
+                        <div class="bg-rose-50 p-2.5 rounded-xl border border-rose-200">
                             <span class="text-rose-800 block">إجمالي الغياب</span>
                             <span class="text-lg font-black text-rose-600">${totalAbsentsClass}</span>
                         </div>
@@ -1488,15 +1498,28 @@
                             <span class="text-amber-800 block">إجمالي التأخر</span>
                             <span class="text-lg font-black text-amber-600">${totalLatesClass}</span>
                         </div>
+                        <div class="bg-stone-100 p-2.5 rounded-xl border border-stone-300">
+                            <span class="text-stone-800 block">إجمالي خارج بدون إذن</span>
+                            <span class="text-lg font-black text-stone-900">${totalUnauthorizedExitsClass}</span>
+                        </div>
                     </div>
                     <div class="overflow-x-auto border rounded-xl">
                         <table class="w-full text-xs text-right whitespace-nowrap">
                             <thead class="bg-amber-900 text-amber-50">
                                 <tr>
-                                    <th class="p-2.5">#</th><th class="p-2.5">اسم الطالب</th><th class="p-2.5 text-center">حضور</th><th class="p-2.5 text-center">غياب</th><th class="p-2.5 text-center">تاخر</th><th class="p-2.5 text-center">النقاط</th><th class="p-2.5">المشاركات الإيجابية</th><th class="p-2.5">الملاحظات السلبية</th><th class="p-2.5">الواجبات والملفات</th>
+                                    <th class="p-2.5">#</th>
+                                    <th class="p-2.5">اسم الطالب</th>
+                                    <th class="p-2.5 text-center">حضور</th>
+                                    <th class="p-2.5 text-center">غياب</th>
+                                    <th class="p-2.5 text-center">تاخر</th>
+                                    <th class="p-2.5 text-center bg-stone-800 text-amber-100">خارج بدون إذن</th>
+                                    <th class="p-2.5 text-center">النقاط</th>
+                                    <th class="p-2.5">المشاركات الإيجابية</th>
+                                    <th class="p-2.5">الملاحظات السلبية</th>
+                                    <th class="p-2.5">الواجبات والملفات</th>
                                 </tr>
                             </thead>
-                            <tbody>${students.length === 0 ? '<tr><td colspan="9" class="text-center p-4 text-slate-400">لا توجد طلاب مسجلين في هذا الفصل</td></tr>' : studentsRowsHtml}</tbody>
+                            <tbody>${students.length === 0 ? '<tr><td colspan="10" class="text-center p-4 text-slate-400">لا توجد طلاب مسجلين في هذا الفصل</td></tr>' : studentsRowsHtml}</tbody>
                         </table>
                     </div>
                 </div>
@@ -1511,13 +1534,14 @@
 
         function shareTableClassReportLink(className, btnElement) {
             const students = allStudents.filter(s => s.className === className);
-            let totalPresentsClass = 0, totalAbsentsClass = 0, totalLatesClass = 0;
+            let totalPresentsClass = 0, totalAbsentsClass = 0, totalLatesClass = 0, totalUnauthorizedExitsClass = 0;
 
             let studentsRowsHtml = students.map((st, idx) => {
                 const sum = calculateStudentSummaryData(st);
                 totalPresentsClass += sum.att.presents || 0;
                 totalAbsentsClass += sum.att.absents || 0;
                 totalLatesClass += sum.att.lates || 0;
+                totalUnauthorizedExitsClass += sum.att.unauthorizedExits || 0;
                 let homeworkText = sum.homeworkList.length > 0 ? sum.homeworkList.map(h => h.title).join('، ') : 'منتظم';
                 let portfolioText = sum.portfolioList.length > 0 ? sum.portfolioList.map(p => p.title).join('، ') : 'مكتمل';
                 let negativeText = sum.negativeList.length > 0 ? sum.negativeList.map(n => n.title).join('، ') : 'لا يوجد';
@@ -1529,6 +1553,7 @@
                         <td style="padding: 10px; text-align: center; color: #059669; font-weight: bold;">${sum.att.presents || 0}</td>
                         <td style="padding: 10px; text-align: center; color: #dc2626; font-weight: bold;">${sum.att.absents || 0}</td>
                         <td style="padding: 10px; text-align: center; color: #d97706; font-weight: bold;">${sum.att.lates || 0}</td>
+                        <td style="padding: 10px; text-align: center; color: #1e293b; font-weight: bold; background-color: #f1f5f9;">${sum.att.unauthorizedExits || 0}</td>
                         <td style="padding: 10px; text-align: center; font-weight: 900; color: ${sum.totalScore >= 0 ? '#059669' : '#dc2626'};">${sum.totalScore > 0 ? '+' + sum.totalScore : sum.totalScore}</td>
                         <td style="padding: 10px; font-size: 11px; color: #047857; font-weight: bold;">+${sum.totalPositiveScore} (${sum.positiveCountTotal} مشاركة)</td>
                         <td style="padding: 10px; font-size: 11px; color: #b91c1c; font-weight: bold;">${negativeText}</td>
@@ -1556,19 +1581,29 @@
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
                             <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-3 text-center mb-6 text-xs font-bold">
-                            <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-emerald-800 block text-sm">إجمالي الحضور بالفصل</span><span class="text-xl font-black text-emerald-600">${totalPresentsClass}</span></div>
-                            <div class="bg-rose-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-rose-800 block text-sm">إجمالي الغياب بالفصل</span><span class="text-xl font-black text-rose-600">${totalAbsentsClass}</span></div>
-                            <div class="bg-amber-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-amber-800 block text-sm">إجمالي التأخر بالفصل</span><span class="text-xl font-black text-amber-600">${totalLatesClass}</span></div>
+                        <div class="grid grid-cols-4 gap-3 text-center mb-6 text-xs font-bold">
+                            <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-emerald-800 block text-sm">إجمالي الحضور</span><span class="text-xl font-black text-emerald-600">${totalPresentsClass}</span></div>
+                            <div class="bg-rose-50 p-3 rounded-2xl border border-rose-200 shadow-xs"><span class="text-rose-800 block text-sm">إجمالي الغياب</span><span class="text-xl font-black text-rose-600">${totalAbsentsClass}</span></div>
+                            <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 shadow-xs"><span class="text-amber-800 block text-sm">إجمالي التأخر</span><span class="text-xl font-black text-amber-600">${totalLatesClass}</span></div>
+                            <div class="bg-stone-100 p-3 rounded-2xl border border-stone-300 shadow-xs"><span class="text-stone-800 block text-sm">إجمالي خارج بدون إذن</span><span class="text-xl font-black text-stone-900">${totalUnauthorizedExitsClass}</span></div>
                         </div>
                         <div class="overflow-x-auto border rounded-2xl shadow-xs">
                             <table class="w-full text-xs text-right border-collapse whitespace-nowrap">
                                 <thead style="background-color: #800000; color: #d4af37;">
                                     <tr>
-                                        <th style="padding: 12px;">#</th><th style="padding: 12px;">اسم الطالب</th><th style="padding: 12px; text-align: center;">حضور</th><th style="padding: 12px; text-align: center;">غياب</th><th style="padding: 12px; text-align: center;">تاخر</th><th style="padding: 12px; text-align: center;">النقاط</th><th style="padding: 12px;">المشاركات الإيجابية</th><th style="padding: 12px;">الملاحظات السلبية</th><th style="padding: 12px;">الواجبات والملفات</th>
+                                        <th style="padding: 12px;">#</th>
+                                        <th style="padding: 12px;">اسم الطالب</th>
+                                        <th style="padding: 12px; text-align: center;">حضور</th>
+                                        <th style="padding: 12px; text-align: center;">غياب</th>
+                                        <th style="padding: 12px; text-align: center;">تاخر</th>
+                                        <th style="padding: 12px; text-align: center; background-color: #334155; color: #ffffff;">خارج بدون إذن</th>
+                                        <th style="padding: 12px; text-align: center;">النقاط</th>
+                                        <th style="padding: 12px;">المشاركات الإيجابية</th>
+                                        <th style="padding: 12px;">الملاحظات السلبية</th>
+                                        <th style="padding: 12px;">الواجبات والملفات</th>
                                     </tr>
                                 </thead>
-                                <tbody>${students.length === 0 ? '<tr><td colspan="9" style="text-align: center; padding: 20px; color: #94a3b8;">لا توجد طلاب مسجلين في هذا الفصل</td></tr>' : studentsRowsHtml}</tbody>
+                                <tbody>${students.length === 0 ? '<tr><td colspan="10" style="text-align: center; padding: 20px; color: #94a3b8;">لا توجد طلاب مسجلين في هذا الفصل</td></tr>' : studentsRowsHtml}</tbody>
                             </table>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
@@ -1578,7 +1613,6 @@
                 </body>
                 </html>
             `;
-            // استخدام الميزة السحابية الجديدة
             saveAndCopyReportLink(webPageHTML, btnElement);
         }
 
@@ -1588,15 +1622,12 @@
         };
 
         window.onload = function() {
-            // فحص إذا كان الزائر قد دخل عبر "رابط مشاركة تقرير"
             const urlParams = new URLSearchParams(window.location.search);
             const reportId = urlParams.get('view_report');
             
             if(reportId) {
-                // عرض شاشة تحميل للزائر
                 document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #800000; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">⏳</div>جاري تحميل التقرير...</div>`;
                 
-                // جلب كود التقرير من القاعدة السحابية وعرضه
                 rtdb.ref('shared_reports/' + reportId).once('value', snapshot => {
                     const data = snapshot.val();
                     if(data && data.html) {
@@ -1607,7 +1638,7 @@
                         document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #dc2626; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">❌</div>عذراً، هذا التقرير غير موجود أو تم حذفه</div>`;
                     }
                 });
-                return; // إيقاف تشغيل المنصة للمعلم والاكتفاء بعرض التقرير
+                return;
             }
 
             showLoginModal();
@@ -1783,7 +1814,6 @@
         }
 
         function copyTeacherShareLink(email) {
-            // تثبيت الرابط الأساسي للمنصة ليعمل الرابط مع كل المعلمين على كل الأجهزة
             const baseUrl = "https://school1school2-stack.github.io/Abdul-majeed2/";
             const shareableLink = `${baseUrl}?teacher=${encodeURIComponent(email)}`;
             
@@ -2195,6 +2225,7 @@
                     <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
                     <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
                     <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
+                    <button onclick="recordAction('خارج بدون إذن', 0, 'خارج بدون إذن')" class="flex items-center gap-3 bg-stone-100 border border-stone-400 text-stone-800 px-4 py-3 rounded-2xl shrink-0 cursor-pointer font-bold">🚶‍♂️ خارج بدون إذن</button>
                     <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-3 bg-sky-50 border border-sky-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🏃 مستاذن</button>
                 </div>
             </div>
