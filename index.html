@@ -1769,7 +1769,7 @@
         };
 
         window.onload = function() {
-            // التعديل 1: إجبار الجميع (معلم أو مشرف) على المرور بنافذة تسجيل الدخول دائماً
+            // إجبار الجميع (معلم أو مشرف) على المرور بنافذة تسجيل الدخول دائماً
             showLoginModal();
         };
 
@@ -1789,7 +1789,7 @@
                 return;
             }
 
-            // التعديل 2: التأكد من أن الإيميل المدخل يطابق الرابط المرسل للمعلم (إلا إذا كان المشرف العام)
+            // التأكد من أن الإيميل المدخل يطابق الرابط المرسل للمعلم (إلا إذا كان المشرف العام)
             const urlParams = new URLSearchParams(window.location.search);
             const teacherParam = urlParams.get('teacher');
             
@@ -1875,6 +1875,59 @@
             }
         }
 
+        // --- دوال التحكم بقائمة المعلمين (تعديل وحذف ونسخ) --- //
+        window.handleTeacherAction = async function(selectElement, key, currentEmail, currentName, currentSubject) {
+            const action = selectElement.value;
+            selectElement.value = ""; // تفريغ الخيار بعد الضغط
+
+            if (action === 'copy_link') copyTeacherShareLink(currentEmail);
+            else if (action === 'copy_email') copyText(currentEmail);
+            else if (action === 'copy_name') copyText(currentName);
+            else if (action === 'delete') deleteTeacher(key);
+            else if (action === 'edit_name') editTeacherName(key, currentName);
+            else if (action === 'edit_email') editTeacherEmail(key, currentEmail, currentName, currentSubject);
+        };
+
+        async function editTeacherName(key, currentName) {
+            const newName = prompt("أدخل الاسم الجديد للمعلم:", currentName);
+            if (newName === null) return;
+            const trimmedName = newName.trim();
+            if (!trimmedName) return alert("لا يمكن ترك الاسم فارغاً.");
+            
+            try {
+                await rtdb.ref('teachers_registry/' + key).update({ name: trimmedName });
+                loadTeachersList();
+                alert("تم تعديل الاسم بنجاح!");
+            } catch (error) {
+                alert("حدث خطأ أثناء تحديث الاسم.");
+            }
+        }
+
+        async function editTeacherEmail(oldKey, currentEmail, currentName, currentSubject) {
+            const newEmailInput = prompt("أدخل البريد الإلكتروني الجديد للمعلم:", currentEmail);
+            if (newEmailInput === null) return;
+            const newEmail = newEmailInput.trim().toLowerCase();
+            if (!newEmail || !newEmail.includes('@')) return alert("يرجى إدخال بريد إلكتروني صحيح.");
+            if (newEmail === currentEmail) return;
+
+            const newKey = newEmail.replace(/\./g, '_');
+            
+            try {
+                // التأكد من أن البريد الجديد غير مستخدم لمعلم آخر
+                const snapshot = await rtdb.ref('teachers_registry/' + newKey).once('value');
+                if (snapshot.exists()) return alert("هذا البريد الإلكتروني موجود مسبقاً لمعلم آخر!");
+
+                // حفظ البيانات بالمفتاح الجديد وحذف المفتاح القديم
+                await rtdb.ref('teachers_registry/' + newKey).set({ name: currentName, email: newEmail, subject: currentSubject });
+                await rtdb.ref('teachers_registry/' + oldKey).remove();
+                
+                loadTeachersList();
+                alert("تم تعديل الإيميل بنجاح! 🌟");
+            } catch (error) {
+                alert("حدث خطأ أثناء تحديث الإيميل.");
+            }
+        }
+
         function loadTeachersList() {
             const tbody = document.getElementById('teachers-list-body');
             if(!tbody) return;
@@ -1891,6 +1944,8 @@
 
                 Object.keys(data).forEach(k => {
                     let t = data[k];
+                    let safeName = t.name ? t.name.replace(/'/g, "\\'") : '';
+                    let safeSubject = t.subject ? t.subject.replace(/'/g, "\\'") : '';
                     
                     tbody.innerHTML += `
                         <tr>
@@ -1899,10 +1954,15 @@
                             <td><span style="background:#e0f2fe; color:#0369a1; padding:3px 10px; border-radius:6px; font-weight:bold;">${t.subject}</span></td>
                             <td style="direction:ltr;">${t.email}</td>
                             <td>
-                                <div class="flex gap-1.5 flex-wrap">
-                                    <button class="btn" style="background:#10b981; color:white; padding:5px 10px; font-size:0.8rem;" onclick="copyTeacherShareLink('${t.email}')"><i class="fas fa-link"></i> نسخ الرابط</button>
-                                    <button class="btn" style="background:#ef4444; color:white; padding:5px 10px; font-size:0.8rem;" onclick="deleteTeacher('${k}')"><i class="fas fa-trash"></i> حذف</button>
-                                </div>
+                                <select class="action-select" style="min-width: 130px;" onchange="handleTeacherAction(this, '${k}', '${t.email}', '${safeName}', '${safeSubject}')">
+                                    <option value="" disabled selected>⚙️ خيارات المعلم</option>
+                                    <option value="copy_link">🔗 نسخ الرابط</option>
+                                    <option value="copy_email">📧 نسخ الإيميل</option>
+                                    <option value="copy_name">📋 نسخ الاسم</option>
+                                    <option value="edit_name">✏️ تعديل الاسم</option>
+                                    <option value="edit_email">✏️ تعديل الإيميل</option>
+                                    <option value="delete">🗑️ حذف المعلم</option>
+                                </select>
                             </td>
                         </tr>
                     `;
@@ -1933,7 +1993,6 @@
     <div id="teacher-login-modal" class="fixed inset-0 bg-slate-950/80 hidden items-center justify-center p-4 z-50 backdrop-blur-md">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-2xl text-center border-2 border-amber-300">
             <div class="w-20 h-20 bg-amber-900 text-amber-100 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg border-2 border-amber-400">👨‍🏫</div>
-            <!-- التعديل 3: تغيير عنوان نافذة الدخول لتناسب الجميع -->
             <h2 class="text-2xl font-black text-slate-900 mb-1">تسجيل الدخول للمنصة</h2>
             <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال البريد الإلكتروني المعتمد للوصول</p>
 
@@ -2183,4 +2242,3 @@
 
 </body>
 </html>
-```<FollowUp>
