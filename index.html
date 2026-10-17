@@ -197,7 +197,7 @@
             "🛡️ \"الأخطاء ليست نهاية المطاف، بل هي الدروس المجانية التي تجعلنا أكثر ذكاءً وقوة.\"",
             "⚓ \"كن صبوراً، فالأشجار العميقة الجذور هي وحدها التي تقاوم أقوى العواصف.\"",
             "🌠 \"الأحلام الكبيرة تحتاج إلى جهود عظيمة، فلا تستصغر أي جهد قمت به اليوم.\"",
-            "🛠️ \"العلم في الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
+            "🛠️ \"العلم in الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
             "🧭 \"دع شغفك هو بوصلتك، وعملك الجاد هو وقودك، ولا تيأس مهما كانت المسافة طويلة.\"",
             "✍️ \"اكتب نجاحك اليوم بعرق جبينك وإصرارك، لتقرأه بفخر واعتزاز غداً.\"",
             "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
@@ -952,7 +952,7 @@
         window.removeStudentFromClass = async function(id) {
             const student = allStudents.find(s => s.id === id);
             if(!student) return;
-            if(confirm(`هل أنت متأكد من إزالة الطالب (${student.name}) من هذا الفصل؟`)) {
+            if(confirm(`هل أنت متأكد من إزالة الطالب (${student.name}) من هذا الفصل وإتاحته في القائمة المركزية؟`)) {
                 student.className = 'غير موزع';
                 renderClassStudents();
                 renderView();
@@ -1989,7 +1989,7 @@
                     name: name,
                     className: selectedClass,
                     added_at: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                }, { merge: true });
 
                 selectEl.classList.add('hidden');
                 btnElement.parentElement.innerHTML = `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> تمت الإضافة</span>`;
