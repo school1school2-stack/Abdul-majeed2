@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة الطلاب الشامل - د/ سامي محمد العمر 👨‍🏫 ثانوية الأمير عبدالمجيد</title>
+    <title>نظام متابعة الطلاب الشامل - د/ سامي محمد العمر 👨‍🏫 ثانوية الأمير عبدالمجيد 😊 ثانوية الأمير عبدالمجيد مع فيس تعبيري</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -137,23 +137,14 @@
         let currentTeacherSubject = "القرآن الكريم وعلومه";
 
         function getTeacherCollection() {
-            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
-                return "teacher_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
-            }
             return "allowed_students";
         }
 
         function getPendingCollection() {
-            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
-                return "pending_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
-            }
             return "pending_students";
         }
 
         function getClassConfigDoc() {
-            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
-                return "classes_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
-            }
             return "classes_config";
         }
 
@@ -632,28 +623,26 @@
                 `;
             });
 
-            if (currentTeacherEmail === "school1school2@gmail.com") {
-                const adminTheme = classSoftThemes[classList.length % classSoftThemes.length];
-                const approvedTotalCount = allStudents.length;
-                classesContainer.innerHTML += `
-                    <div class="class-3d-card ${adminTheme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4 relative">
-                        ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md border-2 border-white animate-pulse">طلب جديد!</div>` : ''}
-                        <div onclick="openAdminControlPanel()" class="flex items-center justify-between cursor-pointer">
-                            <div class="flex items-center gap-4 sm:gap-5">
-                                <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-amber-200/60 flex items-center justify-center shrink-0">🔒</span>
-                                <div>
-                                    <h3 class="class-title-font text-lg sm:text-xl tracking-wide ${adminTheme.text}">لوحة التحكم المدمجة</h3>
-                                    <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${approvedTotalCount} طالب معتمد</p>
-                                </div>
+            const adminTheme = classSoftThemes[classList.length % classSoftThemes.length];
+            const approvedTotalCount = allStudents.length;
+            classesContainer.innerHTML += `
+                <div class="class-3d-card ${adminTheme.bg} p-5 sm:p-6 rounded-3xl transition flex flex-col justify-between border shadow-md hover:shadow-xl gap-4 relative">
+                    ${pendingCountGlobal > 0 ? `<div class="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md border-2 border-white animate-pulse">طلب جديد!</div>` : ''}
+                    <div onclick="openAdminControlPanel()" class="flex items-center justify-between cursor-pointer">
+                        <div class="flex items-center gap-4 sm:gap-5">
+                            <span class="text-4xl sm:text-5xl p-3 sm:p-4 rounded-3xl bg-white/95 shadow-sm border border-amber-200/60 flex items-center justify-center shrink-0">🔒</span>
+                            <div>
+                                <h3 class="class-title-font text-lg sm:text-xl tracking-wide ${adminTheme.text}">لوحة التحكم المدمجة</h3>
+                                <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${approvedTotalCount} طالب معتمد</p>
                             </div>
-                            <span class="bg-white/95 backdrop-blur-xs w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg text-[#800000] shadow-sm border border-amber-200 shrink-0">⚙️</span>
                         </div>
-                        <div class="pt-2 border-t border-amber-200/50">
-                            <button onclick="openAdminControlPanel()" class="w-full bg-[#800000] hover:bg-[#660000] text-amber-50 py-2.5 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔐 فتح لوحة التحكم وإدارة الاعتمادات</button>
-                        </div>
+                        <span class="bg-white/95 backdrop-blur-xs w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-lg text-[#800000] shadow-sm border border-amber-200 shrink-0">⚙️</span>
                     </div>
-                `;
-            }
+                    <div class="pt-2 border-t border-amber-200/50">
+                        <button onclick="openAdminControlPanel()" class="w-full bg-[#800000] hover:bg-[#660000] text-amber-50 py-2.5 px-3 rounded-xl font-bold text-xs shadow cursor-pointer transition text-center flex items-center justify-center gap-1">🔐 فتح لوحة التحكم وإدارة الاعتمادات</button>
+                    </div>
+                </div>
+            `;
         }
 
         function getCleanActionDetails(rawTitle) {
@@ -672,7 +661,7 @@
             if (cleanName.includes('غائب بعذر')) { return { title: 'غائب بعذر', icon: '👤' }; }
             if (cleanName.includes('غائب')) { return { title: 'غائب', icon: '🔴' }; }
             if (cleanName.includes('متأخر')) { return { title: 'متأخر', icon: '⏰' }; }
-            if (cleanName.includes('مستاذن')) { return { title: 'مستاذن', icon: '🏃' }; }
+            if (cleanName.includes('عن بعد')) { return { title: 'عن بعد', icon: '💻' }; }
             if (cleanName.includes('هارب')) { return { title: 'هارب', icon: '🚶‍♂️' }; }
 
             for (let ca of customActions) {
@@ -1100,7 +1089,7 @@
                     if (isToday) positiveCountToday++;
                 }
 
-                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('مستاذن') || title.includes('غائب بعذر')) {
+                if (title.includes('غائب') || title.includes('متأخر') || title.includes('حاضر') || title.includes('هارب') || title.includes('عن بعد') || title.includes('غائب بعذر')) {
                     attendanceEventsList.push(act);
                 }
 
@@ -1141,7 +1130,7 @@
                 <div class="text-center mb-6 border-b pb-4">
                     <div class="w-20 h-20 ${btnPrimaryClass} text-white rounded-full flex items-center justify-center text-4xl font-bold mx-auto mb-2 shadow-md">👤</div>
                     <h2 class="student-name-font text-3xl text-slate-900">${student.name}</h2>
-                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -1240,7 +1229,7 @@
                     <div class="text-center border-b border-amber-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-amber-950">📋 تقرير متابعة طالب مفصل</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
-                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
                     </div>
 
                     <div class="space-y-4 text-xs font-bold text-slate-800">
@@ -1321,7 +1310,7 @@
                             <span class="text-5xl mb-2 inline-block">🎓</span>
                             <h1 class="student-title text-3xl font-bold text-slate-900">${student.name}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">الصف: ${student.className}</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري | ${currentTeacherSubject}</p>
                         </div>
 
                         <div class="space-y-4 text-xs font-bold text-slate-800">
@@ -1392,7 +1381,7 @@
                         </div>
 
                         <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-500 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد مع فيس تعبيري</span>
                             <span>الحقوق محفوظة 2026</span>
                             <span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
@@ -1490,7 +1479,7 @@
                     <div class="text-center border-b border-amber-200 pb-3 mb-6 sticky top-0 bg-white z-10 py-2">
                         <h3 class="student-name-font text-2xl text-slate-900">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
                     </div>
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
@@ -1585,11 +1574,11 @@
                             <span class="text-5xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الفردي الشامل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري | ${currentTeacherSubject}</p>
                         </div>
                         <div>${students.length === 0 ? '<p style="text-align: center; padding: 30px; color: #94a3b8; font-weight: bold;">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد مع فيس تعبيري</span>
                             <span>الحقوق محفوظة 2026</span>
                             <span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
@@ -1637,7 +1626,7 @@
                     <div class="text-center border-b border-amber-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-900">📊 جدول الفصل الشامل والمفصل: ${className}</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | ${currentTeacherSubject}</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
                     </div>
 
                     <div class="grid grid-cols-3 gap-2 text-center mb-4 text-xs font-bold">
@@ -1645,7 +1634,7 @@
                             <span class="text-emerald-800 block">إجمالي الحضور</span>
                             <span class="text-lg font-black text-emerald-600">${totalPresentsClass}</span>
                         </div>
-                        <div class="bg-rose-50 p-2.5 rounded-xl border border-emerald-200">
+                        <div class="bg-rose-50 p-2.5 rounded-xl border border-rose-200">
                             <span class="text-rose-800 block">إجمالي الغياب</span>
                             <span class="text-lg font-black text-rose-600">${totalAbsentsClass}</span>
                         </div>
@@ -1734,12 +1723,12 @@
                             <span class="text-5xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الشامل والمفصل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري | ${currentTeacherSubject}</p>
                         </div>
                         <div class="grid grid-cols-3 gap-3 text-center mb-6 text-xs font-bold">
                             <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-emerald-800 block text-sm">إجمالي الحضور بالفصل</span><span class="text-xl font-black text-emerald-600">${totalPresentsClass}</span></div>
-                            <div class="bg-rose-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-rose-800 block text-sm">إجمالي الغياب بالفصل</span><span class="text-xl font-black text-rose-600">${totalAbsentsClass}</span></div>
-                            <div class="bg-amber-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-amber-800 block text-sm">إجمالي التأخر بالفصل</span><span class="text-xl font-black text-amber-600">${totalLatesClass}</span></div>
+                            <div class="bg-rose-50 p-3 rounded-2xl border border-rose-200 shadow-xs"><span class="text-rose-800 block text-sm">إجمالي الغياب بالفصل</span><span class="text-xl font-black text-rose-600">${totalAbsentsClass}</span></div>
+                            <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 shadow-xs"><span class="text-amber-800 block text-sm">إجمالي التأخر بالفصل</span><span class="text-xl font-black text-amber-600">${totalLatesClass}</span></div>
                         </div>
                         <div class="overflow-x-auto border rounded-2xl shadow-xs">
                             <table class="w-full text-xs text-right border-collapse whitespace-nowrap">
@@ -1752,7 +1741,7 @@
                             </table>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد مع فيس تعبيري</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1768,35 +1757,13 @@
             document.getElementById('student-modal').classList.remove('flex');
         };
 
+        // التحقق الصارم والمشدد عند الفتح
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const teacherParam = urlParams.get('teacher');
-
-            if (teacherParam) {
-                currentTeacherEmail = teacherParam.trim().toLowerCase();
-                rtdb.ref('teachers_registry').once('value', snapshot => {
-                    const data = snapshot.val();
-                    let found = false;
-                    if (data) {
-                        Object.keys(data).forEach(k => {
-                            if (data[k].email.toLowerCase() === currentTeacherEmail) {
-                                currentTeacherName = data[k].name;
-                                currentTeacherSubject = data[k].subject;
-                                found = true;
-                            }
-                        });
-                    }
-                    if (!found) {
-                        currentTeacherName = "المعلم";
-                        currentTeacherSubject = "مادة دراسية";
-                    }
-                    
-                    document.getElementById('main-header-title').innerText = `نظام المتابعة الشاملة (${currentTeacherName})`;
-                    document.getElementById('main-header-subtitle').innerText = `المادة: ${currentTeacherSubject} | ثانوية الأمير عبدالمجيد`;
-                    
-                    initSystem();
-                });
+            const savedEmail = localStorage.getItem('teacher_email');
+            if (savedEmail && savedEmail.toLowerCase().trim() === "school1school2@gmail.com") {
+                verifyAndLoadTeacher(savedEmail);
             } else {
+                localStorage.removeItem('teacher_email');
                 showLoginModal();
             }
         };
@@ -1817,36 +1784,15 @@
                 return;
             }
 
+            // قصر الدخول حصرياً على إيميل المشرف العام فقط
             if (emailInput === "school1school2@gmail.com") {
-                currentTeacherEmail = emailInput;
+                localStorage.setItem('teacher_email', emailInput);
                 document.getElementById('teacher-login-modal').classList.add('hidden');
                 verifyAndLoadTeacher(emailInput);
                 return;
             } else {
-                rtdb.ref('teachers_registry').once('value', snapshot => {
-                    const data = snapshot.val();
-                    let allowed = false;
-                    if (data) {
-                        Object.keys(data).forEach(k => {
-                            if (data[k].email.toLowerCase() === emailInput) {
-                                allowed = true;
-                                currentTeacherName = data[k].name;
-                                currentTeacherSubject = data[k].subject;
-                            }
-                        });
-                    }
-
-                    if (allowed) {
-                        currentTeacherEmail = emailInput;
-                        document.getElementById('teacher-login-modal').classList.add('hidden');
-                        document.getElementById('main-header-title').innerText = `نظام المتابعة الشاملة (${currentTeacherName})`;
-                        document.getElementById('main-header-subtitle').innerText = `المادة: ${currentTeacherSubject} | ثانوية الأمير عبدالمجيد`;
-                        initSystem();
-                    } else {
-                        loginError.innerText = "عذراً، هذا البريد غير مسجل كمعلم في النظام!";
-                        loginError.classList.remove('hidden');
-                    }
-                });
+                loginError.innerText = "عذراً، هذا البريد غير مصرح له بدخول لوحة المشرف العام!";
+                loginError.classList.remove('hidden');
             }
         }
 
@@ -1855,17 +1801,19 @@
                 document.getElementById('admin-supervisor-card').style.display = 'block';
                 document.getElementById('main-dashboard').style.display = 'none';
                 document.getElementById('main-header-title').innerText = "نظام المتابعة الشاملة";
-                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام ثانوية الأمير عبدالمجيد";
+                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام ثانوية الأمير عبدالمجيد 😊 ثانوية الأمير عبدالمجيد مع فيس تعبيري";
                 document.getElementById('teacher-logout-btn').classList.remove('hidden');
                 loadTeachersList();
                 return;
             } else {
+                localStorage.removeItem('teacher_email');
                 showLoginModal();
             }
         }
 
         function logoutTeacher() {
-            if (confirm("هل ترغب في قفل الجلسة وتسجيل الخروج؟")) {
+            if (confirm("هل ترغب في تسجيل الخروج؟")) {
+                localStorage.removeItem('teacher_email');
                 location.reload();
             }
         }
@@ -1917,24 +1865,11 @@
                             <td><span style="background:#e0f2fe; color:#0369a1; padding:3px 10px; border-radius:6px; font-weight:bold;">${t.subject}</span></td>
                             <td style="direction:ltr;">${t.email}</td>
                             <td>
-                                <div class="flex gap-1.5 flex-wrap">
-                                    <button class="btn" style="background:#10b981; color:white; padding:5px 10px; font-size:0.8rem;" onclick="copyTeacherShareLink('${t.email}')"><i class="fas fa-link"></i> نسخ الرابط</button>
-                                    <button class="btn" style="background:#ef4444; color:white; padding:5px 10px; font-size:0.8rem;" onclick="deleteTeacher('${k}')"><i class="fas fa-trash"></i> حذف</button>
-                                </div>
+                                <button class="btn" style="background:#ef4444; color:white; padding:5px 10px; font-size:0.8rem;" onclick="deleteTeacher('${k}')"><i class="fas fa-trash"></i> حذف</button>
                             </td>
                         </tr>
                     `;
                 });
-            });
-        }
-
-        function copyTeacherShareLink(email) {
-            const baseUrl = window.location.href.split('?')[0];
-            const shareableLink = `${baseUrl}?teacher=${encodeURIComponent(email)}`;
-            navigator.clipboard.writeText(shareableLink).then(() => {
-                alert(`تم نسخ رابط المشاركة الخاص بالمعلم (${email}) بنجاح! 📋`);
-            }).catch(() => {
-                alert("فشل نسخ الرابط تلقائياً.");
             });
         }
 
@@ -1959,6 +1894,12 @@
                     <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني المعتمد:</label>
                     <input type="email" id="loginTeacherEmail" autocomplete="off" spellcheck="false" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
                 </div>
+                
+                <!-- زر نسخ الإيميل السريع لحل مشكلة التصحيح التلقائي بالجوال -->
+                <button type="button" onclick="navigator.clipboard.writeText('school1school2@gmail.com'); alert('تم نسخ البريد الصحيح إلى الحافظة! الصقه الآن في خانة البريد 📋');" class="w-full bg-sky-50 hover:bg-sky-100 text-sky-800 py-2.5 rounded-xl font-bold text-xs border border-sky-200 transition cursor-pointer flex items-center justify-center gap-2">
+                    <i class="fas fa-copy"></i>
+                    <span>اضغط هنا لنسخ الإيميل الصحيح بضغطة زر</span>
+                </button>
 
                 <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 hidden"></div>
                 
@@ -1967,7 +1908,7 @@
                     <i class="fas fa-arrow-left"></i>
                 </button>
             </div>
-            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد</p>
+            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد 😊 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
         </div>
     </div>
 
@@ -1975,12 +1916,12 @@
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-center sm:text-right">
                 <h1 class="text-lg font-black tracking-wide" id="main-header-title">نظام المتابعة السحابي الشامل</h1>
-                <p class="text-xs opacity-90 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد</p>
+                <p class="text-xs opacity-90 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد 😊 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
             </div>
             <div class="flex gap-2 items-center">
                 <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🏫 الفصول</button>
                 <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">⚙️ التقييمات</button>
-                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
+                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
         </div>
     </header>
@@ -2034,7 +1975,7 @@
                 <p id="quote-text" class="student-name-font text-lg text-amber-950 leading-relaxed">
                     ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
                 </p>
-                <span class="text-[11px] font-bold text-amber-800/60 block mt-1">ثانوية الأمير عبدالمجيد</span>
+                <span class="text-[11px] font-bold text-amber-800/60 block mt-1">ثانوية الأمير عبدالمجيد 😊 ثانوية الأمير عبدالمجيد مع فيس تعبيري</span>
             </div>
         </div>
 
@@ -2114,7 +2055,7 @@
 
     <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
         <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right">
-            <div>ثانوية الأمير عبدالمجيد</div>
+            <div>ثانوية الأمير عبدالمجيد 😊 ثانوية الأمير عبدالمجيد مع فيس تعبيري</div>
             <div>الحقوق محفوظة 2026</div>
             <div>التعليم الذكي</div>
         </div>
@@ -2186,7 +2127,6 @@
                     <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
                     <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
                     <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
-                    <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-3 bg-sky-50 border border-sky-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🏃 مستاذن</button>
                 </div>
             </div>
 
