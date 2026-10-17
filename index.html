@@ -169,6 +169,7 @@
         let editingClassIndex = null;
         let pendingCountGlobal = 0;
 
+        // مكتبة العبارات التحفيزية الشاملة (تتغير عشوائياً عند تحديث الصفحة)
         const motivationalQuotes = [
             "✨ \"التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم.\"",
             "💡 \"النجاح ليس عدم تحقيق الأخطاء، بل هو عدم تكرار الأخطاء.\"",
@@ -176,13 +177,41 @@
             "📚 \"العلم نور والجهل ظلام.. والمواظبة هي طريق التميز والنجاح.\"",
             "🚀 \"طريق الألف ميل يبدأ بفرصة وحصة دراسية واحدة، اجعل يومك مثمراً.\"",
             "🏆 \"من فتح باب مدرسة، أغلق باب سجن.. تحية لكل طالب يطلب العلم بشغف.\"",
-            "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\""
+            "🎯 \"الجهد الذي تبذله اليوم هو الحجر الأساس لمستقبل لافت ومشرق غداً.\"",
+            "🌱 \"كل خطوة صغيرة تقطعها اليوم نحو هدفك، تقربك مسافات طويلة نحو قمة النجاح.\"",
+            "🔥 \"لا تقارن نفسك بغيرك، بل قارن نفسك بما كنت عليه بالأمس، وحاول أن تكون أفضل دائماً.\"",
+            "🦅 \"العقبات والصعوبات ليست سوى حواجز اختبار لتعرف مدى إصرارك وقوتك الحقيقية.\"",
+            "⏳ \"الوقت الذي تستثمره في التعلم اليوم هو الأداة الأكثر قيمة التي تمتلكها لصناعة الغد.\"",
+            "💎 \"التعب الذي تشعر به أثناء الدراسة سيزول سريعاً، لكن فخر إنجازك سيبقى معك إلى الأبد.\"",
+            "🌟 \"استمر في السعي بثقة، فكل درس تتعلمه اليوم يضيف لبنة جديدة في جدار مستقبلك العظيم.\"",
+            "💪 \"النجاح يبدأ من الإيمان بقدرتك على تجاوز الصعاب مهما كانت معقدة.\"",
+            "🧠 \"عقلك هو أثمن ما تملك؛ استثمره بالقراءة والتعلم كل يوم لتصنع الفارق.\"",
+            "☀️ \"ابدأ صباحك بعزيمة متجددة، فاليوم هو فرصة جديدة لتحقيق ما لم تقم به بالأمس.\"",
+            "🔑 \"الانضباط هو الجسر الحقيقي الذي يربط بين أحلامك وبين إنجازاتها على أرض الواقع.\"",
+            "📖 \"كل صفحة تقرأها اليوم هي خطوة تفصلك عن الجهل وتقربك من التميز.\"",
+            "⚡ \"الشغف يمنحك البداية، لكن الاستمرارية والعزيمة هما ما يوصلانك إلى خط النهاية.\"",
+            "🌊 \"لا تخف من الأمواج العالية، فالسفن الماهرة تصنع أروع إنجازاتها في البحار الثائرة.\"",
+            "🎨 \"مستقبلك لوحة فنية، وأنت من تختار الألوان والجهد الذي تضعه لتخرج في أبهى صورة.\"",
+            "⛰️ \"الجبال العالية لا تتسلق بلمح البصر، بل بخطوات ثابتة وواثقة نحو القمة.\"",
+            "🔮 \"أفضل طريقة لتنبؤ مستقبلك هي أن تقوم بصناعته بنفسك اليوم، خطوة بخطوة.\"",
+            "🛡️ \"الأخطاء ليست نهاية المطاف، بل هي الدروس المجانية التي تجعلنا أكثر ذكاءً وقوة.\"",
+            "⚓ \"كن صبوراً، فالأشجار العميقة الجذور هي وحدها التي تقاوم أقوى العواصف.\"",
+            "🌠 \"الأحلام الكبيرة تحتاج إلى جهود عظيمة، فلا تستصغر أي جهد قمت به اليوم.\"",
+            "🛠️ \"العلم في الصغر كالنقش على الحجر، وكل معلومة تكتسبها هي كنز يبقى معك للأبد.\"",
+            "🧭 \"دع شغفك هو بوصلتك، وعملك الجاد هو وقودك، ولا تيأس مهما كانت المسافة طويلة.\"",
+            "✍️ \"اكتب نجاحك اليوم بعرق جبينك وإصرارك، لتقرأه بفخر واعتزاز غداً.\"",
+            "👑 \"التميز ليس مصادفة، بل هو ثمرة التخطيط المستمر، والعمل الجاد، وعدم الاستسلام.\""
         ];
 
+        // قائمة الثيمات الفاخرة (تتغير عشوائياً عند التحديث)
         const themes = [
             { name: "العاجي الفاخر", bg: "linear-gradient(135deg, #fffdfa 0%, #f7f3eb 100%)", headerBg: "bg-amber-50 text-amber-950 border-amber-200/80", btnPrimary: "bg-amber-900 hover:bg-amber-950 text-amber-50" },
             { name: "اللؤلؤ النقي", bg: "linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)", headerBg: "bg-slate-100 text-slate-900 border-slate-200", btnPrimary: "bg-slate-800 hover:bg-slate-900 text-white" },
-            { name: "السموكي الناعم", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-50 text-sky-950 border-sky-200", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" }
+            { name: "الكتان الدافئ", bg: "linear-gradient(135deg, #fdfbf7 0%, #f4efe6 100%)", headerBg: "bg-stone-100 text-stone-900 border-stone-200", btnPrimary: "bg-stone-800 hover:bg-stone-900 text-amber-50" },
+            { name: "الزمرد الفاتح", bg: "linear-gradient(135deg, #f4fcf7 0%, #e6f4ed 100%)", headerBg: "bg-emerald-50 text-emerald-950 border-emerald-200", btnPrimary: "bg-emerald-800 hover:bg-emerald-900 text-white" },
+            { name: "السموكي الناعم", bg: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)", headerBg: "bg-sky-50 text-sky-950 border-sky-200", btnPrimary: "bg-sky-900 hover:bg-sky-950 text-white" },
+            { name: "اللافندر الرقيق", bg: "linear-gradient(135deg, #fcfaff 0%, #f0ebf8 100%)", headerBg: "bg-purple-50 text-purple-950 border-purple-200", btnPrimary: "bg-purple-900 hover:bg-purple-950 text-white" },
+            { name: "المرجان المشرق", bg: "linear-gradient(135deg, #fffaf9 0%, #fcefeD 100%)", headerBg: "bg-rose-50 text-rose-950 border-rose-200", btnPrimary: "bg-rose-800 hover:bg-rose-900 text-white" }
         ];
 
         function applyRandomTheme() {
@@ -213,7 +242,10 @@
             { icon: '📕', name: 'لم يحل الواجب', score: -3.0, color: '#e83e8c' },
             { icon: '📁', name: 'نسيان ملف', score: -5.0, color: '#dc3545' },
             { icon: '📂', name: 'إنجاز ملف', score: 5.0, color: '#ffc107' },
-            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#6610f2' }
+            { icon: '💤', name: 'النوم في الحصة', score: -1.0, color: '#6610f2' },
+            { icon: '🗣️', name: 'التحدث أثناء الدرس', score: -1.0, color: '#6f42c1' },
+            { icon: '📱', name: 'استخدام الهاتف', score: -1.0, color: '#d9534f' },
+            { icon: '🎁', name: 'هدية', score: 5.0, color: '#e17055' }
         ];
 
         function initSystem() {
@@ -560,7 +592,7 @@
                             </div>
                         </div>
                         
-                        <!-- قائمة منسدلة منسقة تشمل دخول الفصل وإجراءات التقارير بسهولة -->
+                        <!-- القائمة المنسدلة المنظمة المحدثة لبطاقات الفصول -->
                         <div class="pt-2 border-t border-amber-200/50 flex items-center gap-2">
                             <select class="action-select w-full py-2.5 px-3 rounded-2xl border-2 border-amber-200/80 bg-white font-bold text-xs shadow-2xs outline-none cursor-pointer hover:border-[#800000] transition" onchange="handleClassDropdownAction(this, '${cls}')">
                                 <option value="" disabled selected>⚡ اختر الإجراء أو الخيار للفصل...</option>
@@ -616,7 +648,7 @@
 
         window.handleClassDropdownAction = function(selectElement, className) {
             const action = selectElement.value;
-            selectElement.value = ""; // إعادة تعيين التحديد في القائمة
+            selectElement.value = ""; 
             
             if (action === 'enter_class') {
                 openClass(className);
@@ -1129,7 +1161,7 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
                     <button onclick="openPreviewSummaryModal('${student.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">👁️ معاينة الملخص</button>
-                    <button onclick="shareStudentReportLink('${student.id}', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير</button>
+                    <button onclick="shareStudentReportLink('${student.id}', this)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🔗 نسخ رابط التقرير</button>
                     <button onclick="window.print()" class="${btnPrimaryClass} text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-md text-center flex items-center justify-center gap-1">🖨️ طباعة</button>
                     <button onclick="closeModal()" class="bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs hover:bg-slate-300 cursor-pointer shadow-md text-center">إغلاق</button>
                 </div>
@@ -1788,7 +1820,7 @@
             const newKey = newEmail.replace(/\./g, '_');
             try {
                 const snapshot = await rtdb.ref('teachers_registry/' + newKey).once('value');
-                if (snapshot.exists()) return alert("هذا البريد الإلكتروني موجود مسبقاً للمعلم آخر!");
+                if (snapshot.exists()) return alert("هذا البريد الإلكتروني موجود مسبقاً لمعلم آخر!");
                 await rtdb.ref('teachers_registry/' + newKey).set({ name: currentName, email: newEmail, subject: currentSubject });
                 await rtdb.ref('teachers_registry/' + oldKey).remove();
                 loadTeachersList(); alert("تم تعديل الإيميل بنجاح! 🌟");
@@ -2200,17 +2232,82 @@
                 <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border p-2.5 rounded-xl text-xs font-bold"></select>
                 <div class="grid grid-cols-3 gap-2">
                     <select id="new-action-icon" class="border border-slate-200 p-2.5 rounded-xl text-base font-bold bg-white">
+                        <option value="👑">👑 ملك الإنجاز / التميز المطلق</option>
+                        <option value="🚀">🚀 انطلاقة صاروخية / تفوق</option>
+                        <option value="🧠">🧠 عبقري / تفكير عميق</option>
+                        <option value="🌟">🌟 نجم ساطع</option>
+                        <option value="💯">💯 درجة كاملة / مثالي</option>
+                        <option value="🥇">🥇 المركز الأول</option>
+                        <option value="🎓">🎓 إنجاز أكاديمي عالي</option>
+                        <option value="🔥">🔥 اشتعال الحماس والهمة</option>
+                        <option value="💎">💎 درة ومجوهرات الأداء</option>
+                        <option value="👑💯">👑💯 القمة المطلقة</option>
+                        <option value="🚀🌟">🚀🌟 تميز وانطلاق صاروخي</option>
                         <option value="⭐">⭐ نجمة تفوق</option>
-                        <option value="✅">✅ إجابة صحيحة</option>
-                        <option value="❌">❌ خطأ</option>
+                        <option value="👍">👍 أحسنت / تأييد</option>
+                        <option value="✨">✨ تألق وإبداع</option>
+                        <option value="📈">📈 صعود ومؤشر تصاعدي</option>
+                        <option value="👏">👏 تشجيع وثناء</option>
+                        <option value="🎯">🎯 إصابة الهدف بدقة</option>
+                        <option value="📝">📝 تدريب وتحضير</option>
+                        <option value="👌">👌 إتقان وأداء ممتاز</option>
+                        <option value="⚡">⚡ نشاط وسرعة استجابة</option>
+                        <option value="📚">📚 استذكار ومذاكرة</option>
+                        <option value="⏳">⏳ انتظار وصبر</option>
+                        <option value="🔋">🔋 طاقة جيدة</option>
+                        <option value="🌤️">🌤️ تحسن ملحوظ</option>
+                        <option value="🚲">🚲 محاولة مستمرة</option>
+                        <option value="📉">📉 انخفاض بالمستوى</option>
+                        <option value="⚠️">⚠️ تنبيه هام</option>
+                        <option value="🛑">🛑 إيقاف / منع</option>
+                        <option value="🔍">🔍 تحتاج تدقيق ومراجعة</option>
+                        <option value="🔄">🔄 إعادة المحاولة</option>
+                        <option value="❌">❌ خطأ / تقصير</option>
+                        <option value="🎨">🎨 ترتيب وإبداع فني</option>
+                        <option value="🧼">🧼 نظافة ومرتب</option>
+                        <option value="🌸">🌸 حسن مظهر</option>
+                        <option value="📐">📐 تنظيم وهندسة الدفتر</option>
+                        <option value="📖">📖 العناية بالكتاب المدرسي</option>
+                        <option value="✏️">✏️ كتابة ممتازة ودقيقة</option>
+                        <option value="📜">📜 خط جميل ومنسق</option>
+                        <option value="🙋‍♂️">🙋‍♂️ مبادر بالمشاركة (طالب)</option>
+                        <option value="🙋‍♀️">🙋‍♀️ مبادرة بالمشاركة (طالبة)</option>
+                        <option value="🗣️">🗣️ تفاعل لفظي نشط</option>
+                        <option value="🤝">🤝 تعاون ومساعدة الزملاء</option>
+                        <option value="⏱️">⏱️ التزام بالوقت</option>
+                        <option value="🏅">🏅 وسام الالتزام السلوكي</option>
+                        <option value="😍">😍 فخور بك جداً</option>
+                        <option value="🥰">🥰 أحببت عملك وأدائك</option>
+                        <option value="😎">😎 إجابة واثقة ومتقنة</option>
+                        <option value="🤔">🤔 فكر مجدداً بعمق</option>
+                        <option value="🧐">🧐 ركز أكثر من فضلك</option>
+                        <option value="😢">😢 حزين على مستواك وتقصيرك</option>
+                        <option value="✅">✅ إجابة صحيحة / صح</option>
+                        <option value="💡">💡 مشاركة وفكرة</option>
+                        <option value="📘">📘 حل الواجب</option>
+                        <option value="📕">📕 لم يحل الواجب</option>
+                        <option value="📁">📁 نسيان ملف</option>
+                        <option value="📂">📂 إنجاز ملف</option>
+                        <option value="💤">💤 النوم في الحصة</option>
+                        <option value="📱">📱 استخدام الهاتف</option>
+                        <option value="🎁">🎁 هدية تشجيعية</option>
                     </select>
-                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white">
+                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white focus:outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
+                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة (1 أو -1)" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
                     <select id="new-action-color" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
-                        <option value="#28a745">🟢 أخضر</option>
-                        <option value="#dc3545">🔴 أحمر</option>
+                        <option value="#28a745">🟢 أخضر عشبي</option>
+                        <option value="#20c997">🔹 أخضر فيروزي</option>
+                        <option value="#007bff">🔵 أزرق غامق</option>
+                        <option value="#17a2b8">🟦 سماوي فاتح</option>
+                        <option value="#6610f2">🟣 بنفسجي ملكي</option>
+                        <option value="#6f42c1">🔮 أرجواني</option>
+                        <option value="#e83e8c">🩷 وردي زاهي</option>
+                        <option value="#dc3545">🔴 أحمر قاني</option>
+                        <option value="#fd7e14">🟠 برتقالي ساطع</option>
+                        <option value="#ffc107">🟡 أصفر ذهبي</option>
+                        <option value="#6c757d">⚪ رمادي رسمي</option>
                     </select>
                 </div>
                 <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-black">حفظ التقييم 🚀</button>
