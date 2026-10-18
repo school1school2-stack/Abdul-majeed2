@@ -149,21 +149,21 @@
         let globalStudentsLoaded = false;
 
         function getTeacherCollection() {
-            if (currentTeacherEmail && currentTeacherEmail !== "Aztlg1512") {
+            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
                 return "teacher_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
             }
             return "allowed_students";
         }
 
         function getPendingCollection() {
-            if (currentTeacherEmail && currentTeacherEmail !== "Aztlg1512") {
+            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
                 return "pending_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
             }
             return "pending_students";
         }
 
         function getClassConfigDoc() {
-            if (currentTeacherEmail && currentTeacherEmail !== "Aztlg1512") {
+            if (currentTeacherEmail && currentTeacherEmail !== "school1school2@gmail.com") {
                 return "classes_" + currentTeacherEmail.replace(/[^a-zA-Z0-9]/g, "_");
             }
             return "classes_config";
