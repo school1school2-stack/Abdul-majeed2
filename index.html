@@ -124,7 +124,7 @@
     </style>
 
     <script>
-        // إعدادات سحابة aaaa-a2380[cite: 8]
+        // إعدادات سحابة aaaa-a2380[span_1](start_span)[span_1](end_span)
         const firebaseConfig = {
             apiKey: "AIzaSyDhd5CSkNMoppGby6uKxHsQCBPmi6xxO58",
             authDomain: "aaaa-a2380.firebaseapp.com",
@@ -1725,11 +1725,9 @@
             const reportId = urlParams.get('view_report');
             const shortUrlId = urlParams.get('id');
 
-            // إذا كان الرابط هو اختصار روابط سحابي (مدعوم من Firebase)
             if (shortUrlId) {
                 document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #800000; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">⏳</div>جاري قراءة الرابط من السحابة والتحويل...</div>`;
                 
-                const dbRef = firebase.database().ref();
                 firebase.database().ref(`short_urls/${shortUrlId}`).once('value').then((snapshot) => {
                     if (snapshot.exists()) {
                         let targetUrl = snapshot.val().longUrl;
@@ -2089,7 +2087,6 @@
             }
         };
 
-        // دالة توليد معرف عشوائي قصير جداً (5 خانات) لاختصار الروابط
         function generateRandomId() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let result = '';
@@ -2099,7 +2096,6 @@
             return result;
         }
 
-        // تفعيل أداة اختصار الروابط
         document.addEventListener("DOMContentLoaded", () => {
             const setupShortener = (genBtnId, longUrlId, resultBoxId, shortenedLinkId, copyBtnId, qrcodeId, saveQrBtnId) => {
                 const genBtn = document.getElementById(genBtnId);
@@ -2190,10 +2186,7 @@
                 }
             };
 
-            // تفعيل مختصر الروابط في لوحة المشرف الرئيسية
             setupShortener('genBtn', 'longUrl', 'resultBox', 'shortenedLink', 'copyBtn', 'qrcode', 'saveQrBtn');
-            
-            // تفعيل مختصر الروابط داخل نافذة الإعدادات (للمعلم والمشرف)
             setupShortener('modal-genBtn', 'modal-longUrl', 'modal-resultBox', 'modal-shortenedLink', 'modal-copyBtn', 'modal-qrcode', 'modal-saveQrBtn');
         });
     </script>
@@ -2246,7 +2239,6 @@
                 <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا:</p>
             </div>
 
-            <!-- أداة اختصار الروابط في لوحة المشرف -->
             <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200 mb-5 text-right">
                 <h3 class="text-sm font-bold text-amber-950 mb-1"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي:</h3>
                 <p class="text-xs text-amber-800 mb-3 font-semibold">يتم حفظ الروابط الطويلة في السحابة للحصول على رابط قصير جداً وباركود (QR).</p>
@@ -2412,14 +2404,12 @@
             <button onclick="closeSettingsModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
             <h3 class="text-lg font-black text-center mb-3 text-slate-900">⚙️ لوحة الإعدادات والروابط</h3>
             
-            <!-- أزرار التنقل (الفصول، التقييمات، اختصار الروابط) -->
             <div class="flex gap-2 mb-4 bg-slate-100 p-1 rounded-xl">
                 <button id="btn-tab-classes" onclick="switchSettingsTab('classes')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-white shadow">🏫 الفصول</button>
                 <button id="btn-tab-actions" onclick="switchSettingsTab('actions')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">⭐ التقييمات</button>
                 <button id="btn-tab-shortener" onclick="switchSettingsTab('shortener')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">🔗 الروابط</button>
             </div>
 
-            <!-- محتوى تبويب الفصول -->
             <div id="classes-tab-content" class="space-y-3">
                 <div class="flex gap-2">
                     <input type="text" id="new-class-name" placeholder="اسم الفصل..." class="flex-1 border p-2.5 rounded-xl text-xs font-bold">
@@ -2428,7 +2418,6 @@
                 <div id="settings-classes-list" class="space-y-1.5 max-h-44 overflow-y-auto"></div>
             </div>
 
-            <!-- محتوى تبويب التقييمات -->
             <div id="actions-tab-content" class="space-y-3 hidden">
                 <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border p-2.5 rounded-xl text-xs font-bold"></select>
                 <div class="grid grid-cols-3 gap-2">
@@ -2514,7 +2503,6 @@
                 <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-black">حفظ التقييم 🚀</button>
             </div>
 
-            <!-- محتوى تبويب اختصار الروابط المتاح للمعلم والمشرف -->
             <div id="shortener-tab-content" class="space-y-3 hidden text-right">
                 <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200">
                     <h3 class="text-sm font-bold text-amber-950 mb-1"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي:</h3>
@@ -2562,7 +2550,7 @@
                 <div class="flex gap-3 overflow-x-auto pb-2 pt-1 px-1">
                     <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
                     <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
-                    <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
+                    <button onclick="recordAnswer('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
                     <button onclick="recordAction('خروج بدون إذن', 0, 'خروج بدون إذن')" class="flex items-center gap-3 bg-stone-100 border border-stone-400 text-stone-800 px-4 py-3 rounded-2xl shrink-0 cursor-pointer font-bold">🚶‍♂️ خروج بدون إذن</button>
                     <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-3 bg-sky-50 border border-sky-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🏃 مستاذن</button>
                 </div>
