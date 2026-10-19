@@ -337,7 +337,7 @@
                         id: doc.id,
                         name: name,
                         email: email,
-                        className: data.className || 'غير موزاد',
+                        className: data.className || 'غير موزع',
                         phone: data.phone || '966566688614',
                         actions: data.actions || [],
                         attendanceStats: data.attendanceStats || { presents: 0, absents: 0, lates: 0, unauthorizedExits: 0 }
@@ -506,6 +506,53 @@
             } else alert("تنسيق غير معروف.");
         }
 
+        // دالة لصق الطلاب الخاصة بكل فصل مفرد
+        window.pasteStudentsToClass = async function(targetClassName) {
+            let clipboardText = "";
+            try {
+                clipboardText = await navigator.clipboard.readText();
+            } catch (e) {
+                clipboardText = prompt(`الصق بيانات الطلاب لفصل (${targetClassName}) هنا (الاسم ثم الإيميل):`) || "";
+            }
+
+            clipboardText = clipboardText.trim();
+            if (!clipboardText) return alert("لم يتم العثور على أي نص لصقه!");
+
+            const lines = clipboardText.split('\n').map(l => l.trim()).filter(l => l !== "");
+            const batch = db.batch();
+            let count = 0;
+
+            for (let i = 0; i < lines.length; i++) {
+                let line1 = lines[i];
+                let line2 = lines[i + 1];
+                if (!line2) break;
+
+                let name = "", email = "";
+                if (!line1.includes('@') && line2.includes('@')) { 
+                    name = line1; email = line2.toLowerCase(); i++; 
+                } else if (line1.includes('@') && !line2.includes('@')) { 
+                    email = line1.toLowerCase(); name = line2; i++; 
+                }
+
+                if (name && email) {
+                    const ref = db.collection(getTeacherCollection()).doc(email);
+                    batch.set(ref, { 
+                        name: name, 
+                        className: targetClassName, 
+                        added_at: firebase.firestore.FieldValue.serverTimestamp() 
+                    }, { merge: true });
+                    count++;
+                }
+            }
+
+            if (count > 0) {
+                await batch.commit();
+                alert(`تم إضافة ${count} طالب إلى (${targetClassName}) بنجاح! 🎉`);
+            } else {
+                alert("تعذر التعرف على التنسيق. يرجى التأكد من أن النسخ يحتوي على الاسم والبريد الإلكتروني في سطرين متتاليين.");
+            }
+        };
+
         async function copyAllStudents() {
             const rows = document.querySelectorAll("#studentsTable tbody tr");
             let textToCopy = "";
@@ -600,11 +647,15 @@
                                     <p class="text-xs sm:text-sm mt-1.5 font-bold px-2.5 py-0.5 rounded-xl inline-block bg-[#800000]/10 text-[#800000] border border-[#800000]/20">${count} طلاب مخصصين</p>
                                 </div>
                             </div>
+                            <button onclick="event.stopPropagation(); pasteStudentsToClass('${cls}')" title="لصق الطلاب المنسوخين لهذا الفصل مباشرة" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5 shrink-0">
+                                📋 لصق الطلاب
+                            </button>
                         </div>
                         
                         <div class="pt-2 border-t border-amber-200/50 flex items-center gap-2" onclick="event.stopPropagation()">
                             <select class="action-select w-full py-2.5 px-3 rounded-2xl border-2 border-amber-200/80 bg-white font-bold text-xs shadow-2xs outline-none cursor-pointer hover:border-[#800000] transition" onchange="handleClassDropdownAction(this, '${cls}')">
                                 <option value="" disabled selected>⚡ خيارات إضافية وتقارير الفصل...</option>
+                                <option value="paste_students">📋 لصق الطلاب بهذا الفصل</option>
                                 <option value="preview_detailed">👁️ عرض التقرير الفردي</option>
                                 <option value="preview_table">👁️ عرض تقرير الفصل كامل</option>
                                 <option value="share_detailed">🔗 مشاركة التقرير الفردي</option>
@@ -658,7 +709,9 @@
             const action = selectElement.value;
             selectElement.value = ""; 
             
-            if (action === 'preview_detailed') {
+            if (action === 'paste_students') {
+                pasteStudentsToClass(className);
+            } else if (action === 'preview_detailed') {
                 openClassReportPreview(className, 'detailed');
             } else if (action === 'preview_table') {
                 openClassReportPreview(className, 'table');
@@ -693,7 +746,7 @@
             const students = allStudents.filter(s => s.className === activeClass);
 
             if(students.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-2 text-center py-12 font-bold bg-white rounded-2xl shadow-xs text-sm">لا توجد طلاب في هذا الفصل حالياً. يمكنك تعيينهم من لوحة التحكم الرئيسية.</p>`;
+                container.innerHTML = `<p class="text-slate-500 col-span-2 text-center py-12 font-bold bg-white rounded-2xl shadow-xs text-sm">لا توجد طلاب في هذا الفصل حالياً. يمكنك تعيينهم من لوحة التحكم الرئيسية أو استخدام زر (📋 لصق الطلاب) بالصفحة الرئيسية.</p>`;
                 return;
             }
 
