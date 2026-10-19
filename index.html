@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة الطلاب الشامل - 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</title>
+    <title>نظام متابعة الطلاب الشامل - 👨‍🏫 ثانوية الأمير عبدالمجيد</title>
     
     <!-- وسوم المعاينة المخصصة لواتساب ووسائل التواصل -->
-    <meta property="og:title" content="ثانوية الأمير عبدالمجيد">
-    <meta property="og:description" content="نظام متابعة الطلاب الشامل">
+    <meta property="og:title" content="   ثانوية الأمير عبدالمجيد">
+    <meta property="og:description" content=" نظام متابعة الطلاب الشامل">
     <meta property="og:type" content="website">
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -124,7 +124,7 @@
     </style>
 
     <script>
-        // إعدادات سحابة Firebase الموحدة
+        // إعدادات سحابة aaaa-a2380 
         const firebaseConfig = {
             apiKey: "AIzaSyDhd5CSkNMoppGby6uKxHsQCBPmi6xxO58",
             authDomain: "aaaa-a2380.firebaseapp.com",
@@ -337,7 +337,7 @@
                         id: doc.id,
                         name: name,
                         email: email,
-                        className: data.className || 'غير موزع',
+                        className: data.className || 'غير موزاد',
                         phone: data.phone || '966566688614',
                         actions: data.actions || [],
                         attendanceStats: data.attendanceStats || { presents: 0, absents: 0, lates: 0, unauthorizedExits: 0 }
@@ -437,14 +437,7 @@
                 student.className = newClass;
                 renderView();
                 if(activeClass) renderClassStudents();
-                // تحديث مزدوج لضمان التزامن بين الـ collections
-                await db.collection(getTeacherCollection()).doc(studentId).update({ className: newClass, teacher_email: currentTeacherEmail });
-                await db.collection("allowed_students").doc(studentId).set({
-                    name: student.name,
-                    email: student.email,
-                    className: newClass,
-                    teacher_email: currentTeacherEmail
-                }, { merge: true });
+                await db.collection(getTeacherCollection()).doc(studentId).update({ className: newClass });
             }
         }
 
@@ -458,10 +451,8 @@
             if (newName === null) return;
             const trimmedName = newName.trim();
             if (!trimmedName) return;
-            try { 
-                await db.collection(getTeacherCollection()).doc(email).update({ name: trimmedName }); 
-                await db.collection("allowed_students").doc(email).set({ name: trimmedName }, { merge: true });
-            } catch (error) { alert("حدث خطأ."); }
+            try { await db.collection(getTeacherCollection()).doc(email).update({ name: trimmedName }); } 
+            catch (error) { alert("حدث خطأ."); }
         }
 
         async function editStudentEmail(currentEmail, currentName) {
@@ -472,19 +463,14 @@
             try {
                 const docCheck = await db.collection(getTeacherCollection()).doc(newEmail).get();
                 if (docCheck.exists) return alert("موجود مسبقاً!");
-                const payload = { name: currentName, email: newEmail, className: 'غير موزاد', teacher_email: currentTeacherEmail, added_at: firebase.firestore.FieldValue.serverTimestamp() };
-                await db.collection(getTeacherCollection()).doc(newEmail).set(payload);
-                await db.collection("allowed_students").doc(newEmail).set(payload);
+                await db.collection(getTeacherCollection()).doc(newEmail).set({ name: currentName, className: 'غير موزع', added_at: firebase.firestore.FieldValue.serverTimestamp() });
                 await db.collection(getTeacherCollection()).doc(currentEmail).delete();
-                await db.collection("allowed_students").doc(currentEmail).delete();
             } catch (error) { alert("حدث خطأ."); }
         }
 
         async function approveStudent(email, name) {
             try {
-                const payload = { name: name, email: email, className: 'غير موزع', teacher_email: currentTeacherEmail, added_at: firebase.firestore.FieldValue.serverTimestamp() };
-                await db.collection(getTeacherCollection()).doc(email).set(payload);
-                await db.collection("allowed_students").doc(email).set(payload, { merge: true });
+                await db.collection(getTeacherCollection()).doc(email).set({ name: name, className: 'غير موزع', added_at: firebase.firestore.FieldValue.serverTimestamp() });
                 await db.collection(getPendingCollection()).doc(email).delete();
             } catch (error) {}
         }
@@ -492,10 +478,7 @@
             if(confirm(`حذف ${email}؟`)) await db.collection(getPendingCollection()).doc(email).delete();
         }
         async function deleteAllowed(email) {
-            if(confirm(`حذف ${email}؟`)) {
-                await db.collection(getTeacherCollection()).doc(email).delete();
-                await db.collection("allowed_students").doc(email).delete();
-            }
+            if(confirm(`حذف ${email}؟`)) await db.collection(getTeacherCollection()).doc(email).delete();
         }
 
         async function superSmartBulkAdd() {
@@ -511,11 +494,8 @@
                 if(!line1.includes('@') && line2.includes('@')) { name = line1; email = line2.toLowerCase(); i++; } 
                 else if(line1.includes('@') && !line2.includes('@')) { email = line1.toLowerCase(); name = line2; i++; }
                 if(name && email) {
-                    const payload = { name: name, email: email, className: 'غير موزع', teacher_email: currentTeacherEmail, added_at: firebase.firestore.FieldValue.serverTimestamp() };
-                    const ref1 = db.collection(getTeacherCollection()).doc(email);
-                    const ref2 = db.collection("allowed_students").doc(email);
-                    batch.set(ref1, payload, { merge: true });
-                    batch.set(ref2, payload, { merge: true });
+                    const ref = db.collection(getTeacherCollection()).doc(email);
+                    batch.set(ref, { name: name, className: 'غير موزع', added_at: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
                     count++;
                 }
             }
@@ -542,10 +522,7 @@
             if(!confirm("مسح جميع الطلاب؟")) return;
             const snapshot = await db.collection(getTeacherCollection()).get();
             const batch = db.batch();
-            snapshot.forEach(doc => {
-                batch.delete(doc.ref);
-                batch.delete(db.collection("allowed_students").doc(doc.id));
-            });
+            snapshot.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
         }
 
@@ -869,8 +846,7 @@
                 for(let stu of allStudents) {
                     if(stu.className === oldName) {
                         stu.className = name;
-                        await db.collection(getTeacherCollection()).doc(stu.id).update({ className: name, teacher_email: currentTeacherEmail });
-                        await db.collection("allowed_students").doc(stu.id).set({ className: name, teacher_email: currentTeacherEmail }, { merge: true });
+                        await db.collection(getTeacherCollection()).doc(stu.id).update({ className: name });
                     }
                 }
                 editingClassIndex = null;
@@ -900,8 +876,7 @@
                 for(let stu of allStudents) {
                     if(stu.className === removedName) {
                         stu.className = 'غير موزع';
-                        await db.collection(getTeacherCollection()).doc(stu.id).update({ className: 'غير موزع', teacher_email: currentTeacherEmail });
-                        await db.collection("allowed_students").doc(stu.id).set({ className: 'غير موزع', teacher_email: currentTeacherEmail }, { merge: true });
+                        await db.collection(getTeacherCollection()).doc(stu.id).update({ className: 'غير موزع' });
                     }
                 }
                 await saveClassesToCloud();
@@ -1023,8 +998,7 @@
                 student.className = 'غير موزع';
                 renderClassStudents();
                 renderView();
-                await db.collection(getTeacherCollection()).doc(id).update({ className: 'غير موزع', teacher_email: currentTeacherEmail });
-                await db.collection("allowed_students").doc(id).set({ className: 'غير موزع', teacher_email: currentTeacherEmail }, { merge: true });
+                await db.collection(getTeacherCollection()).doc(id).update({ className: 'غير موزع' });
                 if(document.getElementById('global-students-view') && !document.getElementById('global-students-view').classList.contains('hidden')) {
                     renderGlobalStudentsTable();
                 }
@@ -1059,8 +1033,7 @@
                 renderClassStudents();
                 await db.collection(getTeacherCollection()).doc(currentStudentId).update({
                     actions: student.actions,
-                    attendanceStats: attendanceStats,
-                    teacher_email: currentTeacherEmail
+                    attendanceStats: attendanceStats
                 });
             }
         };
@@ -1072,7 +1045,7 @@
                 student.actions.splice(actionIndex, 1);
                 openModal(currentStudentId);
                 renderClassStudents();
-                await db.collection(getTeacherCollection()).doc(currentStudentId).update({ actions: student.actions, teacher_email: currentTeacherEmail });
+                await db.collection(getTeacherCollection()).doc(currentStudentId).update({ actions: student.actions });
             }
         };
 
@@ -1087,7 +1060,7 @@
                 if(type === 'unauthorizedExits') att.unauthorizedExits = Math.max(0, (att.unauthorizedExits || 0) + delta);
 
                 openModal(currentStudentId);
-                await db.collection(getTeacherCollection()).doc(currentStudentId).update({ attendanceStats: att, teacher_email: currentTeacherEmail });
+                await db.collection(getTeacherCollection()).doc(currentStudentId).update({ attendanceStats: att });
             }
         };
 
@@ -1150,7 +1123,7 @@
                 <div class="text-center mb-6 border-b pb-4">
                     <div class="w-20 h-20 ${btnPrimaryClass} text-white rounded-full flex items-center justify-center text-4xl font-bold mx-auto mb-2 shadow-md">👤</div>
                     <h2 class="student-name-font text-3xl text-slate-900">${student.name}</h2>
-                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
+                    <p class="text-sm font-bold text-slate-600 mt-1">${student.className} | منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -1255,7 +1228,7 @@
                     <div class="text-center border-b border-amber-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-amber-950">📋 تقرير متابعة طالب مفصل</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">الطالب: ${student.name} | الصف: ${student.className}</p>
-                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
+                        <p class="text-[11px] text-amber-700 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div class="space-y-4 text-xs font-bold text-slate-800">
                         <div class="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
@@ -1315,7 +1288,7 @@
                     timestamp: firebase.database.ServerValue.TIMESTAMP 
                 });
                 
-                const baseUrl = window.location.origin + window.location.pathname;
+                const baseUrl = "https://school1school2-stack.github.io/Abdul-majeed2/";
                 const shareableLink = `${baseUrl}?view_report=${reportId}`;
                 
                 await navigator.clipboard.writeText(shareableLink);
@@ -1358,7 +1331,7 @@
                             <span class="text-5xl mb-2 inline-block">🎓</span>
                             <h1 class="student-title text-3xl font-bold text-slate-900">${student.name}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">الصف: ${student.className}</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">منصة ${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
                         <div class="space-y-4 text-xs font-bold text-slate-800">
                             <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 shadow-xs">
@@ -1403,7 +1376,7 @@
                             </div>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-[11px] font-bold text-slate-500 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد مع فيس تعبيري</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1480,7 +1453,7 @@
                     <div class="text-center border-b border-amber-200 pb-3 mb-6 sticky top-0 bg-white z-10 py-2">
                         <h3 class="student-name-font text-2xl text-slate-900">📊 التقرير الفردي المتسلسل لفصل: ${className}</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | كل طالب بتقريره المستقل</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div>${students.length === 0 ? '<p class="text-center p-6 text-slate-400 font-bold">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                 </div>
@@ -1560,11 +1533,11 @@
                             <span class="text-5xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-900">التقرير الفردي الشامل لفصل: ${className}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب (كل طالب بتقريره المستقل)</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
                         <div>${students.length === 0 ? '<p style="text-align: center; padding: 30px; color: #94a3b8; font-weight: bold;">لا توجد طلاب مسجلين في هذا الفصل</p>' : studentsCardsHtml}</div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد مع فيس تعبيري</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1609,7 +1582,7 @@
                     <div class="text-center border-b border-amber-200 pb-3 mb-4">
                         <h3 class="student-name-font text-2xl text-slate-900">📊 تقرير الفصل كامل: ${className}</h3>
                         <p class="text-xs font-bold text-amber-800 mt-1">إجمالي الطلاب: ${students.length} طالب | ${currentTeacherSubject}</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد</p>
                     </div>
                     <div class="grid grid-cols-4 gap-2 text-center mb-4 text-xs font-bold">
                         <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
@@ -1705,7 +1678,7 @@
                             <span class="text-5xl mb-2 inline-block">🏫</span>
                             <h1 class="class-title text-3xl font-bold text-slate-900">تقرير الفصل كامل: ${className}</h1>
                             <p class="text-sm font-bold text-amber-800 mt-1">إجمالي الطلاب المسجلين: ${students.length} طالب</p>
-                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد مع فيس تعبيري | ${currentTeacherSubject}</p>
+                            <p class="text-xs text-slate-500 mt-1 font-semibold">${currentTeacherName} 👨‍🏫 ثانوية الأمير عبدالمجيد | ${currentTeacherSubject}</p>
                         </div>
                         <div class="grid grid-cols-4 gap-3 text-center mb-6 text-xs font-bold">
                             <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 shadow-xs"><span class="text-emerald-800 block text-sm">إجمالي الحضور</span><span class="text-xl font-black text-emerald-600">${totalPresentsClass}</span></div>
@@ -1733,7 +1706,7 @@
                             </table>
                         </div>
                         <div class="mt-8 text-center border-t pt-4 text-xs font-bold text-slate-500 flex justify-between">
-                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد مع فيس تعبيري</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
+                            <span>${currentTeacherName} ثانوية الأمير عبدالمجيد</span><span>الحقوق محفوظة 2026</span><span>منصة ${currentTeacherSubject} 👨‍🏫</span>
                         </div>
                     </div>
                 </body>
@@ -1752,9 +1725,11 @@
             const reportId = urlParams.get('view_report');
             const shortUrlId = urlParams.get('id');
 
+            // إذا كان الرابط هو اختصار روابط سحابي (مدعوم من Firebase)
             if (shortUrlId) {
                 document.body.innerHTML = `<div style="text-align:center; padding: 50px; font-family: Tajawal, sans-serif; font-size: 20px; color: #800000; font-weight:bold; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 40px; margin-bottom: 15px;">⏳</div>جاري قراءة الرابط من السحابة والتحويل...</div>`;
                 
+                const dbRef = firebase.database().ref();
                 firebase.database().ref(`short_urls/${shortUrlId}`).once('value').then((snapshot) => {
                     if (snapshot.exists()) {
                         let targetUrl = snapshot.val().longUrl;
@@ -1837,7 +1812,7 @@
                         currentTeacherEmail = emailInput;
                         document.getElementById('teacher-login-modal').classList.add('hidden');
                         document.getElementById('main-header-title').innerText = `نظام المتابعة الشاملة (${currentTeacherName})`;
-                        document.getElementById('main-header-subtitle').innerText = `المادة: ${currentTeacherSubject} | ثانوية الأمير عبدالمجيد مع فيس تعبيري`;
+                        document.getElementById('main-header-subtitle').innerText = `المادة: ${currentTeacherSubject} | ثانوية الأمير عبدالمجيد`;
                         initSystem();
                     } else {
                         loginError.innerText = "عذراً، هذا البريد غير مسجل كمعلم في النظام!";
@@ -1852,7 +1827,7 @@
                 document.getElementById('admin-supervisor-card').style.display = 'block';
                 document.getElementById('main-dashboard').style.display = 'none';
                 document.getElementById('main-header-title').innerText = "نظام المتابعة الشاملة";
-                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام ثانوية الأمير عبدالمجيد مع فيس تعبيري";
+                document.getElementById('main-header-subtitle').innerText = "لوحة المشرف العام ثانوية الأمير عبدالمجيد";
                 document.getElementById('teacher-logout-btn').classList.remove('hidden');
                 loadTeachersList();
                 return;
@@ -2023,486 +1998,583 @@
             const tbody = document.getElementById('global-students-tbody');
             if(!globalStudentsLoaded) {
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4 font-bold text-slate-500">جاري إعداد القائمة... لحظات...</td></tr>';
-                db.collection("all_global_students").orderBy("name").get().then((snapshot) => {
-                    globalStudentsList = [];
-                    snapshot.forEach(doc => { globalStudentsList.push({ email: doc.id, name: doc.data().name }); });
-                    globalStudentsLoaded = true;
-                    renderGlobalStudentsTable();
-                });
-            } else {
-                renderGlobalStudentsTable();
+                return;
             }
+            renderGlobalStudentsTable();
         };
 
         window.renderGlobalStudentsTable = function() {
             const tbody = document.getElementById('global-students-tbody');
-            if(!tbody) return;
             tbody.innerHTML = '';
-
-            const activeStudentsMap = {};
-            allStudents.forEach(st => { activeStudentsMap[st.email.toLowerCase()] = st.className || 'غير موزع'; });
-
+            
             if(globalStudentsList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4 font-bold text-slate-400">لا يوجد طلاب في القاعدة المركزية.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-rose-500 font-bold">لا يوجد طلاب مسجلين في القاعدة المركزية. (انتظر المشرف لرفعهم)</td></tr>';
                 return;
             }
+            
+            let htmlChunk = '';
+            let classOptions = `<option value="" selected disabled>-- حدد الفصل --</option>`;
+            classList.forEach(cls => { classOptions += `<option value="${cls}">${cls}</option>`; });
 
-            globalStudentsList.forEach(gst => {
-                const lowerEmail = gst.email.toLowerCase();
-                const currentAssignedClass = activeStudentsMap[lowerEmail] || null;
+            globalStudentsList.forEach(student => {
+                const email = student.email;
+                const name = student.name;
+                
+                const assignedStudent = allStudents.find(s => s.email === email && s.className && s.className !== 'غير موزع');
+                const isAssigned = !!assignedStudent;
 
-                let classSelectHtml = `<select class="action-select text-xs py-1.5 px-3 rounded-xl border border-indigo-200" onchange="assignGlobalStudentToClass('${gst.email}', '${gst.name.replace(/'/g, "\\'")}', this.value)">`;
-                classSelectHtml += `<option value="" ${!currentAssignedClass ? 'selected' : ''}>-- اختر الفصل لإضافته --</option>`;
-                classList.forEach(cls => {
-                    const isSelected = currentAssignedClass === cls;
-                    classSelectHtml += `<option value="${cls}" ${isSelected ? 'selected' : ''}>${isSelected ? '✔️ ' : ''}${cls}</option>`;
-                });
-                if(currentAssignedClass) {
-                    classSelectHtml += `<option value="REMOVE">❌ إزالة من منصتي</option>`;
-                }
-                classSelectHtml += `</select>`;
+                const actionHtml = isAssigned 
+                    ? `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> مضاف بـ (${assignedStudent.className})</span>`
+                    : `<button onclick="addStudentToMyClass('${email}', '${name.replace(/'/g, "\\'")}', this)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition">➕ إضافة</button>`;
 
-                let statusBadge = currentAssignedClass 
-                    ? `<span class="bg-emerald-100 text-emerald-800 text-[11px] font-black px-2.5 py-1 rounded-lg border border-emerald-300">مضاف (${currentAssignedClass})</span>`
-                    : `<span class="bg-slate-100 text-slate-600 text-[11px] font-black px-2.5 py-1 rounded-lg border border-slate-200">غير مضاف</span>`;
-
-                tbody.innerHTML += `
-                    <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition">
-                        <td class="p-3 font-bold text-slate-900 text-xs">${gst.name}</td>
-                        <td class="p-3 text-slate-600 text-xs">${gst.email}</td>
-                        <td class="p-3 text-center">${statusBadge}</td>
-                        <td class="p-3 text-center">${classSelectHtml}</td>
+                htmlChunk += `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-900">${name}</td>
+                        <td class="p-3 text-slate-500 text-[11px]">${email}</td>
+                        <td class="p-3">
+                            <select class="class-selector border border-slate-300 p-1.5 rounded-lg text-xs bg-white focus:border-indigo-500 outline-none w-full ${isAssigned ? 'hidden' : ''}">
+                                ${classOptions}
+                            </select>
+                        </td>
+                        <td class="p-3 text-center">${actionHtml}</td>
                     </tr>
                 `;
             });
-            searchGlobalStudents();
+            tbody.innerHTML = htmlChunk;
+        };
+
+        window.addStudentToMyClass = async function(email, name, btnElement) {
+            const tr = btnElement.closest('tr');
+            const selectEl = tr.querySelector('.class-selector');
+            const selectedClass = selectEl.value;
+
+            if(!selectedClass) return alert("يرجى تحديد الفصل من القائمة المنسدلة أولاً!");
+
+            try {
+                btnElement.innerText = "جاري الإضافة...";
+                btnElement.disabled = true;
+
+                await db.collection(getTeacherCollection()).doc(email).set({
+                    name: name,
+                    className: selectedClass,
+                    added_at: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                selectEl.classList.add('hidden');
+                btnElement.parentElement.innerHTML = `<span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> تمت الإضافة</span>`;
+            } catch(e) {
+                alert("حدث خطأ أثناء الإضافة.");
+                btnElement.innerText = "➕ إضافة";
+                btnElement.disabled = false;
+            }
         };
 
         window.searchGlobalStudents = function() {
-            let input = document.getElementById("searchGlobalStudentsInput");
-            if(!input) return;
-            let filter = input.value.toUpperCase();
-            let tbody = document.getElementById("global-students-tbody");
-            if(!tbody) return;
-            let tr = tbody.getElementsByTagName("tr");
+            let input = document.getElementById("searchGlobalInput").value.toUpperCase();
+            let table = document.getElementById("globalStudentsTable");
+            let tr = table.getElementsByTagName("tr");
 
-            for (let i = 0; i < tr.length; i++) {
+            for (let i = 1; i < tr.length; i++) {
                 let tdName = tr[i].getElementsByTagName("td")[0];
                 let tdEmail = tr[i].getElementsByTagName("td")[1];
                 if (tdName || tdEmail) {
                     let txtValueName = tdName.textContent || tdName.innerText;
                     let txtValueEmail = tdEmail.textContent || tdEmail.innerText;
-                    tr[i].style.display = (txtValueName.toUpperCase().indexOf(filter) > -1 || txtValueEmail.toUpperCase().indexOf(filter) > -1) ? "" : "none";
+                    if (txtValueName.toUpperCase().indexOf(input) > -1 || txtValueEmail.toUpperCase().indexOf(input) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
                 }       
             }
         };
 
-        window.assignGlobalStudentToClass = async function(email, name, targetClass) {
-            if(!targetClass) return;
+        // دالة توليد معرف عشوائي قصير جداً (5 خانات) لاختصار الروابط
+        function generateRandomId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 5; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
 
-            if (targetClass === "REMOVE") {
-                if(confirm(`هل تريد إزالة الطالب (${name}) من منصتك الدراسية؟`)) {
-                    await db.collection(getTeacherCollection()).doc(email).delete();
-                    await db.collection("allowed_students").doc(email).delete();
-                    renderGlobalStudentsTable();
+        // تفعيل أداة اختصار الروابط
+        document.addEventListener("DOMContentLoaded", () => {
+            const setupShortener = (genBtnId, longUrlId, resultBoxId, shortenedLinkId, copyBtnId, qrcodeId, saveQrBtnId) => {
+                const genBtn = document.getElementById(genBtnId);
+                if(genBtn) {
+                    genBtn.addEventListener('click', () => {
+                        const longUrl = document.getElementById(longUrlId).value.trim();
+                        if (!longUrl) {
+                            alert('الرجاء إدخال رابط أولاً');
+                            return;
+                        }
+
+                        genBtn.disabled = true;
+                        genBtn.innerText = "جاري التوصيل بالسحابة...";
+
+                        const shortId = generateRandomId();
+
+                        firebase.database().ref('short_urls/' + shortId).set({
+                            longUrl: longUrl,
+                            createdAt: Date.now()
+                        })
+                        .then(() => {
+                            const baseUrl = window.location.origin + window.location.pathname;
+                            const shortUrl = `${baseUrl}?id=${shortId}`;
+
+                            document.getElementById(shortenedLinkId).innerText = shortUrl;
+                            document.getElementById(resultBoxId).style.display = 'block';
+
+                            document.getElementById(qrcodeId).innerHTML = '';
+                            new QRCode(document.getElementById(qrcodeId), {
+                                text: shortUrl,
+                                width: 256,
+                                height: 256
+                            });
+
+                            genBtn.disabled = false;
+                            genBtn.innerText = "توليد رابط قصير جداً والـ QR";
+                        })
+                        .catch((error) => {
+                            alert("فشل الحفظ في السحابة: " + error.message);
+                            genBtn.disabled = false;
+                            genBtn.innerText = "توليد رابط قصير جداً والـ QR";
+                        });
+                    });
                 }
-                return;
-            }
 
-            const payload = {
-                name: name,
-                email: email,
-                className: targetClass,
-                teacher_email: currentTeacherEmail,
-                added_at: firebase.firestore.FieldValue.serverTimestamp()
+                const copyBtn = document.getElementById(copyBtnId);
+                if(copyBtn) {
+                    copyBtn.addEventListener('click', () => {
+                        const linkText = document.getElementById(shortenedLinkId).innerText;
+                        navigator.clipboard.writeText(linkText).then(() => {
+                            alert('تم نسخ الرابط بنجاح!');
+                        });
+                    });
+                }
+
+                const saveQrBtn = document.getElementById(saveQrBtnId);
+                if(saveQrBtn) {
+                    saveQrBtn.addEventListener('click', () => {
+                        const qrContainer = document.getElementById(qrcodeId);
+                        const canvas = qrContainer.querySelector('canvas');
+                        const img = qrContainer.querySelector('img');
+
+                        if (!canvas && !img) {
+                            alert('الرجاء توليد رمز الاستجابة السريعة أولاً.');
+                            return;
+                        }
+
+                        const targetSize = 300;
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = targetSize;
+                        tempCanvas.height = targetSize;
+                        const ctx = tempCanvas.getContext('2d');
+
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.fillRect(0, 0, targetSize, targetSize);
+
+                        const sourceElement = canvas || img;
+                        ctx.drawImage(sourceElement, 0, 0, targetSize, targetSize);
+
+                        const imageUrl = tempCanvas.toDataURL('image/png');
+                        const link = document.createElement('a');
+                        link.href = imageUrl;
+                        link.download = 'qrcode.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+                }
             };
 
-            // حفظ مزدوج مع إضافة teacher_email صراحة للتزامن التام
-            await db.collection(getTeacherCollection()).doc(email).set(payload, { merge: true });
-            await db.collection("allowed_students").doc(email).set(payload, { merge: true });
-
-            renderGlobalStudentsTable();
-            renderView();
-            fetchStudents();
-        };
-
-        async function createShortUrlFromInput() {
-            const input = document.getElementById('longUrlInput').value.trim();
-            if(!input) return alert('الرجاء إدخال الرابط الطويل أولاً!');
-            let validUrl = input;
-            if(!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) { validUrl = 'https://' + validUrl; }
-
-            const generateRandomCode = (length = 6) => {
-                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let result = '';
-                for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
-                return result;
-            };
-
-            const shortCode = generateRandomCode();
-            const baseUrl = window.location.origin + window.location.pathname;
-            const fullShortUrl = `${baseUrl}?id=${shortCode}`;
-
-            try {
-                await rtdb.ref(`short_urls/${shortCode}`).set({
-                    longUrl: validUrl,
-                    createdAt: firebase.database.ServerValue.TIMESTAMP,
-                    teacher: currentTeacherEmail
-                });
-
-                document.getElementById('shortUrlResult').innerText = fullShortUrl;
-                document.getElementById('shortenerResultContainer').classList.remove('hidden');
-
-                const qrcodeContainer = document.getElementById('qrcode');
-                qrcodeContainer.innerHTML = '';
-                new QRCode(qrcodeContainer, { text: fullShortUrl, width: 140, height: 140 });
-
-            } catch (e) { alert('حدث خطأ أثناء اختصار الرابط، يرجى المحاولة لاحقاً.'); }
-        }
-
-        function copyGeneratedShortUrl() {
-            const shortUrl = document.getElementById('shortUrlResult').innerText;
-            if(shortUrl) {
-                navigator.clipboard.writeText(shortUrl).then(() => {
-                    alert('تم نسخ الرابط المختصر بنجاح! 📋');
-                }).catch(() => { alert('فشل نسخ الرابط تلقائياً'); });
-            }
-        }
+            // تفعيل مختصر الروابط في لوحة المشرف الرئيسية
+            setupShortener('genBtn', 'longUrl', 'resultBox', 'shortenedLink', 'copyBtn', 'qrcode', 'saveQrBtn');
+            
+            // تفعيل مختصر الروابط داخل نافذة الإعدادات (للمعلم والمشرف)
+            setupShortener('modal-genBtn', 'modal-longUrl', 'modal-resultBox', 'modal-shortenedLink', 'modal-copyBtn', 'modal-qrcode', 'modal-saveQrBtn');
+        });
     </script>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="text-slate-900 h-full flex flex-col justify-between text-sm overflow-x-hidden">
 
-    <div id="teacher-login-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white max-w-md w-full rounded-3xl p-8 border-2 border-amber-200 shadow-2xl text-center">
-            <span class="text-6xl mb-4 inline-block">👨‍🏫</span>
-            <h2 class="class-title-font text-2xl text-slate-900 mb-2">تسجيل دخول المعلم</h2>
-            <p class="text-xs text-slate-500 font-bold mb-6">ثانوية الأمير عبدالمجيد مع فيس تعبيري - نظام كشوف المتابعة</p>
-            <div class="space-y-4 text-right">
-                <div>
-                    <label class="block text-xs font-black text-slate-700 mb-1">البريد الإلكتروني للمعلم:</label>
-                    <input type="email" id="loginTeacherEmail" dir="ltr" placeholder="teacher@gmail.com" class="w-full bg-slate-50 border border-slate-300 rounded-2xl p-3 text-sm font-bold text-slate-900 outline-none focus:border-[#800000] focus:bg-white transition">
+    <div id="teacher-login-modal" class="fixed inset-0 bg-slate-950/80 hidden items-center justify-center p-4 z-50 backdrop-blur-md">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 relative shadow-2xl text-center border-2 border-amber-300">
+            <div class="w-20 h-20 bg-amber-900 text-amber-100 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg border-2 border-amber-400">👨‍🏫</div>
+            <h2 class="text-2xl font-black text-slate-900 mb-1">تسجيل الدخول للمنصة</h2>
+            <p class="text-xs font-bold text-slate-500 mb-6">يرجى إدخال البريد الإلكتروني المعتمد للوصول</p>
+
+            <div class="space-y-4">
+                <div class="text-right">
+                    <label class="text-xs font-bold text-slate-700 block mb-1">البريد الإلكتروني المعتمد:</label>
+                    <input type="email" id="loginTeacherEmail" autocomplete="off" spellcheck="false" class="w-full border-2 border-slate-200 p-3 rounded-2xl text-sm font-bold bg-slate-50 focus:bg-white focus:border-amber-600 outline-none transition text-left" dir="ltr">
                 </div>
-                <div id="loginError" class="hidden text-xs text-rose-600 font-bold bg-rose-50 p-2.5 rounded-xl border border-rose-200"></div>
-                <button onclick="submitTeacherLogin()" class="w-full bg-[#800000] hover:bg-[#660000] text-amber-50 font-bold text-sm py-3.5 rounded-2xl shadow-lg cursor-pointer transition">دخول النظام 🚀</button>
+
+                <div id="loginError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 hidden"></div>
+                
+                <button onclick="submitTeacherLogin()" class="w-full bg-amber-900 hover:bg-amber-950 text-amber-50 py-3.5 rounded-2xl font-black text-sm shadow-md transition cursor-pointer flex items-center justify-center gap-2">
+                    <span>دخول المنصة</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
             </div>
+            <p class="text-[11px] text-slate-400 font-semibold mt-6">ثانوية الأمير عبدالمجيد</p>
         </div>
     </div>
 
-    <header id="main-header" class="p-4 shadow-sm border-b shrink-0 z-30 transition-all duration-500 bg-amber-50 text-amber-950 border-amber-200/80">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3 text-center md:text-right">
-                <span class="text-3xl sm:text-4xl">👨‍🏫</span>
-                <div>
-                    <h1 id="main-header-title" class="class-title-font text-xl sm:text-2xl font-bold tracking-wide">نظام متابعة الطلاب الشامل</h1>
-                    <p id="main-header-subtitle" class="text-xs font-bold opacity-80 mt-0.5">ثانوية الأمير عبدالمجيد مع فيس تعبيري - إدارة الفصول الذكية</p>
-                </div>
+    <header id="main-header" class="p-4 shadow-sm border-b shrink-0 z-30 transition-all duration-500">
+        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="text-center sm:text-right">
+                <h1 class="text-lg font-black tracking-wide" id="main-header-title">نظام المتابعة السحابي الشامل</h1>
+                <p class="text-xs opacity-90 mt-0.5 font-bold" id="main-header-subtitle">ثانوية الأمير عبدالمجيد</p>
             </div>
-            
-            <div class="flex items-center gap-2 flex-wrap justify-center">
-                <button onclick="openSettingsModal('classes')" class="bg-white/80 hover:bg-white text-slate-800 border border-slate-200/80 font-bold px-3.5 py-2 rounded-2xl text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer transition">⚙️ إعداد الفصول والتقييمات</button>
-                <button onclick="applyRandomTheme()" class="bg-white/80 hover:bg-white text-slate-800 border border-slate-200/80 font-bold px-3.5 py-2 rounded-2xl text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer transition">🎨 مظهر عشوائي</button>
-                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold px-3.5 py-2 rounded-2xl text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer transition">🔒 قفل الجلسة</button>
+            <div class="flex gap-2 items-center">
+                <button onclick="openSettingsModal('classes')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🏫 الفصول</button>
+                <button onclick="openSettingsModal('actions')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">⚙️ التقييمات</button>
+                <button onclick="openSettingsModal('shortener')" class="bg-black/5 hover:bg-black/10 text-slate-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-black/10 transition">🔗 الروابط</button>
+                <button id="teacher-logout-btn" onclick="logoutTeacher()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-2 rounded-xl font-bold text-xs cursor-pointer border border-rose-200 transition hidden"><i class="fas fa-sign-out-alt"></i> قفل الجلسة</button>
             </div>
         </div>
     </header>
 
-    <main id="main-scroll-container" class="flex-grow p-4 md:p-8 max-w-7xl mx-auto w-full">
+    <main id="main-scroll-container" class="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 container mx-auto max-w-6xl w-full">
 
-        <div id="quote-container" class="mb-6 bg-white/80 backdrop-blur-md border border-amber-200/60 p-4 rounded-2xl shadow-xs text-center">
-            <p id="quote-text" class="text-xs sm:text-sm font-bold text-amber-900 leading-relaxed"></p>
-        </div>
-
-        <div id="main-dashboard" class="space-y-6">
-            <div id="dynamic-classes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
-        </div>
-
-        <div id="admin-supervisor-card" class="admin-card max-w-5xl mx-auto" style="display:none;">
+        <div id="admin-supervisor-card" class="admin-card mb-6" style="display: none;">
             <div class="header">
-                <h2>إدارة المعلمين المسجلين في النظام (خاص بالمشرف العام)</h2>
-                <p>إضافة وتعديل بيانات المعلمين واعتماد حساباتهم للوصول لكشوف المتابعة</p>
+                <h2 class="text-xl font-black text-slate-900"><i class="fas fa-user-shield text-amber-600"></i> لوحة إدارة المعلمين العامة (خاص بالمشرف)</h2>
+                <p class="text-xs text-slate-500 mt-1">أضف المعلم من هنا:</p>
             </div>
-            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                <input type="text" id="newTeacherName" placeholder="اسم المعلم الرباعي" style="flex: 1; min-width: 180px; padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.85rem;">
-                <input type="email" id="newTeacherEmail" placeholder="البريد الإلكتروني الرسمي" style="flex: 1; min-width: 180px; padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.85rem; direction: ltr;">
-                <input type="text" id="newTeacherSubject" placeholder="المادة الدراسية" style="flex: 1; min-width: 140px; padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.85rem;">
-                <button onclick="addNewTeacher()" class="btn btn-upload">إضافة معلم جديد ➕</button>
+
+            <!-- أداة اختصار الروابط في لوحة المشرف -->
+            <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200 mb-5 text-right">
+                <h3 class="text-sm font-bold text-amber-950 mb-1"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي:</h3>
+                <p class="text-xs text-amber-800 mb-3 font-semibold">يتم حفظ الروابط الطويلة في السحابة للحصول على رابط قصير جداً وباركود (QR).</p>
+                <input type="url" id="longUrl" placeholder="ضع الرابط الطويل هنا..." class="w-full border p-2.5 rounded-xl text-xs font-bold bg-white mb-2" required>
+                <button id="genBtn" class="w-full bg-[#2ea44f] hover:bg-[#2c974b] text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">توليد رابط قصير جداً والـ QR 🚀</button>
+
+                <div class="result" id="resultBox" style="display:none; margin-top:15px; padding:12px; background:#eef9f1; border-radius:10px; border:1px solid #c3e6cb;">
+                    <strong style="font-size:12px; color:#155724;">الرابط المختصر القصير:</strong>
+                    <div id="shortenedLink" style="background:#fff; padding:8px; border:1px dashed #2ea44f; border-radius:6px; word-break:break-all; font-size:14px; margin:5px 0; color:#0366d6; font-weight:bold;"></div>
+                    <button id="copyBtn" class="w-full bg-[#0366d6] hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mb-2">نسخ الرابط 📋</button>
+                    <div id="qrcode" style="display:flex; justify-content:center; margin-top:10px;"></div>
+                    <button id="saveQrBtn" class="w-full bg-[#6f42c1] hover:bg-purple-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mt-2">حفظ QR كصورة 💾</button>
+                </div>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>اسم المعلم</th>
-                        <th>المادة</th>
-                        <th>البريد الإلكتروني</th>
-                        <th>الخيارات</th>
-                    </tr>
-                </thead>
-                <tbody id="teachers-list-body"></tbody>
-            </table>
+
+            <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-200 mb-5 text-right">
+                <h3 class="text-sm font-bold text-indigo-900 mb-2"><i class="fas fa-users"></i> قاعدة بيانات الطلاب المركزية (للمدرسة كاملة):</h3>
+                <p class="text-xs text-indigo-700 mb-2 font-semibold">انسخ والصق قائمة الطلاب (الاسم ثم الإيميل في سطرين متتاليين) لتكون متاحة لجميع المعلمين لسحبها.</p>
+                <textarea id="globalStudentsInput" placeholder="الطالب الأول&#10;student1@email.com&#10;الطالب الثاني&#10;student2@email.com" class="w-full h-24 p-3 rounded-xl border border-indigo-300 text-xs font-bold mb-3"></textarea>
+                <button onclick="uploadGlobalStudents()" class="w-full bg-indigo-700 hover:bg-indigo-900 text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer"><i class="fas fa-cloud-upload-alt"></i> رفع الطلاب لقاعدة المدرسة المركزية</button>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-5 text-right">
+                <h3 class="text-xs font-bold text-sky-800 mb-2"><i class="fas fa-user-plus"></i> إضافة معلم جديد:</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+                    <input type="text" id="newTeacherName" placeholder="اسم المعلم" class="border p-2 rounded-xl text-xs font-bold bg-white">
+                    <input type="email" id="newTeacherEmail" placeholder="البريد الإلكتروني" class="border p-2 rounded-xl text-xs font-bold bg-white text-left" dir="ltr">
+                    <input type="text" id="newTeacherSubject" placeholder="المادة الدراسية" class="border p-2 rounded-xl text-xs font-bold bg-white">
+                </div>
+                <button onclick="addNewTeacher()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer"><i class="fas fa-magic"></i> اعتماد وإضافة المعلم</button>
+            </div>
+
+            <h3 class="text-xs font-bold text-slate-800 mb-2 text-right"><i class="fas fa-list"></i> المعلمون المعتمدون في النظام:</h3>
+            <div class="overflow-x-auto border rounded-xl">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المعلم</th>
+                            <th>المادة الدراسية</th>
+                            <th>البريد الإلكتروني المعتمد</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachers-list-body">
+                        <tr><td colspan="5" style="text-align:center;">جاري الجلب...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div id="global-students-view" class="hidden space-y-6">
-            <div class="flex items-center justify-between bg-white p-5 rounded-3xl border border-indigo-100 shadow-sm">
-                <div class="flex items-center gap-3">
-                    <button onclick="backToHome()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-3 rounded-2xl font-bold text-xs flex items-center justify-center cursor-pointer transition">🔙 العودة</button>
-                    <div>
-                        <h2 class="class-title-font text-xl font-bold text-slate-900">سحب وإدارة طلاب المنصة</h2>
-                        <p class="text-xs text-slate-500 font-bold mt-0.5">اختر الفصل لإسناد الطالب إليه مباشرة وتفعيله في كشوف المتابعة الخاصة بك</p>
-                    </div>
-                </div>
+        <div id="main-dashboard" class="py-2 space-y-6">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h2 class="text-2xl font-black text-slate-900 tracking-wider">🏫 القائمة الرئيسية</h2>
+                <span class="text-xs font-bold text-slate-500 bg-white px-3.5 py-1.5 rounded-full border shadow-2xs">اختر الفصل للبدء</span>
             </div>
+            
+            <div id="dynamic-classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 sm:gap-6 w-full max-w-full overflow-hidden"></div>
 
-            <div class="bg-white p-5 rounded-3xl border border-indigo-100 shadow-sm space-y-4">
-                <div class="flex justify-between items-center gap-4 flex-wrap">
-                    <input type="text" id="searchGlobalStudentsInput" onkeyup="searchGlobalStudents()" placeholder="🔍 ابحث برقم أو اسم الطالب..." class="bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-2xl text-xs font-bold outline-none max-w-xs w-full focus:border-indigo-500 transition">
-                </div>
-
-                <div class="overflow-x-auto border border-slate-100 rounded-2xl">
-                    <table class="w-full text-xs text-right border-collapse whitespace-nowrap">
-                        <thead class="bg-indigo-900 text-white font-bold">
-                            <tr>
-                                <th class="p-3">اسم الطالب</th>
-                                <th class="p-3">البريد / المعرف</th>
-                                <th class="p-3 text-center">الحالة بالمنصة</th>
-                                <th class="p-3 text-center">إسناد لفصل دراسي</th>
-                            </tr>
-                        </thead>
-                        <tbody id="global-students-tbody"></tbody>
-                    </table>
-                </div>
+            <div class="bg-white/80 backdrop-blur-xs border-2 border-amber-200/80 p-5 rounded-3xl shadow-sm text-center my-4 transition hover:shadow-md">
+                <p id="quote-text" class="student-name-font text-lg text-amber-950 leading-relaxed">
+                    ✨ "التعليم هو السلاح الأقوى الذي يمكنك استخدامه لتغيير العالم."
+                </p>
+                <span class="text-[11px] font-bold text-amber-800/60 block mt-1">ثانوية الأمير عبدالمجيد</span>
             </div>
         </div>
 
-        <div id="admin-control-view" class="hidden space-y-6">
-            <div class="flex items-center justify-between bg-white p-5 rounded-3xl border border-amber-200/80 shadow-xs">
-                <div class="flex items-center gap-3">
-                    <button onclick="backToHome()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-3 rounded-2xl font-bold text-xs flex items-center justify-center cursor-pointer transition">🔙 العودة</button>
-                    <div>
-                        <h2 class="class-title-font text-xl font-bold text-slate-900">لوحة التحكم السحابية - إدارة الطلاب والموافقة</h2>
-                        <p class="text-xs text-slate-500 font-bold mt-0.5">اعتماد الطلبات المعلقة، وإلغاء الربط، ورفع القوائم الجماعية</p>
-                    </div>
-                </div>
+        <div id="admin-control-view" class="hidden py-2 space-y-4">
+            <div class="flex items-center justify-between mb-2 bg-white p-3.5 rounded-2xl shadow-sm border">
+                <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
+                <h2 class="text-base font-black text-slate-800">🔒 لوحة إضافة الطلاب للفصول</h2>
+                <div class="w-12"></div>
             </div>
-
             <div class="admin-card">
                 <div class="header">
-                    <h2>نظام الاعتماد والمتابعة السحابي ⚡</h2>
-                    <p>ثانوية الأمير عبدالمجيد مع فيس تعبيري - إدارة الطلاب والاعتمادات</p>
+                    <h2 class="text-lg font-black text-slate-900">🔒 أسماء الطلاب للإضافة</h2>
+                    <p class="text-xs text-slate-500">إدارة الطلاب والاعتماد السريع</p>
                 </div>
-
                 <div class="pending-section" id="pendingSection">
-                    <h3 id="pendingCountBadge">الطلبات المعلقة</h3>
+                    <h3>🔔 طلبات جديدة للمراجعة</h3>
                     <table id="pendingTable">
-                        <thead>
-                            <tr>
-                                <th>اسم الطالب</th>
-                                <th>البريد الإلكتروني</th>
-                                <th>الإجراء</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>الاسم</th><th>البريد</th><th>الإجراء</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
-
                 <div class="bulk-section">
-                    <h3 style="margin-top:0; color:var(--maroon); font-size:0.95rem;">📋 رفع أسماء وإيميلات جماعية</h3>
-                    <p style="font-size:0.75rem; color:#666; margin-bottom:8px;">الصق الأسماء والإيميلات بسطور متتالية مباشرة</p>
-                    <textarea id="bulkInput" placeholder="أحمد علي&#10;ahmed@gmail.com&#10;خالد محمد&#10;khaled@gmail.com"></textarea>
+                    <label class="block mb-1 text-xs font-bold"><strong>لصق القائمة للاعتماد المباشر:</strong></label>
+                    <textarea id="bulkInput" placeholder="الصق الاسم والإيميل هنا.."></textarea>
                     <div class="controls">
-                        <button class="btn btn-upload" onclick="superSmartBulkAdd()">رفع القائمة السحابية 🚀</button>
+                        <button class="btn btn-upload" onclick="superSmartBulkAdd()">رفع واعتماد 🚀</button>
+                        <button class="btn btn-copy" onclick="copyAllStudents()">📋 نسخ الكل</button>
+                        <button class="btn btn-delete-all" onclick="deleteAllStudents()">مسح الكل 🗑️</button>
                     </div>
                 </div>
-
                 <div class="stats-bar">
-                    <span id="approvedCount">الطلاب المعتمدين: 0</span>
+                    <span id="approvedCount">الطلاب: 0</span>
+                    <span id="pendingCountBadge" style="color: #d32f2f;">المعلقة: 0</span>
                 </div>
-
                 <div class="search-container">
-                    <h3>قائمة الطلاب المعتمدين والموزعين</h3>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <input type="text" id="searchInput" class="search-box" onkeyup="searchStudents()" placeholder="🔍 ابحث باسم الطالب أو البريد...">
-                        <button class="btn btn-copy" onclick="copyAllStudents()">📑 نسخ المعروض</button>
-                        <button class="btn btn-delete-all" onclick="deleteAllStudents()">🗑️ مسح الكل</button>
-                    </div>
+                    <h3 class="text-xs font-bold">🎓 الطلاب المعتمدين</h3>
+                    <input type="text" id="searchInput" class="search-box" onkeyup="searchStudents()" placeholder="🔍 ابحث...">
                 </div>
-
-                <div style="overflow-x: auto;">
+                <div class="max-h-96 overflow-y-auto mt-2 border rounded-xl">
                     <table id="studentsTable">
-                        <thead>
-                            <tr>
-                                <th>اسم الطالب</th>
-                                <th>البريد الإلكتروني</th>
-                                <th>الخيارات</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>الاسم</th><th>الإيميل</th><th>الإجراءات</th></tr></thead>
                         <tbody></tbody>
                     </table>
-                </div>
-            </div>
-
-            <div class="admin-card mt-6">
-                <div class="header">
-                    <h2>🏫 رفع قائمة الطلاب العامة في النظام (خاص بمدير المنصة)</h2>
-                    <p>رفع الأسماء ليتمكن المعلمون من سحبهم وإسنادهم مباشرة إلى فصولهم</p>
-                </div>
-                <div class="bulk-section">
-                    <textarea id="globalStudentsInput" placeholder="اسم الطالب&#10;email@gmail.com&#10;اسم الطالب الثاني&#10;email2@gmail.com"></textarea>
-                    <div class="controls">
-                        <button class="btn btn-upload" onclick="uploadGlobalStudents()">رفع وتعميم القائمة على جميع المعلمين 🚀</button>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="class-view" class="hidden space-y-6">
-            <div class="flex items-center justify-between bg-white/90 backdrop-blur-md p-5 rounded-3xl border border-amber-200/80 shadow-xs">
-                <div class="flex items-center gap-3">
-                    <button onclick="backToHome()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-3 rounded-2xl font-bold text-xs flex items-center justify-center cursor-pointer transition">🔙 العودة للرئيسية</button>
-                    <h2 id="class-title-header" class="class-title-font text-2xl font-bold text-slate-900">إدارة الفصل</h2>
+        <div id="class-view" class="hidden py-1">
+            <div class="flex items-center justify-between mb-4 bg-white p-3.5 rounded-2xl shadow-sm border">
+                <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
+                <h2 class="text-base font-black text-slate-800" id="class-title-header">الفصل</h2>
+                <div class="w-12"></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="class-students-container"></div>
+        </div>
+
+        <div id="global-students-view" class="hidden py-2 space-y-4">
+            <div class="flex items-center justify-between mb-4 bg-white p-3.5 rounded-2xl shadow-sm border">
+                <button onclick="backToHome()" class="bg-slate-100 text-slate-800 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer hover:bg-slate-200 transition">⬅ الرئيسية</button>
+                <h2 class="text-base font-black text-slate-800">🗂️ سحب الطلاب للفصول</h2>
+                <div class="w-12"></div>
+            </div>
+            
+            <div class="bg-white p-5 rounded-3xl shadow-sm border-2 border-indigo-100 text-right">
+                <div class="flex justify-between items-center mb-4 gap-2 flex-col sm:flex-row text-right">
+                    <h3 class="font-bold text-indigo-900 text-sm hidden sm:block">قائمة طلاب المدرسة</h3>
+                    <input type="text" id="searchGlobalInput" onkeyup="searchGlobalStudents()" placeholder="🔍 ابحث عن اسم طالب أو إيميل..." class="border p-2.5 rounded-xl text-xs font-bold w-full sm:w-1/2 outline-none focus:border-indigo-500 bg-slate-50 text-right">
+                </div>
+                
+                <div class="overflow-x-auto border rounded-xl max-h-96">
+                    <table class="w-full text-sm text-right" id="globalStudentsTable">
+                        <thead class="bg-indigo-50 text-indigo-900">
+                            <tr>
+                                <th class="p-3 text-xs">اسم الطالب</th>
+                                <th class="p-3 text-xs">الإيميل</th>
+                                <th class="p-3 text-xs">اختيار الفصل</th>
+                                <th class="p-3 text-xs text-center">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="global-students-tbody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            <div id="class-students-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
     </main>
 
-    <div id="settings-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white max-w-lg w-full rounded-3xl p-6 border-2 border-amber-200 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="class-title-font text-xl font-bold text-slate-900">إعدادات النظام الذكي</h3>
-                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600 font-black text-lg p-1 cursor-pointer">✕</button>
+    <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500">
+        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold text-center sm:text-right">
+            <div>ثانوية الأمير عبدالمجيد</div>
+            <div>الحقوق محفوظة 2026</div>
+            <div>التعليم الذكي</div>
+        </div>
+    </footer>
+
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeSettingsModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
+            <h3 class="text-lg font-black text-center mb-3 text-slate-900">⚙️ لوحة الإعدادات والروابط</h3>
+            
+            <!-- أزرار التنقل (الفصول، التقييمات، اختصار الروابط) -->
+            <div class="flex gap-2 mb-4 bg-slate-100 p-1 rounded-xl">
+                <button id="btn-tab-classes" onclick="switchSettingsTab('classes')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-white shadow">🏫 الفصول</button>
+                <button id="btn-tab-actions" onclick="switchSettingsTab('actions')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">⭐ التقييمات</button>
+                <button id="btn-tab-shortener" onclick="switchSettingsTab('shortener')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">🔗 الروابط</button>
             </div>
 
-            <div class="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
-                <button id="btn-tab-classes" onclick="switchSettingsTab('classes')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-white shadow transition-all cursor-pointer">🏫 إدارة الفصول</button>
-                <button id="btn-tab-actions" onclick="switchSettingsTab('actions')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer">⚙️ أزرار التقييم</button>
-                <button id="btn-tab-shortener" onclick="switchSettingsTab('shortener')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 transition-all cursor-pointer">🔗 اختصار الرابط</button>
-            </div>
-
-            <div id="classes-tab-content" class="space-y-4">
+            <!-- محتوى تبويب الفصول -->
+            <div id="classes-tab-content" class="space-y-3">
                 <div class="flex gap-2">
-                    <input type="text" id="new-class-name" placeholder="اسم الفصل الجديد (مثال: الفصل الخامس)" class="flex-grow bg-slate-50 border border-slate-300 rounded-2xl px-4 py-2.5 text-xs font-bold outline-none focus:border-[#800000]">
-                    <button id="save-class-btn" onclick="saveClassItem()" class="bg-[#800000] text-amber-50 px-5 rounded-2xl text-xs font-bold hover:bg-[#660000] cursor-pointer transition">إضافة ➕</button>
+                    <input type="text" id="new-class-name" placeholder="اسم الفصل..." class="flex-1 border p-2.5 rounded-xl text-xs font-bold">
+                    <button id="save-class-btn" onclick="saveClassItem()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-black">إضافة ➕</button>
                 </div>
-                <div id="settings-classes-list" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
+                <div id="settings-classes-list" class="space-y-1.5 max-h-44 overflow-y-auto"></div>
             </div>
 
-            <div id="actions-tab-content" class="space-y-4 hidden">
-                <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <label class="block text-xs font-bold text-slate-700">اختر تقييماً مسبقاً لتعديله أو احذفه:</label>
-                    <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full bg-white border border-slate-300 rounded-xl p-2 text-xs font-bold text-slate-800 outline-none">
-                        <option value="">-- اختر تقييماً للتعديل --</option>
+            <!-- محتوى تبويب التقييمات -->
+            <div id="actions-tab-content" class="space-y-3 hidden">
+                <select id="actions-dropdown-select" onchange="onSelectActionToEdit()" class="w-full border p-2.5 rounded-xl text-xs font-bold"></select>
+                <div class="grid grid-cols-3 gap-2">
+                    <select id="new-action-icon" class="border border-slate-200 p-2.5 rounded-xl text-base font-bold bg-white">
+                        <option value="👑">👑 ملك الإنجاز / التميز المطلق</option>
+                        <option value="🚀">🚀 انطلاقة صاروخية / تفوق</option>
+                        <option value="🧠">🧠 عبقري / تفكير عميق</option>
+                        <option value="🌟">🌟 نجم ساطع</option>
+                        <option value="💯">💯 درجة كاملة / مثالي</option>
+                        <option value="🥇">🥇 المركز الأول</option>
+                        <option value="🎓">🎓 إنجاز أكاديمي عالي</option>
+                        <option value="🔥">🔥 اشتعال الحماس والهمة</option>
+                        <option value="💎">💎 درة ومجوهرات الأداء</option>
+                        <option value="👑💯">👑💯 القمة المطلقة</option>
+                        <option value="🚀🌟">🚀🌟 تميز وانطلاق صاروخي</option>
+                        <option value="⭐">⭐ نجمة تفوق</option>
+                        <option value="👍">👍 أحسنت / تأييد</option>
+                        <option value="✨">✨ تألق وإبداع</option>
+                        <option value="📈">📈 صعود ومؤشر تصاعدي</option>
+                        <option value="👏">👏 تشجيع وثناء</option>
+                        <option value="🎯">🎯 إصابة الهدف بدقة</option>
+                        <option value="📝">📝 تدريب وتحضير</option>
+                        <option value="👌">👌 إتقان وأداء ممتاز</option>
+                        <option value="⚡">⚡ نشاط وسرعة استجابة</option>
+                        <option value="📚">📚 استذكار ومذاكرة</option>
+                        <option value="⏳">⏳ انتظار وصبر</option>
+                        <option value="🔋">🔋 طاقة جيدة</option>
+                        <option value="🌤️">🌤️ تحسن ملحوظ</option>
+                        <option value="🚲">🚲 محاولة مستمرة</option>
+                        <option value="📉">📉 انخفاض بالمستوى</option>
+                        <option value="⚠️">⚠️ تنبيه هام</option>
+                        <option value="🛑">🛑 إيقاف / منع</option>
+                        <option value="🔍">🔍 تحتاج تدقيق ومراجعة</option>
+                        <option value="🔄">🔄 إعادة المحاولة</option>
+                        <option value="❌">❌ خطأ / تقصير</option>
+                        <option value="🎨">🎨 ترتيب وإبداع فني</option>
+                        <option value="🧼">🧼 نظافة ومرتب</option>
+                        <option value="🌸">🌸 حسن مظهر</option>
+                        <option value="📐">📐 تنظيم وهندسة الدفتر</option>
+                        <option value="📖">📖 العناية بالكتاب المدرسي</option>
+                        <option value="✏️">✏️ كتابة ممتازة ودقيقة</option>
+                        <option value="📜">📜 خط جميل ومنسق</option>
+                        <option value="🙋‍♂️">🙋‍♂️ مبادر بالمشاركة (طالب)</option>
+                        <option value="🙋‍♀️">🙋‍♀️ مبادرة بالمشاركة (طالبة)</option>
+                        <option value="🗣️">🗣️ تفاعل لفظي نشط</option>
+                        <option value="🤝">🤝 تعاون ومساعدة الزملاء</option>
+                        <option value="⏱️">⏱️ التزام بالوقت</option>
+                        <option value="🏅">🏅 وسام الالتزام السلوكي</option>
+                        <option value="😍">😍 فخور بك جداً</option>
+                        <option value="🥰">🥰 أحببت عملك وأدائك</option>
+                        <option value="😎">😎 إجابة واثقة ومتقنة</option>
+                        <option value="🤔">🤔 فكر مجدداً بعمق</option>
+                        <option value="🧐">🧐 ركز أكثر من فضلك</option>
+                        <option value="😢">😢 حزين على مستواك وتقصيرك</option>
+                        <option value="✅">✅ إجابة صحيحة / صح</option>
+                        <option value="💡">💡 مشاركة وفكرة</option>
+                        <option value="📘">📘 حل الواجب</option>
+                        <option value="📕">📕 لم يحل الواجب</option>
+                        <option value="📁">📁 نسيان ملف</option>
+                        <option value="📂">📂 إنجاز ملف</option>
+                        <option value="💤">💤 النوم في الحصة</option>
+                        <option value="📱">📱 استخدام الهاتف</option>
+                        <option value="🎁">🎁 هدية تشجيعية</option>
+                    </select>
+                    <input type="text" id="new-action-name" placeholder="اسم التقييم..." class="col-span-2 border border-slate-200 p-2.5 rounded-xl text-xs font-bold bg-white focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="number" step="0.5" id="new-action-score" placeholder="الدرجة (1 أو -1)" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
+                    <select id="new-action-color" class="border border-slate-200 p-2.5 rounded-xl text-xs font-semibold bg-white">
+                        <option value="#28a745">🟢 أخضر عشبي</option>
+                        <option value="#20c997">🔹 أخضر فيروزي</option>
+                        <option value="#007bff">🔵 أزرق غامق</option>
+                        <option value="#17a2b8">🟦 سماوي فاتح</option>
+                        <option value="#6610f2">🟣 بنفسجي ملكي</option>
+                        <option value="#6f42c1">🔮 أرجواني</option>
+                        <option value="#e83e8c">🩷 وردي زاهي</option>
+                        <option value="#dc3545">🔴 أحمر قاني</option>
+                        <option value="#fd7e14">🟠 برتقالي ساطع</option>
+                        <option value="#ffc107">🟡 أصفر ذهبي</option>
+                        <option value="#6c757d">⚪ رمادي رسمي</option>
                     </select>
                 </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">رمز التقييم:</label>
-                        <select id="new-action-icon" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs font-bold outline-none">
-                            <option value="✅">✅ صح</option>
-                            <option value="❌">❌ خطأ</option>
-                            <option value="💡">💡 فكرة</option>
-                            <option value="⭐">⭐ نجمة</option>
-                            <option value="📘">📘 كتاب</option>
-                            <option value="📕">📕 دفتر</option>
-                            <option value="💤">💤 كسل</option>
-                            <option value="🗣️">🗣️ حديث</option>
-                            <option value="📱">📱 جوال</option>
-                            <option value="🎁">🎁 هدية</option>
-                            <option value="🏆">🏆 كأس</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">النقاط:</label>
-                        <input type="number" step="0.5" id="new-action-score" placeholder="مثال: 1 أو -1" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs font-bold outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم التقييم:</label>
-                    <input type="text" id="new-action-name" placeholder="اسم التقييم (مثال: مشاركة متميزة)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs font-bold outline-none">
-                </div>
-
-                <div class="hidden">
-                    <input type="color" id="new-action-color" value="#800000">
-                </div>
-
-                <div class="flex gap-2 pt-2">
-                    <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="flex-grow bg-[#800000] text-amber-50 py-3 rounded-2xl text-xs font-bold hover:bg-[#660000] cursor-pointer shadow-md">حفظ كتقييم جديد 🚀</button>
-                    <button id="delete-action-btn" onclick="deleteSelectedAction()" class="hidden bg-rose-600 text-white px-4 py-3 rounded-2xl text-xs font-bold hover:bg-rose-700 cursor-pointer shadow-md">حذف 🗑️</button>
-                    <button onclick="resetActionForm()" class="bg-slate-200 text-slate-700 px-4 py-3 rounded-2xl text-xs font-bold hover:bg-slate-300 cursor-pointer">إلغاء</button>
-                </div>
+                <button id="save-action-btn" onclick="saveCustomActionFromDropdown()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-black">حفظ التقييم 🚀</button>
             </div>
 
-            <div id="shortener-tab-content" class="space-y-4 hidden">
-                <div class="space-y-3 bg-amber-50/50 p-4 rounded-2xl border border-amber-200">
-                    <label class="block text-xs font-bold text-amber-950">ضع الرابط الطويل المراد اختصاره:</label>
-                    <input type="url" id="longUrlInput" placeholder="https://example.com/very/long/url" dir="ltr" class="w-full bg-white border border-amber-200 rounded-xl p-2.5 text-xs font-bold outline-none focus:border-[#800000]">
-                    <button onclick="createShortUrlFromInput()" class="w-full bg-[#800000] text-amber-50 py-2.5 rounded-xl text-xs font-bold hover:bg-[#660000] cursor-pointer shadow-md">إنشاء رابط مختصر وتوليد QR 🚀</button>
-                </div>
+            <!-- محتوى تبويب اختصار الروابط المتاح للمعلم والمشرف -->
+            <div id="shortener-tab-content" class="space-y-3 hidden text-right">
+                <div class="bg-amber-50/70 p-4 rounded-2xl border-2 border-amber-200">
+                    <h3 class="text-sm font-bold text-amber-950 mb-1"><i class="fas fa-link text-amber-700"></i> مختصر الروابط السحابي:</h3>
+                    <p class="text-xs text-amber-800 mb-3 font-semibold">حفظ الروابط الطويلة وتوليد رابط قصير وباركود (QR) للإرسال السريع.</p>
+                    <input type="url" id="modal-longUrl" placeholder="ضع الرابط الطويل هنا..." class="w-full border p-2.5 rounded-xl text-xs font-bold bg-white mb-2" required>
+                    <button id="modal-genBtn" class="w-full bg-[#2ea44f] hover:bg-[#2c974b] text-white py-2.5 rounded-xl font-bold text-xs shadow cursor-pointer">توليد رابط قصير جداً والـ QR 🚀</button>
 
-                <div id="shortenerResultContainer" class="hidden p-4 bg-white rounded-2xl border border-slate-200 text-center space-y-3">
-                    <p class="text-xs font-bold text-slate-600">الرابط المختصر جاهز للمشاركة:</p>
-                    <div class="p-2 bg-slate-50 rounded-xl border border-slate-200 text-xs font-mono font-bold text-indigo-700 break-all select-all" id="shortUrlResult"></div>
-                    <button onclick="copyGeneratedShortUrl()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-700 cursor-pointer shadow-xs">نسخ الرابط 📋</button>
-                    
-                    <div class="pt-2 border-t flex flex-col items-center">
-                        <span class="text-[11px] font-bold text-slate-500 mb-2">رمز الاستجابة السريعة (QR Code):</span>
-                        <div id="qrcode" class="p-2 bg-white rounded-xl border border-slate-200 shadow-xs"></div>
+                    <div class="result" id="modal-resultBox" style="display:none; margin-top:15px; padding:12px; background:#eef9f1; border-radius:10px; border:1px solid #c3e6cb;">
+                        <strong style="font-size:12px; color:#155724;">الرابط المختصر القصير:</strong>
+                        <div id="modal-shortenedLink" style="background:#fff; padding:8px; border:1px dashed #2ea44f; border-radius:6px; word-break:break-all; font-size:14px; margin:5px 0; color:#0366d6; font-weight:bold;"></div>
+                        <button id="modal-copyBtn" class="w-full bg-[#0366d6] hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mb-2">نسخ الرابط 📋</button>
+                        <div id="modal-qrcode" style="display:flex; justify-content:center; margin-top:10px;"></div>
+                        <button id="modal-saveQrBtn" class="w-full bg-[#6f42c1] hover:bg-purple-700 text-white py-2 rounded-xl text-xs font-bold cursor-pointer mt-2">حفظ QR كصورة 💾</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="action-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white max-w-md w-full rounded-3xl p-6 border-2 border-amber-200 shadow-2xl space-y-5">
-            <div class="flex justify-between items-center border-b pb-3">
-                <div>
-                    <h3 id="action-student-name" class="class-title-font text-lg font-bold text-slate-900">رصد الطالب</h3>
-                    <p id="action-student-subtitle" class="text-xs text-slate-500 font-bold mt-0.5"></p>
-                </div>
-                <button onclick="closeActionModal()" class="text-slate-400 hover:text-slate-600 font-black text-lg p-1 cursor-pointer">✕</button>
-            </div>
-
-            <div class="space-y-2">
-                <span class="text-xs font-bold text-slate-500 block">تسجيل الحضور والغياب اليومي:</span>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="recordAction('حاضر', 0, 'حاضر')" class="bg-emerald-500 hover:bg-emerald-600 text-white p-2.5 rounded-2xl text-xs font-bold shadow-xs cursor-pointer transition">🟢 حاضر</button>
-                    <button onclick="recordAction('غائب', 0, 'غائب')" class="bg-rose-500 hover:bg-rose-600 text-white p-2.5 rounded-2xl text-xs font-bold shadow-xs cursor-pointer transition">🔴 غائب</button>
-                    <button onclick="recordAction('متأخر', 0, 'متأخر')" class="bg-amber-500 hover:bg-amber-600 text-white p-2.5 rounded-2xl text-xs font-bold shadow-xs cursor-pointer transition">⏰ متأخر</button>
-                    <button onclick="recordAction('خروج بدون إذن', 0, 'خروج بدون إذن')" class="bg-stone-800 hover:bg-stone-900 text-white p-2.5 rounded-2xl text-xs font-bold shadow-xs cursor-pointer transition">🚶‍♂️ خروج بدون إذن</button>
-                </div>
-            </div>
-
-            <div class="space-y-2">
-                <span class="text-xs font-bold text-slate-500 block">اختر التقييم المناسب لرصده:</span>
-                <div id="custom-actions-container" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
-            </div>
-
-            <button onclick="closeActionModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 rounded-2xl text-xs font-bold cursor-pointer transition">إلغاء</button>
-        </div>
-    </div>
-
-    <div id="student-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white max-w-2xl w-full rounded-3xl p-6 border-2 border-amber-200 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div id="student-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
+        <div class="bg-white rounded-3xl w-[95%] md:max-w-3xl p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-9 h-9 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
             <div id="modal-content"></div>
         </div>
     </div>
 
-    <div id="preview-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white max-w-4xl w-full rounded-3xl p-6 border-2 border-amber-200 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div id="preview-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
+        <div class="bg-white rounded-3xl w-[95%] md:max-w-4xl p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closePreviewSummaryModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
             <div id="preview-modal-content"></div>
         </div>
     </div>
 
-    <footer id="main-footer" class="py-3 px-6 border-t shrink-0 z-30 transition-all duration-500 bg-amber-50 text-amber-950 border-amber-200/80">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs font-bold opacity-80 gap-2">
-            <span>حقوق التطوير محفوظة © 2026</span>
-            <span>نظام متابعة الطلاب - ثانوية الأمير عبدالمجيد مع فيس تعبيري 👨‍🏫</span>
+    <div id="action-modal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-3 z-50">
+        <div class="bg-white rounded-3xl w-[95%] md:max-w-xl p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeActionModal()" class="absolute top-4 left-4 bg-slate-100 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center cursor-pointer hover:bg-slate-200">✕</button>
+            <div class="text-center mb-5">
+                <div class="w-20 h-20 bg-slate-800 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-3 shadow-md">📝</div>
+                <h3 class="text-2xl font-black text-slate-900" id="action-student-name">رصد الطالب</h3>
+                <p class="text-sm font-bold text-slate-600 mt-1" id="action-student-subtitle"></p>
+            </div>
+            
+            <div class="mb-5">
+                <h4 class="font-bold text-slate-900 text-sm mb-3">📌 الحضور والغياب والتأخر:</h4>
+                <div class="flex gap-3 overflow-x-auto pb-2 pt-1 px-1">
+                    <button onclick="recordAction('حاضر', 0, 'حاضر')" class="flex items-center gap-3 bg-emerald-50 border border-emerald-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🟢 حاضر</button>
+                    <button onclick="recordAction('غائب', 0, 'غائب')" class="flex items-center gap-3 bg-rose-50 border border-rose-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🔴 غائب</button>
+                    <button onclick="recordAction('متأخر', 0, 'متأخر')" class="flex items-center gap-3 bg-amber-50 border border-amber-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">⏰ متأخر</button>
+                    <button onclick="recordAction('خروج بدون إذن', 0, 'خروج بدون إذن')" class="flex items-center gap-3 bg-stone-100 border border-stone-400 text-stone-800 px-4 py-3 rounded-2xl shrink-0 cursor-pointer font-bold">🚶‍♂️ خروج بدون إذن</button>
+                    <button onclick="recordAction('مستاذن', 0, 'مستاذن')" class="flex items-center gap-3 bg-sky-50 border border-sky-300 px-4 py-3 rounded-2xl shrink-0 cursor-pointer">🏃 مستاذن</button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="font-bold text-slate-900 text-sm mb-3">⭐ اختر التقييم السريع:</h4>
+                <div id="custom-actions-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 overflow-y-auto pr-1"></div>
+            </div>
+            <button onclick="closeActionModal()" class="w-full bg-slate-200 text-slate-800 py-3 rounded-xl font-bold text-xs cursor-pointer">إغلاق</button>
         </div>
-    </footer>
+    </div>
 
 </body>
 </html>
